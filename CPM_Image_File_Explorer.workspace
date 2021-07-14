@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="CPM_Image_File_Explorer" Database="" Version="10000">
+  <Project Name="CIFE" Path="CIFE/CIFE.project" Active="Yes"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug-GTK" Selected="yes">
+      <Environment/>
+      <Project Name="CIFE" ConfigName="Debug - GTK"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release-GTK" Selected="no">
+      <Environment/>
+      <Project Name="CIFE" ConfigName="Release - GTK"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Debug-MSW" Selected="no">
+      <Environment/>
+      <Project Name="CIFE" ConfigName="Debug - MSW"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release-MSW" Selected="no">
+      <Environment/>
+      <Project Name="CIFE" ConfigName="Release - MSW"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>
