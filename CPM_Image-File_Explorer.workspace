@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Workspace Name="CPM_Image_File_Explorer" Database="" Version="10000">
+<CodeLite_Workspace Name="CPM_Image-File_Explorer" Database="" Version="10000">
   <Project Name="CIFE" Path="CIFE/CIFE.project" Active="Yes"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug-GTK" Selected="yes">
