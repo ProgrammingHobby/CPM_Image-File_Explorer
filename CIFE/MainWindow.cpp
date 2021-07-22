@@ -22,6 +22,9 @@
 #include "MainWindow.h"
 // --------------------------------------------------------------------------------
 MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
+    // die Größe des Buttons an die Größe des TextEdit anpassen und quadratisch machen
+    int size = editImageFile->m_height;
+    buttonImageFile->SetMaxSize(wxSize(size, size));
 }
 
 // --------------------------------------------------------------------------------

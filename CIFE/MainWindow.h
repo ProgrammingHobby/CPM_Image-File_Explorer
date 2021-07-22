@@ -25,9 +25,19 @@
 #include "Ui_MainWindow.h"
 // --------------------------------------------------------------------------------
 class MainWindow : public Ui_MainWindow {
-    public:
+    public:     // Attributes
+
+    public:     // Methods
+
+    public:     // Constructor & Destructor
         MainWindow(wxWindow *parent);
         virtual ~MainWindow();
+
+    protected:  // Event Methods
+
+    private:    // Attributes
+
+    private:    // Methods
 };
 
 // --------------------------------------------------------------------------------
