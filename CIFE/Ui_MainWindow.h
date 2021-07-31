@@ -44,6 +44,11 @@
 // clang-format on
 
 class Ui_MainWindow : public wxFrame {
+    public:
+        enum {
+            wxID_BUTTON_IMAGE_FILE = 10001,
+            wxID_IMAGE_TYPE = 10002,
+        };
     protected:
         wxMenuBar *menuMainWindow;
         wxMenu *menuFile;
@@ -53,14 +58,12 @@ class Ui_MainWindow : public wxFrame {
         wxStatusBar *statusMainWindow;
         wxBoxSizer *sizerMainWindow;
         wxPanel *panelImageFile;
-        wxGridBagSizer *sizerImageFile;
-        wxStaticText *testImageType;
+        wxGridBagSizer *sizerImage;
+        wxStaticText *textImageType;
+        wxBoxSizer *sizerImageType;
         wxComboBox *comboboxImageType;
         wxStaticText *textImageFile;
         wxTextCtrl *editImageFile;
-        wxPanel *panelImageInfo;
-        wxBoxSizer *sizerImageInfo;
-        wxStaticText *textImageInfo;
         wxButton *buttonImageFile;
         wxPanel *panelImageContents;
         wxBoxSizer *sizeImageContents;
@@ -75,8 +78,8 @@ class Ui_MainWindow : public wxFrame {
         wxStatusBar *GetStatusMainWindow() {
             return statusMainWindow;
         }
-        wxStaticText *GetTestImageType() {
-            return testImageType;
+        wxStaticText *GetTextImageType() {
+            return textImageType;
         }
         wxComboBox *GetComboboxImageType() {
             return comboboxImageType;
@@ -86,12 +89,6 @@ class Ui_MainWindow : public wxFrame {
         }
         wxTextCtrl *GetEditImageFile() {
             return editImageFile;
-        }
-        wxStaticText *GetTextImageInfo() {
-            return textImageInfo;
-        }
-        wxPanel *GetPanelImageInfo() {
-            return panelImageInfo;
         }
         wxButton *GetButtonImageFile() {
             return buttonImageFile;
@@ -105,7 +102,7 @@ class Ui_MainWindow : public wxFrame {
         wxPanel *GetPanelImageContents() {
             return panelImageContents;
         }
-        Ui_MainWindow(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("CP/M Image File Explorer    (c) Uwe Merker 2021"), const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxSize(500, 300), long style = wxDEFAULT_FRAME_STYLE);
+        Ui_MainWindow(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = wxT(""), const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxSize(500, 300), long style = wxDEFAULT_FRAME_STYLE);
         virtual ~Ui_MainWindow();
 };
 

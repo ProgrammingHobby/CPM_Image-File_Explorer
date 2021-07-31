@@ -38,6 +38,7 @@ class MainWindow : public Ui_MainWindow {
     private:    // Attributes
 
     private:    // Methods
+        DECLARE_EVENT_TABLE()
 };
 
 // --------------------------------------------------------------------------------

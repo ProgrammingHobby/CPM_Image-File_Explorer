@@ -21,10 +21,18 @@
 
 #include "MainWindow.h"
 // --------------------------------------------------------------------------------
+BEGIN_EVENT_TABLE(MainWindow, wxFrame)
+END_EVENT_TABLE()
+// --------------------------------------------------------------------------------
 MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
-    // die Größe des Buttons an die Größe des TextEdit anpassen und quadratisch machen
-    int size = editImageFile->m_height;
+
+    int size = editImageFile->GetSize().GetHeight();
+    buttonImageFile->SetMinSize(wxSize(size, size));
     buttonImageFile->SetMaxSize(wxSize(size, size));
+
+    this->Fit();
+    this->SetMinSize(this->GetSize());
+    this->SetTitle(wxT("CP/M Image File Explorer - © Uwe Merker 2021"));
 }
 
 // --------------------------------------------------------------------------------

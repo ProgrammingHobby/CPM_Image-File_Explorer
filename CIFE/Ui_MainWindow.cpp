@@ -24,55 +24,74 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
 
     menuMainWindow = new wxMenuBar(0);
     this->SetMenuBar(menuMainWindow);
+
     menuFile = new wxMenu();
-    menuMainWindow->Append(menuFile, _("Datei"));
-    menuItemClose = new wxMenuItem(menuFile, wxID_CLOSE, _("Beenden"), wxT(""), wxITEM_NORMAL);
+    menuMainWindow->Append(menuFile, _("File"));
+
+    menuItemClose = new wxMenuItem(menuFile, wxID_CLOSE, _("Close"), wxT(""), wxITEM_NORMAL);
     menuFile->Append(menuItemClose);
+
     menuHelp = new wxMenu();
-    menuMainWindow->Append(menuHelp, _("Hilfe"));
-    menuItemAbout = new wxMenuItem(menuHelp, wxID_ABOUT, _("Über ..."), wxT(""), wxITEM_NORMAL);
+    menuMainWindow->Append(menuHelp, _("Help"));
+
+    menuItemAbout = new wxMenuItem(menuHelp, wxID_ABOUT, _("About ..."), wxT(""), wxITEM_NORMAL);
     menuHelp->Append(menuItemAbout);
+
     statusMainWindow = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE);
     statusMainWindow->SetFieldsCount(1);
     this->SetStatusBar(statusMainWindow);
+
     sizerMainWindow = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(sizerMainWindow);
+
     panelImageFile = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxTAB_TRAVERSAL);
+
     sizerMainWindow->Add(panelImageFile, 0, wxEXPAND, WXC_FROM_DIP(4));
-    sizerImageFile = new wxGridBagSizer(0, 0);
-    panelImageFile->SetSizer(sizerImageFile);
-    testImageType = new wxStaticText(panelImageFile, wxID_ANY, _("Image Typ :"), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
-    sizerImageFile->Add(testImageType, wxGBPosition(0, 0), wxGBSpan(1, 1), wxLEFT | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+
+    sizerImage = new wxGridBagSizer(0, 0);
+    panelImageFile->SetSizer(sizerImage);
+
+    textImageType = new wxStaticText(panelImageFile, wxID_ANY, _("Image Typ :"), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
+
+    sizerImage->Add(textImageType, wxGBPosition(0, 0), wxGBSpan(1, 1), wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+
+    sizerImageType = new wxBoxSizer(wxHORIZONTAL);
+
+    sizerImage->Add(sizerImageType, wxGBPosition(0, 1), wxGBSpan(1, 1), wxTOP | wxBOTTOM, WXC_FROM_DIP(4));
+
     wxArrayString comboboxImageTypeArr;
-    comboboxImageType = new wxComboBox(panelImageFile, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), comboboxImageTypeArr, 0);
-#if wxVERSION_NUMBER >= 3000
-    comboboxImageType->SetHint(wxT(""));
-#endif
-    sizerImageFile->Add(comboboxImageType, wxGBPosition(0, 1), wxGBSpan(1, 2), wxLEFT | wxTOP | wxBOTTOM | wxEXPAND, WXC_FROM_DIP(4));
+    comboboxImageType = new wxComboBox(panelImageFile, wxID_IMAGE_TYPE, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), comboboxImageTypeArr, wxCB_READONLY);
+
+    sizerImageType->Add(comboboxImageType, 0, 0, WXC_FROM_DIP(4));
+
+    sizerImageType->Add(-1, -1, 0, 0, WXC_FROM_DIP(5));
+
     textImageFile = new wxStaticText(panelImageFile, wxID_ANY, _("Image Datei :"), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
-    sizerImageFile->Add(textImageFile, wxGBPosition(1, 0), wxGBSpan(1, 1), wxLEFT | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+
+    sizerImage->Add(textImageFile, wxGBPosition(1, 0), wxGBSpan(1, 1), wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+
     editImageFile = new wxTextCtrl(panelImageFile, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
 #if wxVERSION_NUMBER >= 3000
     editImageFile->SetHint(wxT(""));
 #endif
-    sizerImageFile->Add(editImageFile, wxGBPosition(1, 1), wxGBSpan(1, 2), wxLEFT | wxBOTTOM | wxEXPAND, WXC_FROM_DIP(4));
-    panelImageInfo = new wxPanel(panelImageFile, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), wxBORDER_SIMPLE);
-    sizerImageFile->Add(panelImageInfo, wxGBPosition(0, 4), wxGBSpan(2, 1), wxALL | wxEXPAND, WXC_FROM_DIP(4));
-    sizerImageInfo = new wxBoxSizer(wxHORIZONTAL);
-    panelImageInfo->SetSizer(sizerImageInfo);
-    textImageInfo = new wxStaticText(panelImageInfo, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelImageInfo, wxSize(-1, -1)), 0);
-    sizerImageInfo->Add(textImageInfo, 0, wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
-    buttonImageFile = new wxButton(panelImageFile, wxID_ANY, _("..."), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
-    sizerImageFile->Add(buttonImageFile, wxGBPosition(1, 3), wxGBSpan(1, 1), wxLEFT | wxRIGHT, WXC_FROM_DIP(2));
-    sizerImageFile->AddGrowableCol(1);
-    sizerImageFile->AddGrowableCol(2);
-    sizerImageFile->AddGrowableCol(4);
+
+    sizerImage->Add(editImageFile, wxGBPosition(1, 1), wxGBSpan(1, 1), wxRIGHT | wxEXPAND, WXC_FROM_DIP(2));
+
+    buttonImageFile = new wxButton(panelImageFile, wxID_BUTTON_IMAGE_FILE, _("..."), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
+
+    sizerImage->Add(buttonImageFile, wxGBPosition(1, 2), wxGBSpan(1, 1), wxRIGHT, WXC_FROM_DIP(4));
+    sizerImage->AddGrowableCol(1);
     panelImageContents = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxTAB_TRAVERSAL);
+
     sizerMainWindow->Add(panelImageContents, 1, wxEXPAND, WXC_FROM_DIP(5));
+
     sizeImageContents = new wxBoxSizer(wxVERTICAL);
     panelImageContents->SetSizer(sizeImageContents);
+
     listImageContents = new wxListCtrl(panelImageContents, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(panelImageContents, wxSize(-1, -1)), wxLC_REPORT);
+
     sizeImageContents->Add(listImageContents, 1, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, WXC_FROM_DIP(4));
+
     SetName(wxT("Ui_MainWindow"));
     SetSize(wxDLG_UNIT(this, wxSize(500, 300)));
 
