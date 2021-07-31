@@ -102,7 +102,7 @@ class Ui_MainWindow : public wxFrame {
         wxPanel *GetPanelImageContents() {
             return panelImageContents;
         }
-        Ui_MainWindow(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = wxT(""), const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxSize(500, 300), long style = wxDEFAULT_FRAME_STYLE);
+        Ui_MainWindow(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("CP/M Image File Explorer"), const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxSize(500, 300), long style = wxDEFAULT_FRAME_STYLE);
         virtual ~Ui_MainWindow();
 };
 

@@ -21,7 +21,13 @@
 
 #include "MainWindow.h"
 // --------------------------------------------------------------------------------
+#include <wx/aboutdlg.h>
+#include <wx/platinfo.h>
+#include <wx/versioninfo.h>
+// --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
+    EVT_MENU(wxID_CLOSE, MainWindow::onMenuCloseClicked)
+    EVT_MENU(wxID_ABOUT, MainWindow::onMenuAboutClicked)
 END_EVENT_TABLE()
 // --------------------------------------------------------------------------------
 MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
@@ -32,11 +38,33 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
 
     this->Fit();
     this->SetMinSize(this->GetSize());
-    this->SetTitle(wxT("CP/M Image File Explorer - © Uwe Merker 2021"));
 }
 
 // --------------------------------------------------------------------------------
 MainWindow::~MainWindow() {
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onMenuCloseClicked(wxCommandEvent &event) {
+    WXUNUSED(event)
+    Close(true);
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
+    WXUNUSED(event)
+    wxAboutDialogInfo aboutInfo;
+    wxVersionInfo versionInfo("", wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER);
+
+    aboutInfo.SetName("CP/M Image-File Explorer");
+    aboutInfo.SetVersion("0.0.1");
+    aboutInfo.SetIcon(this->GetIcon());
+    aboutInfo.SetDescription(_("Written in C/C++ with CodeLite-IDE\n"
+                               "Using wxWidgets GUI - Framework Version ") + versionInfo.GetVersionString());
+    aboutInfo.SetCopyright("Uwe Merker  (C) 2021");
+    aboutInfo.SetWebSite("https://github.com/ProgrammingHobby/CPM_Image-File_Explorer.git");
+
+    wxAboutBox(aboutInfo);
 }
 
 // --------------------------------------------------------------------------------

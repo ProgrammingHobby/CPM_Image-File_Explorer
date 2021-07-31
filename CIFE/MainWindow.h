@@ -34,6 +34,8 @@ class MainWindow : public Ui_MainWindow {
         virtual ~MainWindow();
 
     protected:  // Event Methods
+        void onMenuCloseClicked(wxCommandEvent &event);
+        void onMenuAboutClicked(wxCommandEvent &event);
 
     private:    // Attributes
 
