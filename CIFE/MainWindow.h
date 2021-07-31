@@ -24,6 +24,8 @@
 // --------------------------------------------------------------------------------
 #include "Ui_MainWindow.h"
 // --------------------------------------------------------------------------------
+#include <wx/arrstr.h>
+// --------------------------------------------------------------------------------
 class MainWindow : public Ui_MainWindow {
     public:     // Attributes
 
@@ -36,10 +38,14 @@ class MainWindow : public Ui_MainWindow {
     protected:  // Event Methods
         void onMenuCloseClicked(wxCommandEvent &event);
         void onMenuAboutClicked(wxCommandEvent &event);
+        void onButtonImageFileClicked(wxCommandEvent &event);
+        void onComboBoxDropDown(wxCommandEvent &event);
 
     private:    // Attributes
 
-    private:    // Methods
+    private:    // Methode
+        wxArrayString getImageTypes();
+
         DECLARE_EVENT_TABLE()
 };
 

@@ -24,10 +24,17 @@
 #include <wx/aboutdlg.h>
 #include <wx/platinfo.h>
 #include <wx/versioninfo.h>
+#include <wx/filedlg.h>
+#include <wx/stdpaths.h>
+#include <wx/txtstrm.h>
+#include <wx/wfstream.h>
+#include <wx/tokenzr.h>
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CLOSE, MainWindow::onMenuCloseClicked)
     EVT_MENU(wxID_ABOUT, MainWindow::onMenuAboutClicked)
+    EVT_BUTTON(wxID_BUTTON_IMAGE_FILE, MainWindow::onButtonImageFileClicked)
+    EVT_COMBOBOX_DROPDOWN(wxID_IMAGE_TYPE, MainWindow::onComboBoxDropDown)
 END_EVENT_TABLE()
 // --------------------------------------------------------------------------------
 MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
@@ -38,6 +45,8 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
 
     this->Fit();
     this->SetMinSize(this->GetSize());
+
+    comboboxImageType->Append(getImageTypes());
 }
 
 // --------------------------------------------------------------------------------
@@ -65,6 +74,47 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
     aboutInfo.SetWebSite("https://github.com/ProgrammingHobby/CPM_Image-File_Explorer.git");
 
     wxAboutBox(aboutInfo);
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
+    wxFileDialog fileDialog(this, _T("Open CP/M Disk Image File"), wxStandardPaths::Get().GetUserDataDir(),
+                            wxEmptyString, _T("Image Files (*.img,*.fdd,*.dsk)|*.img;*.fdd;*.dsk|all Files (*.*)|*.*"),
+                            wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
+    if (fileDialog.ShowModal() == wxID_OK) {
+        editImageFile->SetValue(fileDialog.GetPath());
+        editImageFile->SetInsertionPoint(editImageFile->GetValue().length());
+    }
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onComboBoxDropDown(wxCommandEvent &event) {
+    comboboxImageType->Clear();
+    comboboxImageType->Append(getImageTypes());
+}
+
+// --------------------------------------------------------------------------------
+wxArrayString MainWindow::getImageTypes() {
+    wxArrayString imageTypes;
+    wxFileInputStream file(wxT("diskdefs"));
+    wxTextInputStream text(file);
+
+    while (!file.Eof()) {
+        wxString line = text.ReadLine();
+        wxStringTokenizer tokenizer(line, " ");
+
+        while (tokenizer.HasMoreTokens()) {
+            wxString token = tokenizer.GetNextToken();
+
+            if (token == "diskdef") {
+                wxString type = tokenizer.GetNextToken();
+                imageTypes.Add(type);
+            }
+        }
+    }
+
+    return (imageTypes);
 }
 
 // --------------------------------------------------------------------------------
