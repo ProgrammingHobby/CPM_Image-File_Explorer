@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="CIFE" Version="11000" InternalType="GUI">
   <VirtualDirectory Name="Resource Files">
+    <File Name="Ui_MainWindow_bitmaps.xrc"/>
     <File Name="Ui_MainWindow.wxcp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Header Files">
+    <File Name="ImageFileTools.h"/>
     <File Name="MainWindow.h"/>
     <File Name="Ui_MainWindow.h"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="Source Files">
+    <File Name="ImageFileTools.cpp"/>
     <File Name="Ui_MainWindow_bitmaps.cpp"/>
     <File Name="Ui_MainWindow.cpp"/>
     <File Name="MainWindow.cpp"/>
@@ -28,7 +31,7 @@
     <Configuration Name="Debug - GTK" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g;-O0;-Wall;$(shell wx-config --cxxflags --unicode=yes --static=yes)" C_Options="-g;-O0;-Wall;$(shell wx-config --cxxflags --unicode=yes --static=yes)" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="-no-pie;$(shell wx-config --libs --unicode=yes --static=yes)" Required="yes"/>
-      <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
+      <ResourceCompiler Options="$(shell wx-config --rcflags -static=yes)" Required="no"/>
       <General OutputFile="" IntermediateDirectory="" Command="$(WorkspacePath)/cmake-build-$(WorkspaceConfiguration)/output/$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(WorkspacePath)/cmake-build-$(WorkspaceConfiguration)/output" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="CMake"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
@@ -62,7 +65,7 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Debug - MSW" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Debug - MSW" CompilerType="MinGW ( C:\TDM-GCC-64\bin\ )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g;-O0;-Wall;$(shell wx-config --cxxflags --unicode=yes --static=yes)" C_Options="-g;-O0;-Wall;$(shell wx-config --cxxflags --unicode=yes --static=yes)" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="-mwindows;$(shell wx-config --libs --unicode=yes --static=yes)" Required="yes"/>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
@@ -138,7 +141,7 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release - MSW" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Release - MSW" CompilerType="MinGW ( C:\TDM-GCC-64\bin\ )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3;-Wall;$(shell wx-config --cxxflags --unicode=yes --static=yes)" C_Options="-O3;-Wall;$(shell wx-config --cxxflags --unicode=yes --static=yes)" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>

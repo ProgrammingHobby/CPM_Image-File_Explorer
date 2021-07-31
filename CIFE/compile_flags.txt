@@ -5,7 +5,7 @@
 -I/usr/local/include
 -I/usr/include/x86_64-linux-gnu
 -I/usr/include
--I/home/uwe/Programming/wxWidgets/Projekte/CPM_Image_File_Explorer/CIFE
+-I/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE
 -I/usr/local/lib/wx/include/gtk3-unicode-static-3.1
 -I/usr/local/include/wx-3.1
 -D__WXGTK__

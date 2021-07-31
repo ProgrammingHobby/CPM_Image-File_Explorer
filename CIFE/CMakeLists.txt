@@ -76,7 +76,7 @@ set(LINK_OPTIONS ${LINK_OPTIONS} -no-pie)
 if(WIN32)
     # Resource options
     execute_process(COMMAND 
-        wx-config --rcflags
+        wx-config --rcflags -static=yes
         OUTPUT_VARIABLE
         CL_TMP_VAR
         OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -91,10 +91,11 @@ link_directories(
 
 # Define the CXX sources
 set ( CXX_SRCS
-    ${CMAKE_CURRENT_LIST_DIR}/Ui_MainWindow_bitmaps.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Ui_MainWindow.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MainWindow.cpp
     ${CMAKE_CURRENT_LIST_DIR}/main.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Ui_MainWindow_bitmaps.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MainWindow.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ImageFileTools.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Ui_MainWindow.cpp
 )
 
 set_source_files_properties(
