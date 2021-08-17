@@ -20,6 +20,7 @@
 ***********************************************************************************/
 
 #include "MainWindow.h"
+#include "Version.h"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/platinfo.h>
@@ -29,28 +30,63 @@
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 #include <wx/tokenzr.h>
+#include <wx/bitmap.h>
+#include <wx/icon.h>
+#include <wx/settings.h>
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CLOSE, MainWindow::onMenuCloseClicked)
     EVT_MENU(wxID_ABOUT, MainWindow::onMenuAboutClicked)
     EVT_BUTTON(wxID_BUTTON_IMAGE_FILE, MainWindow::onButtonImageFileClicked)
-    EVT_COMBOBOX_DROPDOWN(wxID_IMAGE_TYPE, MainWindow::onComboBoxDropDown)
+    EVT_BUTTON(wxID_BUTTON_UPDATE_DIR, MainWindow::onButtonUpdateDirClicked)
+    EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
+    EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
+    EVT_COMBOBOX_DROPDOWN(wxID_IMAGE_TYPE, MainWindow::onComboBoxImageTypeDropDown)
+    EVT_COMBOBOX(wxID_IMAGE_TYPE, MainWindow::onImageTypeChanged)
 END_EVENT_TABLE()
 // --------------------------------------------------------------------------------
+#include "Bitmaps/appiconsmall.xpm"
+// --------------------------------------------------------------------------------
 MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
-
     int size = editImageFile->GetSize().GetHeight();
     buttonImageFile->SetMinSize(wxSize(size, size));
     buttonImageFile->SetMaxSize(wxSize(size, size));
+    wxBitmap iconBmp(appiconsmall_xpm);
 
-    this->Fit();
-    this->SetMinSize(this->GetSize());
+    if (iconBmp.IsOk()) {
+        wxIcon icn;
+        icn.CopyFromBitmap(iconBmp);
+        SetIcon(icn);
+    }
 
     comboboxImageType->Append(getImageTypes());
+    comboboxImageType->SetSelection(3);     // nur für Test, ansonsten 0
+    comboboxDirViewType->SetSelection(0);   // nur für Test, entfällt ansonsten
+    editImageFile->SetFocus();
+    buttonUpdateDir->Enable(false);
+    wxSize fontSize = this->GetFont().GetPixelSize();
+    wxFont listFont = wxFont(fontSize, wxFontFamily::wxFONTFAMILY_TELETYPE, wxFontStyle::wxFONTSTYLE_NORMAL, wxFontWeight::wxFONTWEIGHT_NORMAL);
+    listImageContents->SetFont(listFont);
+    imageFileTools = new ImageFileTools();
+    correctWindowSize();
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::correctWindowSize() {
+    this->SetMinSize(wxSize(0, 0));
+    int width = this->GetBestSize().GetWidth();
+    width += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X, listImageContents);
+    int height = this->GetBestSize().GetHeight();
+    this->SetSize(wxSize(width, height));
+    this->SetMinSize(wxSize(width, height));
 }
 
 // --------------------------------------------------------------------------------
 MainWindow::~MainWindow() {
+    if (imageFileTools != nullptr) {
+        delete imageFileTools;
+        imageFileTools = nullptr;
+    }
 }
 
 // --------------------------------------------------------------------------------
@@ -64,34 +100,62 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
     WXUNUSED(event)
     wxAboutDialogInfo aboutInfo;
     wxVersionInfo versionInfo("", wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER);
-
     aboutInfo.SetName("CP/M Image-File Explorer");
-    aboutInfo.SetVersion("0.0.1");
+    aboutInfo.SetVersion(VERSION_STRING);
     aboutInfo.SetIcon(this->GetIcon());
     aboutInfo.SetDescription(_("Written in C/C++ with CodeLite-IDE\n"
-                               "Using wxWidgets GUI - Framework Version ") + versionInfo.GetVersionString());
+                               "Using wxWidgets GUI - Framework Version ") + versionInfo.GetVersionString() +
+                             _("\n\nCP/M Images Functionality based on the CP/M-Tools\n"
+                               "Source Code Version 2.21 from Michael Haardt.\n"
+                               "http://www.moria.de/~michael/cpmtools"));
     aboutInfo.SetCopyright("Uwe Merker  (C) 2021");
-    aboutInfo.SetWebSite("https://github.com/ProgrammingHobby/CPM_Image-File_Explorer.git");
+    aboutInfo.SetWebSite("http://www.moria.de/~michael/cpmtools\n"
+                         "https://github.com/ProgrammingHobby/CPM_Image-File_Explorer.git");
+    wxBitmap iconBmp(appiconsmall_xpm);
 
-    wxAboutBox(aboutInfo);
+    if (iconBmp.IsOk()) {
+        wxIcon icn;
+        icn.CopyFromBitmap(iconBmp);
+        aboutInfo.SetIcon(icn);
+    }
+
+    wxAboutBox(aboutInfo, this);
 }
 
 // --------------------------------------------------------------------------------
 void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
-    wxFileDialog fileDialog(this, _T("Open CP/M Disk Image File"), wxStandardPaths::Get().GetUserDataDir(),
+    WXUNUSED(event)
+//    wxFileDialog fileDialog(this, _T("Open CP/M Disk Image File"), wxStandardPaths::Get().GetUserDataDir(),
+//                            wxEmptyString, _T("Image Files (*.img,*.fdd,*.dsk)|*.img;*.fdd;*.dsk|all Files (*.*)|*.*"),
+//                            wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    wxFileDialog fileDialog(this, _T("Open CP/M Disk Image File"), "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/",
                             wxEmptyString, _T("Image Files (*.img,*.fdd,*.dsk)|*.img;*.fdd;*.dsk|all Files (*.*)|*.*"),
                             wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
     if (fileDialog.ShowModal() == wxID_OK) {
         editImageFile->SetValue(fileDialog.GetPath());
         editImageFile->SetInsertionPoint(editImageFile->GetValue().length());
+//        imageFileTools->setImageFile(fileDialog.GetPath());
+//        imageFileTools->showDirectory();
+        correctWindowSize();
+        buttonUpdateDir->Enable(true);
+    }
+    else {
+        buttonUpdateDir->Enable(false);
     }
 }
 
 // --------------------------------------------------------------------------------
-void MainWindow::onComboBoxDropDown(wxCommandEvent &event) {
+void MainWindow::onComboBoxImageTypeDropDown(wxCommandEvent &event) {
+    WXUNUSED(event)
     comboboxImageType->Clear();
     comboboxImageType->Append(getImageTypes());
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onImageTypeChanged(wxCommandEvent &event) {
+    WXUNUSED(event)
+//    imageFileTools->setImageType(comboboxImageType->GetValue());
 }
 
 // --------------------------------------------------------------------------------
@@ -115,6 +179,30 @@ wxArrayString MainWindow::getImageTypes() {
     }
 
     return (imageTypes);
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onButtonUpdateDirClicked(wxCommandEvent &event) {
+    WXUNUSED(event)
+    listImageContents->ClearAll();
+//    imageFileTools->showDirectory();
+    correctWindowSize();
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onButtonClearMessagesClicked(wxCommandEvent &event) {
+    textMessages->Clear();
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onButtonSaveMessagesClicked(wxCommandEvent &event) {
+    wxFileDialog fileDialog(this, _T("Save CIFE Messages"), wxStandardPaths::Get().GetUserDataDir(),
+                            wxEmptyString, _T("Text Files (*.txt,*.log)|*.txt;*.log|all Files (*.*)|*.*"),
+                            wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+    if (fileDialog.ShowModal() == wxID_OK) {
+        textMessages->SaveFile(fileDialog.GetPath(), wxTEXT_TYPE_ANY);
+    }
 }
 
 // --------------------------------------------------------------------------------

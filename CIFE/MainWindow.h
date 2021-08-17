@@ -23,6 +23,7 @@
 #define MAINWINDOW_H
 // --------------------------------------------------------------------------------
 #include "Ui_MainWindow.h"
+#include "ImageFileTools.h"
 // --------------------------------------------------------------------------------
 #include <wx/arrstr.h>
 // --------------------------------------------------------------------------------
@@ -39,12 +40,18 @@ class MainWindow : public Ui_MainWindow {
         void onMenuCloseClicked(wxCommandEvent &event);
         void onMenuAboutClicked(wxCommandEvent &event);
         void onButtonImageFileClicked(wxCommandEvent &event);
-        void onComboBoxDropDown(wxCommandEvent &event);
+        void onButtonUpdateDirClicked(wxCommandEvent &event);
+        void onButtonClearMessagesClicked(wxCommandEvent &event);
+        void onButtonSaveMessagesClicked(wxCommandEvent &event);
+        void onComboBoxImageTypeDropDown(wxCommandEvent &event);
+        void onImageTypeChanged(wxCommandEvent &event);
 
     private:    // Attributes
+        ImageFileTools *imageFileTools;
 
     private:    // Methode
         wxArrayString getImageTypes();
+        void correctWindowSize();
 
         DECLARE_EVENT_TABLE()
 };
