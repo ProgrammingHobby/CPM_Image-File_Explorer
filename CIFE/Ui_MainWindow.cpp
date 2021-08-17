@@ -75,25 +75,106 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
     editImageFile->SetHint(wxT(""));
 #endif
 
-    sizerImage->Add(editImageFile, wxGBPosition(1, 1), wxGBSpan(1, 1), wxRIGHT | wxEXPAND, WXC_FROM_DIP(2));
+    sizerImage->Add(editImageFile, wxGBPosition(1, 1), wxGBSpan(1, 1), wxRIGHT | wxBOTTOM | wxEXPAND, WXC_FROM_DIP(2));
 
     buttonImageFile = new wxButton(panelImageFile, wxID_BUTTON_IMAGE_FILE, _("..."), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
 
     sizerImage->Add(buttonImageFile, wxGBPosition(1, 2), wxGBSpan(1, 1), wxRIGHT, WXC_FROM_DIP(4));
     sizerImage->AddGrowableCol(1);
-    panelImageContents = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxTAB_TRAVERSAL);
+    panelImageViews = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxBORDER_NONE);
 
-    sizerMainWindow->Add(panelImageContents, 1, wxEXPAND, WXC_FROM_DIP(5));
+    sizerMainWindow->Add(panelImageViews, 1, wxEXPAND, WXC_FROM_DIP(5));
 
-    sizeImageContents = new wxBoxSizer(wxVERTICAL);
-    panelImageContents->SetSizer(sizeImageContents);
+    sizerImageViews = new wxBoxSizer(wxVERTICAL);
+    panelImageViews->SetSizer(sizerImageViews);
 
-    listImageContents = new wxListCtrl(panelImageContents, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(panelImageContents, wxSize(-1, -1)), wxLC_REPORT);
+    panelDirViewType = new wxPanel(panelImageViews, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(panelImageViews, wxSize(-1, -1)), wxTAB_TRAVERSAL);
 
-    sizeImageContents->Add(listImageContents, 1, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, WXC_FROM_DIP(4));
+    sizerImageViews->Add(panelDirViewType, 0, wxLEFT | wxTOP | wxEXPAND, WXC_FROM_DIP(4));
+
+    sizerDirViewType = new wxBoxSizer(wxHORIZONTAL);
+    panelDirViewType->SetSizer(sizerDirViewType);
+
+    textDirViewType = new wxStaticText(panelDirViewType, wxID_ANY, _("Directory View Type :"), wxDefaultPosition, wxDLG_UNIT(panelDirViewType, wxSize(-1, -1)), 0);
+
+    sizerDirViewType->Add(textDirViewType, 0, wxRIGHT | wxTOP | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+
+    wxArrayString comboboxDirViewTypeArr;
+    comboboxDirViewTypeArr.Add(_("Old CP/M 2.2 dir output."));
+    comboboxDirViewTypeArr.Add(_("P2DOS 2.3 ddir-like output."));
+    comboboxDirViewTypeArr.Add(_("CP/M 3.x dir output."));
+    comboboxDirViewTypeArr.Add(_("Long UNIX-style dir output."));
+    comboboxDirViewTypeArr.Add(_("E2fs lsattr-like output."));
+    comboboxDirViewType = new wxComboBox(panelDirViewType, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelDirViewType, wxSize(-1, -1)), comboboxDirViewTypeArr, 0);
+#if wxVERSION_NUMBER >= 3000
+    comboboxDirViewType->SetHint(wxT(""));
+#endif
+    comboboxDirViewType->SetSelection(0);
+
+    sizerDirViewType->Add(comboboxDirViewType, 0, wxTOP, WXC_FROM_DIP(4));
+
+    sizerDirViewType->Add(0, 0, 1, wxALL, WXC_FROM_DIP(5));
+
+    buttonUpdateDir = new wxButton(panelDirViewType, wxID_BUTTON_UPDATE_DIR, _("Update Directory View"), wxDefaultPosition, wxDLG_UNIT(panelDirViewType, wxSize(-1, -1)), 0);
+
+    sizerDirViewType->Add(buttonUpdateDir, 0, wxRIGHT | wxTOP | wxEXPAND | wxRESERVE_SPACE_EVEN_IF_HIDDEN, WXC_FROM_DIP(4));
+
+    splitterImageViews = new wxSplitterWindow(panelImageViews, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(panelImageViews, wxSize(-1, -1)), wxSP_LIVE_UPDATE | wxSP_NOBORDER);
+    splitterImageViews->SetSashGravity(1);
+    splitterImageViews->SetMinimumPaneSize(100);
+
+    sizerImageViews->Add(splitterImageViews, 1, wxLEFT | wxRIGHT | wxTOP | wxEXPAND, WXC_FROM_DIP(4));
+
+    splitterPageImageContents = new wxPanel(splitterImageViews, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(splitterImageViews, wxSize(-1, -1)), wxTAB_TRAVERSAL | wxBORDER_THEME);
+
+    sizerImageContents = new wxBoxSizer(wxVERTICAL);
+    splitterPageImageContents->SetSizer(sizerImageContents);
+
+    listImageContents = new wxListView(splitterPageImageContents, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(splitterPageImageContents, wxSize(-1, -1)), wxLC_VRULES | wxLC_REPORT | wxFULL_REPAINT_ON_RESIZE | wxBORDER_NONE);
+    listImageContents->SetBackgroundColour(wxColour(wxT("rgb(203,230,162)")));
+
+    sizerImageContents->Add(listImageContents, 2, wxEXPAND, WXC_FROM_DIP(4));
+
+    lineImageContents = new wxStaticLine(splitterPageImageContents, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(splitterPageImageContents, wxSize(1, 1)), wxLI_HORIZONTAL);
+
+    sizerImageContents->Add(lineImageContents, 0, wxEXPAND, WXC_FROM_DIP(5));
+    lineImageContents->SetMinSize(wxSize(1, 1));
+
+    textContentsInfo = new wxStaticText(splitterPageImageContents, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(splitterPageImageContents, wxSize(-1, -1)), wxALIGN_LEFT | wxBORDER_NONE);
+
+    sizerImageContents->Add(textContentsInfo, 0, wxBOTTOM | wxEXPAND, WXC_FROM_DIP(5));
+
+    splitterPageMessages = new wxPanel(splitterImageViews, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(splitterImageViews, wxSize(-1, -1)), wxTAB_TRAVERSAL | wxBORDER_THEME);
+    splitterImageViews->SplitHorizontally(splitterPageImageContents, splitterPageMessages, 100);
+
+    sizerMessages = new wxBoxSizer(wxVERTICAL);
+    splitterPageMessages->SetSizer(sizerMessages);
+
+    sizerMessagesControl = new wxBoxSizer(wxHORIZONTAL);
+
+    sizerMessages->Add(sizerMessagesControl, 0, wxLEFT | wxRIGHT | wxTOP | wxEXPAND, WXC_FROM_DIP(4));
+
+    buttonClearMessages = new wxButton(splitterPageMessages, wxID_BUTTON_CLEAR_MESSAGES, _("Clear Messages"), wxDefaultPosition, wxDLG_UNIT(splitterPageMessages, wxSize(-1, -1)), 0);
+
+    sizerMessagesControl->Add(buttonClearMessages, 0, 0, WXC_FROM_DIP(5));
+
+    sizerMessagesControl->Add(0, 0, 1, wxALL, WXC_FROM_DIP(5));
+
+    buttonSaveMessages = new wxButton(splitterPageMessages, wxID_BUTTON_SAVE_MESSAGES, _("SaveMessages"), wxDefaultPosition, wxDLG_UNIT(splitterPageMessages, wxSize(-1, -1)), 0);
+
+    sizerMessagesControl->Add(buttonSaveMessages, 0, 0, WXC_FROM_DIP(5));
+
+    lineTextMessages = new wxStaticLine(splitterPageMessages, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(splitterPageMessages, wxSize(-1, 1)), wxLI_HORIZONTAL | wxBORDER_NONE);
+
+    sizerMessages->Add(lineTextMessages, 0, wxTOP | wxEXPAND, WXC_FROM_DIP(5));
+    lineTextMessages->SetMinSize(wxSize(-1, 1));
+
+    textMessages = new wxTextCtrl(splitterPageMessages, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(splitterPageMessages, wxSize(-1, -1)), wxTE_RICH2 | wxTE_READONLY | wxTE_MULTILINE | wxTE_DONTWRAP | wxBORDER_NONE | wxBORDER_THEME);
+
+    sizerMessages->Add(textMessages, 1, wxEXPAND, WXC_FROM_DIP(5));
 
     SetName(wxT("Ui_MainWindow"));
-    SetSize(wxDLG_UNIT(this, wxSize(500, 300)));
+    SetSize(wxDLG_UNIT(this, wxSize(640, 480)));
 
     if (GetSizer()) {
         GetSizer()->Fit(this);

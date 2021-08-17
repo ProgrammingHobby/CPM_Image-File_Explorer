@@ -24,7 +24,9 @@
 #include <wx/arrstr.h>
 #include <wx/textctrl.h>
 #include <wx/button.h>
+#include <wx/splitter.h>
 #include <wx/listctrl.h>
+#include <wx/statline.h>
 #if wxVERSION_NUMBER >= 2900
     #include <wx/persist.h>
     #include <wx/persist/toplevel.h>
@@ -46,8 +48,11 @@
 class Ui_MainWindow : public wxFrame {
     public:
         enum {
-            wxID_BUTTON_IMAGE_FILE = 10001,
-            wxID_IMAGE_TYPE = 10002,
+            wxID_BUTTON_SAVE_MESSAGES = 10001,
+            wxID_BUTTON_CLEAR_MESSAGES = 10002,
+            wxID_BUTTON_UPDATE_DIR = 10003,
+            wxID_BUTTON_IMAGE_FILE = 10004,
+            wxID_IMAGE_TYPE = 10005,
         };
     protected:
         wxMenuBar *menuMainWindow;
@@ -65,9 +70,26 @@ class Ui_MainWindow : public wxFrame {
         wxStaticText *textImageFile;
         wxTextCtrl *editImageFile;
         wxButton *buttonImageFile;
-        wxPanel *panelImageContents;
-        wxBoxSizer *sizeImageContents;
-        wxListCtrl *listImageContents;
+        wxPanel *panelImageViews;
+        wxBoxSizer *sizerImageViews;
+        wxPanel *panelDirViewType;
+        wxBoxSizer *sizerDirViewType;
+        wxStaticText *textDirViewType;
+        wxComboBox *comboboxDirViewType;
+        wxButton *buttonUpdateDir;
+        wxSplitterWindow *splitterImageViews;
+        wxPanel *splitterPageImageContents;
+        wxBoxSizer *sizerImageContents;
+        wxListView *listImageContents;
+        wxStaticLine *lineImageContents;
+        wxStaticText *textContentsInfo;
+        wxPanel *splitterPageMessages;
+        wxBoxSizer *sizerMessages;
+        wxBoxSizer *sizerMessagesControl;
+        wxButton *buttonClearMessages;
+        wxButton *buttonSaveMessages;
+        wxStaticLine *lineTextMessages;
+        wxTextCtrl *textMessages;
 
     protected:
 
@@ -96,13 +118,52 @@ class Ui_MainWindow : public wxFrame {
         wxPanel *GetPanelImageFile() {
             return panelImageFile;
         }
-        wxListCtrl *GetListImageContents() {
+        wxStaticText *GetTextDirViewType() {
+            return textDirViewType;
+        }
+        wxComboBox *GetComboboxDirViewType() {
+            return comboboxDirViewType;
+        }
+        wxButton *GetButtonUpdateDir() {
+            return buttonUpdateDir;
+        }
+        wxPanel *GetPanelDirViewType() {
+            return panelDirViewType;
+        }
+        wxListView *GetListImageContents() {
             return listImageContents;
         }
-        wxPanel *GetPanelImageContents() {
-            return panelImageContents;
+        wxStaticLine *GetLineImageContents() {
+            return lineImageContents;
         }
-        Ui_MainWindow(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("CP/M Image File Explorer"), const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxSize(500, 300), long style = wxDEFAULT_FRAME_STYLE);
+        wxStaticText *GetTextContentsInfo() {
+            return textContentsInfo;
+        }
+        wxPanel *GetSplitterPageImageContents() {
+            return splitterPageImageContents;
+        }
+        wxButton *GetButtonClearMessages() {
+            return buttonClearMessages;
+        }
+        wxButton *GetButtonSaveMessages() {
+            return buttonSaveMessages;
+        }
+        wxStaticLine *GetLineTextMessages() {
+            return lineTextMessages;
+        }
+        wxTextCtrl *GetTextMessages() {
+            return textMessages;
+        }
+        wxPanel *GetSplitterPageMessages() {
+            return splitterPageMessages;
+        }
+        wxSplitterWindow *GetSplitterImageViews() {
+            return splitterImageViews;
+        }
+        wxPanel *GetPanelImageViews() {
+            return panelImageViews;
+        }
+        Ui_MainWindow(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("CP/M Image File Explorer"), const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxSize(640, 480), long style = wxDEFAULT_FRAME_STYLE);
         virtual ~Ui_MainWindow();
 };
 
