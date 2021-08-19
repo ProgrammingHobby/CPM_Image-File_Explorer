@@ -21,6 +21,8 @@
 
 #include "MainWindow.h"
 #include "Version.h"
+#include "CpmTools.h"
+#include "CpmGuiInterface.h"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/platinfo.h>
@@ -67,7 +69,8 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     wxSize fontSize = this->GetFont().GetPixelSize();
     wxFont listFont = wxFont(fontSize, wxFontFamily::wxFONTFAMILY_TELETYPE, wxFontStyle::wxFONTSTYLE_NORMAL, wxFontWeight::wxFONTWEIGHT_NORMAL);
     listImageContents->SetFont(listFont);
-    cpmtools = new CpmTools();
+    cpmguiinterface = new CpmGuiInterface(listImageContents, textMessages, textContentsInfo);
+    cpmtools = new CpmTools(cpmguiinterface);
     correctWindowSize();
 }
 
@@ -83,6 +86,11 @@ void MainWindow::correctWindowSize() {
 
 // --------------------------------------------------------------------------------
 MainWindow::~MainWindow() {
+    if (cpmguiinterface != nullptr) {
+        delete cpmguiinterface;
+        cpmguiinterface = nullptr;
+    }
+
     if (cpmtools != nullptr) {
         delete cpmtools;
         cpmtools = nullptr;

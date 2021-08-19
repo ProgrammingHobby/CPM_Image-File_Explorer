@@ -23,9 +23,11 @@
 #define MAINWINDOW_H
 // --------------------------------------------------------------------------------
 #include "Ui_MainWindow.h"
-#include "CpmTools.h"
 // --------------------------------------------------------------------------------
 #include <wx/arrstr.h>
+// --------------------------------------------------------------------------------
+class CpmTools;
+class CpmGuiInterface;
 // --------------------------------------------------------------------------------
 class MainWindow : public Ui_MainWindow {
     public:     // Attributes
@@ -48,6 +50,7 @@ class MainWindow : public Ui_MainWindow {
 
     private:    // Attributes
         CpmTools *cpmtools;
+        CpmGuiInterface *cpmguiinterface;
 
     private:    // Methode
         wxArrayString getImageTypes();
