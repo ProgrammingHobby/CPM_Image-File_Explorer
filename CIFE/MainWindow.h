@@ -23,7 +23,7 @@
 #define MAINWINDOW_H
 // --------------------------------------------------------------------------------
 #include "Ui_MainWindow.h"
-#include "ImageFileTools.h"
+#include "CpmTools.h"
 // --------------------------------------------------------------------------------
 #include <wx/arrstr.h>
 // --------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ class MainWindow : public Ui_MainWindow {
         void onImageTypeChanged(wxCommandEvent &event);
 
     private:    // Attributes
-        ImageFileTools *imageFileTools;
+        CpmTools *cpmtools;
 
     private:    // Methode
         wxArrayString getImageTypes();

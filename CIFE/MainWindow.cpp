@@ -67,7 +67,7 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     wxSize fontSize = this->GetFont().GetPixelSize();
     wxFont listFont = wxFont(fontSize, wxFontFamily::wxFONTFAMILY_TELETYPE, wxFontStyle::wxFONTSTYLE_NORMAL, wxFontWeight::wxFONTWEIGHT_NORMAL);
     listImageContents->SetFont(listFont);
-    imageFileTools = new ImageFileTools();
+    cpmtools = new CpmTools();
     correctWindowSize();
 }
 
@@ -83,9 +83,9 @@ void MainWindow::correctWindowSize() {
 
 // --------------------------------------------------------------------------------
 MainWindow::~MainWindow() {
-    if (imageFileTools != nullptr) {
-        delete imageFileTools;
-        imageFileTools = nullptr;
+    if (cpmtools != nullptr) {
+        delete cpmtools;
+        cpmtools = nullptr;
     }
 }
 
@@ -135,8 +135,8 @@ void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
     if (fileDialog.ShowModal() == wxID_OK) {
         editImageFile->SetValue(fileDialog.GetPath());
         editImageFile->SetInsertionPoint(editImageFile->GetValue().length());
-//        imageFileTools->setImageFile(fileDialog.GetPath());
-//        imageFileTools->showDirectory();
+//        cpmtools->setImageFile(fileDialog.GetPath());
+//        cpmtools->showDirectory();
         correctWindowSize();
         buttonUpdateDir->Enable(true);
     }
@@ -155,7 +155,7 @@ void MainWindow::onComboBoxImageTypeDropDown(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onImageTypeChanged(wxCommandEvent &event) {
     WXUNUSED(event)
-//    imageFileTools->setImageType(comboboxImageType->GetValue());
+//    cpmtools->setImageType(comboboxImageType->GetValue());
 }
 
 // --------------------------------------------------------------------------------
@@ -185,7 +185,7 @@ wxArrayString MainWindow::getImageTypes() {
 void MainWindow::onButtonUpdateDirClicked(wxCommandEvent &event) {
     WXUNUSED(event)
     listImageContents->ClearAll();
-//    imageFileTools->showDirectory();
+//    cpmtools->showDirectory();
     correctWindowSize();
 }
 

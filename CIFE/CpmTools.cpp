@@ -18,7 +18,7 @@
 **	Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
 **
 ***********************************************************************************/
-#include "ImageFileTools.h"
+#include "CpmTools.h"
 // --------------------------------------------------------------------------------
 ImageFileTools::ImageFileTools() {
 }
