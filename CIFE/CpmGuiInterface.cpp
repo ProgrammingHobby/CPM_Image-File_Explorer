@@ -28,7 +28,7 @@
 #include <wx/colour.h>
 #include <wx/tokenzr.h>
 // --------------------------------------------------------------------------------
-CpmGuiInterface::CpmGuiInterface(wxListView *listView, wxTextCtrl *textCtrl, wxStaticText *statText) {
+CpmGuiInterface::CpmGuiInterface(wxListView *listView, wxTextCtrl *textCtrl, wxTextCtrl *statText) {
     textMessages = textCtrl;
     listContents = listView;
     textDirInfo = statText;
@@ -67,7 +67,8 @@ void CpmGuiInterface::printMsg(wxString msg, msgColor col) {
 
 // --------------------------------------------------------------------------------
 void CpmGuiInterface::printDirInfo(wxString info) {
-    textDirInfo->SetLabel(info);
+    textDirInfo->Clear();
+    textDirInfo->AppendText(info);
 }
 
 // --------------------------------------------------------------------------------

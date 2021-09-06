@@ -24,8 +24,8 @@
 // --------------------------------------------------------------------------------
 class wxListView;
 class wxTextCtrl;
-class wxStaticText;
-class wxString;
+// --------------------------------------------------------------------------------
+#include <wx/string.h>
 // --------------------------------------------------------------------------------
 class CpmGuiInterface {
     public:     // Attributes
@@ -38,7 +38,7 @@ class CpmGuiInterface {
         void printDirEntry(int col, int row, wxString data);
 
     public:     // Constructor & Destructor
-        CpmGuiInterface(wxListView *listView, wxTextCtrl *textCtrl, wxStaticText *statText);
+        CpmGuiInterface(wxListView *listView, wxTextCtrl *textCtrl, wxTextCtrl *statText);
         ~CpmGuiInterface();
 
     protected:  // Event Methods
@@ -46,7 +46,7 @@ class CpmGuiInterface {
     private:    // Attributes
         wxTextCtrl *textMessages;
         wxListView *listContents;
-        wxStaticText *textDirInfo;
+        wxTextCtrl *textDirInfo;
 
     private:    // Methods
 
