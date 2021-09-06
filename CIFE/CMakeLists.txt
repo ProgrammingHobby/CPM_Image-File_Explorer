@@ -8,7 +8,7 @@ project(CIFE)
 # This setting is useful for providing JSON file used by CodeLite for code completion
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-set(CONFIGURATION_NAME "Debug-GTK")
+set(CONFIGURATION_NAME "Release-MSW")
 
 set(CL_WORKSPACE_DIRECTORY ..)
 # Set default locations
@@ -52,13 +52,14 @@ execute_process(COMMAND
 string(STRIP ${CL_TMP_VAR} CL_VAR_2)
 add_definitions(${CL_VAR_1})
 add_definitions(${CL_VAR_2})
-add_definitions(-g)
-add_definitions(-O0)
+add_definitions(-O3)
 add_definitions(-Wall)
 add_definitions(
-    -D_FILE_OFFSET_BITS=64
-    -DwxDEBUG_LEVEL=0
-    -D__WXGTK__
+    -DNDEBUG
+    -DHAVE_W32API_H
+    -D__WXMSW__
+    -DNDEBUG
+    -D_UNICODE
 )
 
 
@@ -70,13 +71,13 @@ execute_process(COMMAND
     OUTPUT_STRIP_TRAILING_WHITESPACE)
 string(STRIP ${CL_TMP_VAR} CL_VAR_3)
 set(LINK_OPTIONS ${CL_VAR_3})
-set(LINK_OPTIONS ${LINK_OPTIONS} -no-pie)
+set(LINK_OPTIONS ${LINK_OPTIONS} -mwindows)
 
 
 if(WIN32)
     # Resource options
     execute_process(COMMAND 
-        wx-config --rcflags -static=yes
+        wx-config --rcflags
         OUTPUT_VARIABLE
         CL_TMP_VAR
         OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -92,15 +93,23 @@ link_directories(
 # Define the CXX sources
 set ( CXX_SRCS
     ${CMAKE_CURRENT_LIST_DIR}/main.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Ui_MainWindow_bitmaps.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MainWindow.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ImageFileTools.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Ui_MainWindow.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CpmGuiInterface.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Ui_MainWindow_bitmaps.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CpmTools.cpp
 )
+
+if(WIN32)
+    # Define the resource files
+    set ( RC_SRCS
+        ${CMAKE_CURRENT_LIST_DIR}/cife.rc
+    )
+endif(WIN32)
 
 set_source_files_properties(
     ${CXX_SRCS} PROPERTIES COMPILE_FLAGS 
-    " -g -O0 -Wall -pthread")
+    " -O3 -Wall -mthreads -Wno-ctor-dtor-privacy -pipe -fmessage-length=0 -std=gnu++11 ")
 
 if(WIN32)
     enable_language(RC)

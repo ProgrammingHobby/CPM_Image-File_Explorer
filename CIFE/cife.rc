@@ -1,1 +1,2 @@
 # include "wx/msw/wx.rc"
+AppIcon ICON "Bitmaps/appiconsmall.ico"
