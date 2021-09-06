@@ -1,5 +1,7 @@
 # **CP/M Image File Explorer** #
 
+![](CIFE_Linux.jpg)
+
 CP/M Image File Explorer dient zum einfachen Erzeugen und Bearbeiten von binären Disketten- und Festplatten-Images.
 
 Der CP/M Image File Explorer basiert auf dem Source-Code der CP/M-Tools von Michael Haardt in der Version 2.21.
