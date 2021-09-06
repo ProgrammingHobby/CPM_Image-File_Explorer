@@ -43,7 +43,6 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_BUTTON(wxID_BUTTON_UPDATE_DIR, MainWindow::onButtonUpdateDirClicked)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
-    EVT_COMBOBOX_DROPDOWN(wxID_IMAGE_TYPE, MainWindow::onComboBoxImageTypeDropDown)
     EVT_COMBOBOX(wxID_IMAGE_TYPE, MainWindow::onImageTypeChanged)
 END_EVENT_TABLE()
 // --------------------------------------------------------------------------------
@@ -62,15 +61,16 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     }
 
     comboboxImageType->Append(getImageTypes());
-    comboboxImageType->SetSelection(3);     // nur für Test, ansonsten 0
-    comboboxDirViewType->SetSelection(0);   // nur für Test, entfällt ansonsten
+    comboboxImageType->SetSelection(0);
     editImageFile->SetFocus();
     buttonUpdateDir->Enable(false);
     wxSize fontSize = this->GetFont().GetPixelSize();
     wxFont listFont = wxFont(fontSize, wxFontFamily::wxFONTFAMILY_TELETYPE, wxFontStyle::wxFONTSTYLE_NORMAL, wxFontWeight::wxFONTWEIGHT_NORMAL);
     listImageContents->SetFont(listFont);
+    textContentsInfo->SetFont(listFont);
     cpmguiinterface = new CpmGuiInterface(listImageContents, textMessages, textContentsInfo);
     cpmtools = new CpmTools(cpmguiinterface);
+    cpmtools->setImageType(comboboxImageType->GetValue().utf8_string());
     correctWindowSize();
 }
 
@@ -80,8 +80,8 @@ void MainWindow::correctWindowSize() {
     int width = this->GetBestSize().GetWidth();
     width += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X, listImageContents);
     int height = this->GetBestSize().GetHeight();
-    this->SetSize(wxSize(width, height));
-    this->SetMinSize(wxSize(width, height));
+    this->SetSize(wxSize(width, (height * 1.25)));
+    this->SetMinSize(wxSize(width, (height * 1.25)));
 }
 
 // --------------------------------------------------------------------------------
@@ -114,8 +114,7 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
     aboutInfo.SetDescription(_("Written in C/C++ with CodeLite-IDE\n"
                                "Using wxWidgets GUI - Framework Version ") + versionInfo.GetVersionString() +
                              _("\n\nCP/M Images Functionality based on the CP/M-Tools\n"
-                               "Source Code Version 2.21 from Michael Haardt.\n"
-                               "http://www.moria.de/~michael/cpmtools"));
+                               "Source Code Version 2.21 from Michael Haardt."));
     aboutInfo.SetCopyright("Uwe Merker  (C) 2021");
     aboutInfo.SetWebSite("http://www.moria.de/~michael/cpmtools\n"
                          "https://github.com/ProgrammingHobby/CPM_Image-File_Explorer.git");
@@ -133,18 +132,15 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
     WXUNUSED(event)
-//    wxFileDialog fileDialog(this, _T("Open CP/M Disk Image File"), wxStandardPaths::Get().GetUserDataDir(),
-//                            wxEmptyString, _T("Image Files (*.img,*.fdd,*.dsk)|*.img;*.fdd;*.dsk|all Files (*.*)|*.*"),
-//                            wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-    wxFileDialog fileDialog(this, _T("Open CP/M Disk Image File"), "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/",
+    wxFileDialog fileDialog(this, _T("Open CP/M Disk Image File"), wxStandardPaths::Get().GetUserDataDir(),
                             wxEmptyString, _T("Image Files (*.img,*.fdd,*.dsk)|*.img;*.fdd;*.dsk|all Files (*.*)|*.*"),
                             wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
     if (fileDialog.ShowModal() == wxID_OK) {
         editImageFile->SetValue(fileDialog.GetPath());
         editImageFile->SetInsertionPoint(editImageFile->GetValue().length());
-//        cpmtools->setImageFile(fileDialog.GetPath());
-//        cpmtools->showDirectory();
+        cpmtools->setImageFile(fileDialog.GetPath().utf8_string());
+        cpmtools->showDirectory();
         correctWindowSize();
         buttonUpdateDir->Enable(true);
     }
@@ -154,16 +150,9 @@ void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
 }
 
 // --------------------------------------------------------------------------------
-void MainWindow::onComboBoxImageTypeDropDown(wxCommandEvent &event) {
-    WXUNUSED(event)
-    comboboxImageType->Clear();
-    comboboxImageType->Append(getImageTypes());
-}
-
-// --------------------------------------------------------------------------------
 void MainWindow::onImageTypeChanged(wxCommandEvent &event) {
     WXUNUSED(event)
-//    cpmtools->setImageType(comboboxImageType->GetValue());
+    cpmtools->setImageType(comboboxImageType->GetValue().utf8_string());
 }
 
 // --------------------------------------------------------------------------------
@@ -192,8 +181,7 @@ wxArrayString MainWindow::getImageTypes() {
 // --------------------------------------------------------------------------------
 void MainWindow::onButtonUpdateDirClicked(wxCommandEvent &event) {
     WXUNUSED(event)
-    listImageContents->ClearAll();
-//    cpmtools->showDirectory();
+    cpmtools->showDirectory();
     correctWindowSize();
 }
 

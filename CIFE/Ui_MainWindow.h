@@ -74,15 +74,13 @@ class Ui_MainWindow : public wxFrame {
         wxBoxSizer *sizerImageViews;
         wxPanel *panelDirViewType;
         wxBoxSizer *sizerDirViewType;
-        wxStaticText *textDirViewType;
-        wxComboBox *comboboxDirViewType;
         wxButton *buttonUpdateDir;
         wxSplitterWindow *splitterImageViews;
         wxPanel *splitterPageImageContents;
         wxBoxSizer *sizerImageContents;
         wxListView *listImageContents;
         wxStaticLine *lineImageContents;
-        wxStaticText *textContentsInfo;
+        wxTextCtrl *textContentsInfo;
         wxPanel *splitterPageMessages;
         wxBoxSizer *sizerMessages;
         wxBoxSizer *sizerMessagesControl;
@@ -118,12 +116,6 @@ class Ui_MainWindow : public wxFrame {
         wxPanel *GetPanelImageFile() {
             return panelImageFile;
         }
-        wxStaticText *GetTextDirViewType() {
-            return textDirViewType;
-        }
-        wxComboBox *GetComboboxDirViewType() {
-            return comboboxDirViewType;
-        }
         wxButton *GetButtonUpdateDir() {
             return buttonUpdateDir;
         }
@@ -136,7 +128,7 @@ class Ui_MainWindow : public wxFrame {
         wxStaticLine *GetLineImageContents() {
             return lineImageContents;
         }
-        wxStaticText *GetTextContentsInfo() {
+        wxTextCtrl *GetTextContentsInfo() {
             return textContentsInfo;
         }
         wxPanel *GetSplitterPageImageContents() {

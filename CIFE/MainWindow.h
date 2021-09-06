@@ -45,7 +45,6 @@ class MainWindow : public Ui_MainWindow {
         void onButtonUpdateDirClicked(wxCommandEvent &event);
         void onButtonClearMessagesClicked(wxCommandEvent &event);
         void onButtonSaveMessagesClicked(wxCommandEvent &event);
-        void onComboBoxImageTypeDropDown(wxCommandEvent &event);
         void onImageTypeChanged(wxCommandEvent &event);
 
     private:    // Attributes
