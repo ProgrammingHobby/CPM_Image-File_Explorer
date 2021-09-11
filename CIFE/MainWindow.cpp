@@ -160,6 +160,7 @@ wxArrayString MainWindow::getImageTypes() {
     wxArrayString imageTypes;
     wxFileInputStream file(wxT("diskdefs"));
     wxTextInputStream text(file);
+    int diskdefsCount = 0;
 
     while (!file.Eof()) {
         wxString line = text.ReadLine();
@@ -171,10 +172,12 @@ wxArrayString MainWindow::getImageTypes() {
             if (token == "diskdef") {
                 wxString type = tokenizer.GetNextToken();
                 imageTypes.Add(type);
+                diskdefsCount++;
             }
         }
     }
 
+    textDiskdefsCount->SetLabel(wxString::Format(_("%d Disk definitions found."), diskdefsCount));
     return (imageTypes);
 }
 
