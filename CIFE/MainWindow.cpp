@@ -70,7 +70,7 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     textContentsInfo->SetFont(listFont);
     cpmguiinterface = new CpmGuiInterface(listImageContents, textMessages, textContentsInfo);
     cpmtools = new CpmTools(cpmguiinterface);
-    cpmtools->setImageType(comboboxImageType->GetValue().utf8_string());
+    cpmtools->setImageType(comboboxImageType->GetValue());
     correctWindowSize();
 }
 
@@ -139,7 +139,7 @@ void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
     if (fileDialog.ShowModal() == wxID_OK) {
         editImageFile->SetValue(fileDialog.GetPath());
         editImageFile->SetInsertionPoint(editImageFile->GetValue().length());
-        cpmtools->setImageFile(fileDialog.GetPath().utf8_string());
+        cpmtools->setImageFile(fileDialog.GetPath());
         cpmtools->showDirectory();
         correctWindowSize();
         buttonUpdateDir->Enable(true);
@@ -152,7 +152,7 @@ void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onImageTypeChanged(wxCommandEvent &event) {
     WXUNUSED(event)
-    cpmtools->setImageType(comboboxImageType->GetValue().utf8_string());
+    cpmtools->setImageType(comboboxImageType->GetValue());
 }
 
 // --------------------------------------------------------------------------------
