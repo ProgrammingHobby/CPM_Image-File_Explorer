@@ -67,6 +67,7 @@ class Ui_MainWindow : public wxFrame {
         wxStaticText *textImageType;
         wxBoxSizer *sizerImageType;
         wxComboBox *comboboxImageType;
+        wxStaticText *textDiskdefsCount;
         wxStaticText *textImageFile;
         wxTextCtrl *editImageFile;
         wxButton *buttonImageFile;
@@ -103,6 +104,9 @@ class Ui_MainWindow : public wxFrame {
         }
         wxComboBox *GetComboboxImageType() {
             return comboboxImageType;
+        }
+        wxStaticText *GetTextDiskdefsCount() {
+            return textDiskdefsCount;
         }
         wxStaticText *GetTextImageFile() {
             return textImageFile;

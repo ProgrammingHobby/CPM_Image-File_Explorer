@@ -49,6 +49,8 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
     comboboxImageType = new wxComboBox(panelImageFile, wxID_IMAGE_TYPE, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), comboboxImageTypeArr, wxCB_READONLY);
     sizerImageType->Add(comboboxImageType, 0, 0, WXC_FROM_DIP(4));
     sizerImageType->Add(-1, -1, 0, 0, WXC_FROM_DIP(5));
+    textDiskdefsCount = new wxStaticText(panelImageFile, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
+    sizerImageType->Add(textDiskdefsCount, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(16));
     textImageFile = new wxStaticText(panelImageFile, wxID_ANY, _("Image Datei :"), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
     sizerImage->Add(textImageFile, wxGBPosition(1, 0), wxGBSpan(1, 1), wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
     editImageFile = new wxTextCtrl(panelImageFile, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
