@@ -20,6 +20,8 @@
 ***********************************************************************************/
 
 #include <wx/wx.h>
+#include <wx/file.h>
+#include <wx/msgdlg.h>
 // --------------------------------------------------------------------------------
 #include "MainWindow.h"
 // --------------------------------------------------------------------------------
@@ -34,9 +36,16 @@ IMPLEMENT_APP(wxCifeApp);
 
 // --------------------------------------------------------------------------------
 bool wxCifeApp::OnInit() {
-    SetTopWindow(new MainWindow(NULL));
-    GetTopWindow()->Show();
-    return true;
+    if (wxFileExists("diskdefs")) {
+        SetTopWindow(new MainWindow(NULL));
+        GetTopWindow()->Show();
+        return (true);
+    }
+    else {
+        wxMessageBox(_("Diskdefinitions File not found.\n"
+                       "Please copy 'diskdefs' into Application directory."), _("CP/M Image-File Explorer"), wxICON_EXCLAMATION);
+        return (false);
+    }
 }
 
 // --------------------------------------------------------------------------------
