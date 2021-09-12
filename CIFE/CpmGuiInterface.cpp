@@ -23,15 +23,14 @@
 // --------------------------------------------------------------------------------
 #include <wx/textctrl.h>
 #include <wx/listctrl.h>
-#include <wx/stattext.h>
 #include <wx/string.h>
 #include <wx/colour.h>
-#include <wx/tokenzr.h>
 // --------------------------------------------------------------------------------
 CpmGuiInterface::CpmGuiInterface(wxListView *listView, wxTextCtrl *textCtrl, wxTextCtrl *statText) {
     textMessages = textCtrl;
     listContents = listView;
     textDirInfo = statText;
+    setDirHeader();
 }
 
 // --------------------------------------------------------------------------------
@@ -72,29 +71,17 @@ void CpmGuiInterface::printDirInfo(wxString info) {
 }
 
 // --------------------------------------------------------------------------------
-void CpmGuiInterface::setDirHeader(wxString header) {
+void CpmGuiInterface::setDirHeader() {
     listContents->ClearAll();
-    wxStringTokenizer tokenizer(header, ";");
     int charWidth = listContents->GetFont().GetPointSize();
-
-    while (tokenizer.HasMoreTokens()) {
-        wxString token = tokenizer.GetNextToken();
-        int width = wxAtoi(tokenizer.GetNextToken());
-        wxString align = tokenizer.GetNextToken().Upper();
-        wxListColumnFormat format = wxLIST_FORMAT_CENTER;
-
-        if (align == "L") {
-            format = wxLIST_FORMAT_LEFT;
-        }
-        else if (align == "R") {
-            format = wxLIST_FORMAT_RIGHT;
-        }
-        else if (align == "C") {
-            format = wxLIST_FORMAT_CENTER;
-        }
-
-        listContents->AppendColumn(token, format, (width * charWidth));
-    }
+    listContents->AppendColumn("User: Name", wxLIST_FORMAT_LEFT, (14 * charWidth));
+    listContents->AppendColumn("Bytes", wxLIST_FORMAT_RIGHT, (7 * charWidth));
+    listContents->AppendColumn("Recs", wxLIST_FORMAT_RIGHT, (7 * charWidth));
+    listContents->AppendColumn("Attributes", wxLIST_FORMAT_CENTER, (10 * charWidth));
+    listContents->AppendColumn("Permissions", wxLIST_FORMAT_CENTER, (10 * charWidth));
+    listContents->AppendColumn("Updated", wxLIST_FORMAT_CENTER, (15 * charWidth));
+    listContents->AppendColumn("Created", wxLIST_FORMAT_CENTER, (15 * charWidth));
+    listContents->AppendColumn("Last Access", wxLIST_FORMAT_CENTER, (15 * charWidth));
 }
 
 // --------------------------------------------------------------------------------
