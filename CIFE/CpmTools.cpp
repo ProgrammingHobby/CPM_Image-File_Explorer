@@ -116,7 +116,7 @@ void CpmTools::showDirectory() {
         int totalBytes = 0, totalRecs = 0;
         qsort(gargv, gargc, sizeof(char *), namecmp);
         cpmStatFS(&root, &buf);
-        guiintf->setDirHeader("User: Name;14;l;Bytes;7;r;Recs;7;r;Attributes;10;c;Permissions;10;c;Updated;15;c;Created;15;c;Last Access;15;c");
+        guiintf->setDirHeader();
 
         for (l = user = 0; user < 32; ++user) {
             for (i = 0; i < gargc; ++i) {

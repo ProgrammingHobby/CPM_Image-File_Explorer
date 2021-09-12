@@ -71,7 +71,6 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     cpmguiinterface = new CpmGuiInterface(listImageContents, textMessages, textContentsInfo);
     cpmtools = new CpmTools(cpmguiinterface);
     cpmtools->setImageType(comboboxImageType->GetValue());
-    correctWindowSize();
 }
 
 // --------------------------------------------------------------------------------
@@ -185,7 +184,6 @@ wxArrayString MainWindow::getImageTypes() {
 void MainWindow::onButtonUpdateDirClicked(wxCommandEvent &event) {
     WXUNUSED(event)
     cpmtools->showDirectory();
-    correctWindowSize();
 }
 
 // --------------------------------------------------------------------------------
@@ -203,5 +201,4 @@ void MainWindow::onButtonSaveMessagesClicked(wxCommandEvent &event) {
         textMessages->SaveFile(fileDialog.GetPath(), wxTEXT_TYPE_ANY);
     }
 }
-
 // --------------------------------------------------------------------------------

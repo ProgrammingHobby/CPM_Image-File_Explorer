@@ -34,7 +34,7 @@ class CpmGuiInterface {
     public:     // Methods
         void printMsg(wxString msg, msgColor col = msgColBlack);
         void printDirInfo(wxString info);
-        void setDirHeader(wxString header);
+        void setDirHeader();
         void printDirEntry(int col, int row, wxString data);
 
     public:     // Constructor & Destructor
