@@ -48,16 +48,31 @@
 class Ui_MainWindow : public wxFrame {
     public:
         enum {
-            wxID_BUTTON_SAVE_MESSAGES = 10001,
-            wxID_BUTTON_CLEAR_MESSAGES = 10002,
-            wxID_BUTTON_UPDATE_DIR = 10003,
+            wxID_BUTTON_CLEAR_MESSAGES = 10001,
+            wxID_BUTTON_SAVE_MESSAGES = 10002,
+            wxID_IMAGE_CONTENTS = 10003,
             wxID_BUTTON_IMAGE_FILE = 10004,
             wxID_IMAGE_TYPE = 10005,
+            wxID_ATTRIBUTES = 10006,
+            wxID_PERMISSIONS = 10007,
         };
     protected:
         wxMenuBar *menuMainWindow;
         wxMenu *menuFile;
         wxMenuItem *menuItemClose;
+        wxMenu *menuEdit;
+        wxMenuItem *menuItemCut;
+        wxMenuItem *menuItemCopy;
+        wxMenuItem *menuItemPaste;
+        wxMenuItem *menuItemSelectAll;
+        wxMenuItem *menuSeparator;
+        wxMenuItem *menuItemRename;
+        wxMenuItem *menuItemDelete;
+        wxMenuItem *menuSeparator2;
+        wxMenuItem *menuItemPermissions;
+        wxMenuItem *menuItemAttributes;
+        wxMenu *menuView;
+        wxMenuItem *menuItemRefresh;
         wxMenu *menuHelp;
         wxMenuItem *menuItemAbout;
         wxStatusBar *statusMainWindow;
@@ -73,9 +88,6 @@ class Ui_MainWindow : public wxFrame {
         wxButton *buttonImageFile;
         wxPanel *panelImageViews;
         wxBoxSizer *sizerImageViews;
-        wxPanel *panelDirViewType;
-        wxBoxSizer *sizerDirViewType;
-        wxButton *buttonUpdateDir;
         wxSplitterWindow *splitterImageViews;
         wxPanel *splitterPageImageContents;
         wxBoxSizer *sizerImageContents;
@@ -119,12 +131,6 @@ class Ui_MainWindow : public wxFrame {
         }
         wxPanel *GetPanelImageFile() {
             return panelImageFile;
-        }
-        wxButton *GetButtonUpdateDir() {
-            return buttonUpdateDir;
-        }
-        wxPanel *GetPanelDirViewType() {
-            return panelDirViewType;
         }
         wxListView *GetListImageContents() {
             return listImageContents;

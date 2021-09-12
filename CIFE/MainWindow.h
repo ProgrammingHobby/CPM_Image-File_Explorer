@@ -42,10 +42,10 @@ class MainWindow : public Ui_MainWindow {
         void onMenuCloseClicked(wxCommandEvent &event);
         void onMenuAboutClicked(wxCommandEvent &event);
         void onButtonImageFileClicked(wxCommandEvent &event);
-        void onButtonUpdateDirClicked(wxCommandEvent &event);
         void onButtonClearMessagesClicked(wxCommandEvent &event);
         void onButtonSaveMessagesClicked(wxCommandEvent &event);
         void onImageTypeChanged(wxCommandEvent &event);
+        void onViewRefresh(wxCommandEvent &event);
 
     private:    // Attributes
         CpmTools *cpmtools;
