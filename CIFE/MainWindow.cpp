@@ -39,8 +39,8 @@
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CLOSE, MainWindow::onMenuCloseClicked)
     EVT_MENU(wxID_ABOUT, MainWindow::onMenuAboutClicked)
+    EVT_MENU(wxID_REFRESH, MainWindow::onViewRefresh)
     EVT_BUTTON(wxID_BUTTON_IMAGE_FILE, MainWindow::onButtonImageFileClicked)
-    EVT_BUTTON(wxID_BUTTON_UPDATE_DIR, MainWindow::onButtonUpdateDirClicked)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
     EVT_COMBOBOX(wxID_IMAGE_TYPE, MainWindow::onImageTypeChanged)
@@ -63,7 +63,7 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     comboboxImageType->Append(getImageTypes());
     comboboxImageType->SetSelection(0);
     editImageFile->SetFocus();
-    buttonUpdateDir->Enable(false);
+    menuItemRefresh->Enable(false);
     wxSize fontSize = this->GetFont().GetPixelSize();
     wxFont listFont = wxFont(fontSize, wxFontFamily::wxFONTFAMILY_TELETYPE, wxFontStyle::wxFONTSTYLE_NORMAL, wxFontWeight::wxFONTWEIGHT_NORMAL);
     listImageContents->SetFont(listFont);
@@ -71,6 +71,7 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     cpmguiinterface = new CpmGuiInterface(listImageContents, textMessages, textContentsInfo);
     cpmtools = new CpmTools(cpmguiinterface);
     cpmtools->setImageType(comboboxImageType->GetValue());
+    correctWindowSize();
 }
 
 // --------------------------------------------------------------------------------
@@ -79,8 +80,8 @@ void MainWindow::correctWindowSize() {
     int width = this->GetBestSize().GetWidth();
     width += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X, listImageContents);
     int height = this->GetBestSize().GetHeight();
-    this->SetSize(wxSize(width, (height * 1.25)));
-    this->SetMinSize(wxSize(width, (height * 1.25)));
+    this->SetSize(wxSize(width, (height * 1.5)));
+    this->SetMinSize(wxSize(width, (height * 1.5)));
 }
 
 // --------------------------------------------------------------------------------
@@ -140,11 +141,10 @@ void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
         editImageFile->SetInsertionPoint(editImageFile->GetValue().length());
         cpmtools->setImageFile(fileDialog.GetPath());
         cpmtools->showDirectory();
-        correctWindowSize();
-        buttonUpdateDir->Enable(true);
+        menuItemRefresh->Enable(true);
     }
     else {
-        buttonUpdateDir->Enable(false);
+        menuItemRefresh->Enable(false);
     }
 }
 
@@ -181,12 +181,6 @@ wxArrayString MainWindow::getImageTypes() {
 }
 
 // --------------------------------------------------------------------------------
-void MainWindow::onButtonUpdateDirClicked(wxCommandEvent &event) {
-    WXUNUSED(event)
-    cpmtools->showDirectory();
-}
-
-// --------------------------------------------------------------------------------
 void MainWindow::onButtonClearMessagesClicked(wxCommandEvent &event) {
     textMessages->Clear();
 }
@@ -200,5 +194,10 @@ void MainWindow::onButtonSaveMessagesClicked(wxCommandEvent &event) {
     if (fileDialog.ShowModal() == wxID_OK) {
         textMessages->SaveFile(fileDialog.GetPath(), wxTEXT_TYPE_ANY);
     }
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onViewRefresh(wxCommandEvent &event) {
+    cpmtools->showDirectory();
 }
 // --------------------------------------------------------------------------------
