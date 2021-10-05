@@ -1,7 +1,7 @@
 {
 	"metadata":	{
 		"m_generatedFilesDir":	".",
-		"m_objCounter":	152,
+		"m_objCounter":	156,
 		"m_includeFiles":	[],
 		"m_bitmapFunction":	"wxCrafterbA4dhxInitBitmapResources",
 		"m_bitmapsFile":	"Ui_MainWindow_bitmaps.cpp",
@@ -236,7 +236,7 @@
 										}, {
 											"type":	"string",
 											"m_label":	"Shortcut:",
-											"m_value":	""
+											"m_value":	"Ctrl+W"
 										}, {
 											"type":	"string",
 											"m_label":	"Help String:",
@@ -244,7 +244,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/close.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -299,7 +299,7 @@
 										}, {
 											"type":	"string",
 											"m_label":	"Shortcut:",
-											"m_value":	""
+											"m_value":	"Ctrl+X"
 										}, {
 											"type":	"string",
 											"m_label":	"Help String:",
@@ -307,7 +307,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/cut.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -343,7 +343,7 @@
 										}, {
 											"type":	"string",
 											"m_label":	"Shortcut:",
-											"m_value":	""
+											"m_value":	"Ctrl+C"
 										}, {
 											"type":	"string",
 											"m_label":	"Help String:",
@@ -351,7 +351,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/copy.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -387,7 +387,7 @@
 										}, {
 											"type":	"string",
 											"m_label":	"Shortcut:",
-											"m_value":	""
+											"m_value":	"Ctrl+V"
 										}, {
 											"type":	"string",
 											"m_label":	"Help String:",
@@ -395,7 +395,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/paste.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -439,7 +439,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/select-all.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -527,7 +527,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/edit.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -571,7 +571,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/delete.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -603,7 +603,7 @@
 										}, {
 											"type":	"string",
 											"m_label":	"Label:",
-											"m_value":	"Item25"
+											"m_value":	""
 										}, {
 											"type":	"string",
 											"m_label":	"Shortcut:",
@@ -659,7 +659,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/permission.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -703,7 +703,95 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
+											"m_path":	"Bitmaps/attributes.png"
+										}, {
+											"type":	"choice",
+											"m_label":	"Kind:",
+											"m_selection":	0,
+											"m_options":	["normal", "checkable", "radio", "separator"]
+										}, {
+											"type":	"bool",
+											"m_label":	"Checked",
+											"m_value":	false
+										}],
+									"m_events":	[],
+									"m_children":	[]
+								}, {
+									"m_type":	4459,
+									"proportion":	0,
+									"border":	5,
+									"gbSpan":	"1,1",
+									"gbPosition":	"0,0",
+									"m_styles":	[],
+									"m_sizerFlags":	[],
+									"m_properties":	[{
+											"type":	"winid",
+											"m_label":	"ID:",
+											"m_winid":	"wxID_SEPARATOR"
+										}, {
+											"type":	"string",
+											"m_label":	"Name:",
+											"m_value":	"menuSeparator3"
+										}, {
+											"type":	"string",
+											"m_label":	"Label:",
+											"m_value":	""
+										}, {
+											"type":	"string",
+											"m_label":	"Shortcut:",
+											"m_value":	""
+										}, {
+											"type":	"string",
+											"m_label":	"Help String:",
+											"m_value":	""
+										}, {
+											"type":	"bitmapPicker",
+											"m_label":	"Bitmap File:",
 											"m_path":	""
+										}, {
+											"type":	"choice",
+											"m_label":	"Kind:",
+											"m_selection":	3,
+											"m_options":	["normal", "checkable", "radio", "separator"]
+										}, {
+											"type":	"bool",
+											"m_label":	"Checked",
+											"m_value":	false
+										}],
+									"m_events":	[],
+									"m_children":	[]
+								}, {
+									"m_type":	4459,
+									"proportion":	0,
+									"border":	5,
+									"gbSpan":	"1,1",
+									"gbPosition":	"0,0",
+									"m_styles":	[],
+									"m_sizerFlags":	[],
+									"m_properties":	[{
+											"type":	"winid",
+											"m_label":	"ID:",
+											"m_winid":	"wxID_CREATE_NEW"
+										}, {
+											"type":	"string",
+											"m_label":	"Name:",
+											"m_value":	"menuItemCreateNew"
+										}, {
+											"type":	"string",
+											"m_label":	"Label:",
+											"m_value":	"Create New Image"
+										}, {
+											"type":	"string",
+											"m_label":	"Shortcut:",
+											"m_value":	""
+										}, {
+											"type":	"string",
+											"m_label":	"Help String:",
+											"m_value":	""
+										}, {
+											"type":	"bitmapPicker",
+											"m_label":	"Bitmap File:",
+											"m_path":	"Bitmaps/create.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -766,7 +854,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/refresh.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -829,7 +917,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/about.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",

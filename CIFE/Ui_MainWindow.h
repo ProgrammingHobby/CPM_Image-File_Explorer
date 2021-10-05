@@ -48,13 +48,14 @@
 class Ui_MainWindow : public wxFrame {
     public:
         enum {
-            wxID_BUTTON_CLEAR_MESSAGES = 10001,
-            wxID_BUTTON_SAVE_MESSAGES = 10002,
+            wxID_BUTTON_SAVE_MESSAGES = 10001,
+            wxID_BUTTON_CLEAR_MESSAGES = 10002,
             wxID_IMAGE_CONTENTS = 10003,
             wxID_BUTTON_IMAGE_FILE = 10004,
             wxID_IMAGE_TYPE = 10005,
-            wxID_ATTRIBUTES = 10006,
-            wxID_PERMISSIONS = 10007,
+            wxID_CREATE_NEW = 10006,
+            wxID_ATTRIBUTES = 10007,
+            wxID_PERMISSIONS = 10008,
         };
     protected:
         wxMenuBar *menuMainWindow;
@@ -71,6 +72,8 @@ class Ui_MainWindow : public wxFrame {
         wxMenuItem *menuSeparator2;
         wxMenuItem *menuItemPermissions;
         wxMenuItem *menuItemAttributes;
+        wxMenuItem *menuSeparator3;
+        wxMenuItem *menuItemCreateNew;
         wxMenu *menuView;
         wxMenuItem *menuItemRefresh;
         wxMenu *menuHelp;

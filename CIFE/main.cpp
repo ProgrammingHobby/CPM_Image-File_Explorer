@@ -22,6 +22,8 @@
 #include <wx/wx.h>
 #include <wx/file.h>
 #include <wx/msgdlg.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/image.h>
 // --------------------------------------------------------------------------------
 #include "MainWindow.h"
 // --------------------------------------------------------------------------------
@@ -37,6 +39,8 @@ IMPLEMENT_APP(wxCifeApp);
 // --------------------------------------------------------------------------------
 bool wxCifeApp::OnInit() {
     if (wxFileExists("diskdefs")) {
+        wxXmlResource::Get()->InitAllHandlers();
+        wxImage::AddHandler(new wxPNGHandler);
         SetTopWindow(new MainWindow(NULL));
         GetTopWindow()->Show();
         return (true);
