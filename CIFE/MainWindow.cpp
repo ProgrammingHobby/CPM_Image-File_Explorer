@@ -35,11 +35,14 @@
 #include <wx/bitmap.h>
 #include <wx/icon.h>
 #include <wx/settings.h>
+#include <wx/msgdlg.h>
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CLOSE, MainWindow::onMenuCloseClicked)
     EVT_MENU(wxID_ABOUT, MainWindow::onMenuAboutClicked)
     EVT_MENU(wxID_REFRESH, MainWindow::onViewRefresh)
+    EVT_MENU(wxID_SELECTALL, MainWindow::onSelectAll)
+    EVT_MENU(wxID_DELETE, MainWindow::onDelete)
     EVT_BUTTON(wxID_BUTTON_IMAGE_FILE, MainWindow::onButtonImageFileClicked)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
@@ -63,7 +66,7 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     }
 
     comboboxImageType->Append(getImageTypes());
-    comboboxImageType->SetSelection(3); // nur für Debug
+    comboboxImageType->SetSelection(3); //========== nur für Debug ==========//
     editImageFile->SetFocus();
     //
     wxSize fontSize = this->GetFont().GetPixelSize();
@@ -81,6 +84,21 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     correctWindowSize();
     presetMenues();
     //
+    //========== nur für Debug ==========//
+    wxString filePath = "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/Test_Disk-Images/Test_1440kb.fdd";
+    editImageFile->SetValue(filePath);
+    editImageFile->SetInsertionPoint(filePath.length());
+    cpmtools->setImageFile(filePath);
+    isImageLoaded = true;
+    listImageContents->DeleteAllItems();
+    cpmtools->showDirectory();
+    listImageContents->SetFocus();
+    presetMenues();
+    menuMainWindow->Enable(wxID_REFRESH, true);
+    menuMainWindow->Enable(wxID_CREATE_NEW, true);
+    menuMainWindow->Enable(wxID_CHECK_IMAGE, true);
+    menuMainWindow->Enable(wxID_PASTE, true);
+    //========== nur für Debug ==========//
 
     if (listImageContents->GetItemCount() > 0) {
         menuMainWindow->Enable(wxID_SELECTALL, true);
@@ -138,8 +156,8 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
     WXUNUSED(event)
-    wxFileDialog fileDialog(this, _T("Open CP/M Disk Image File"), wxStandardPaths::Get().GetUserDataDir(),
-                            wxEmptyString, _T("Image Files (*.img,*.fdd,*.dsk)|*.img;*.fdd;*.dsk|all Files (*.*)|*.*"),
+    wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"), wxStandardPaths::Get().GetUserDataDir(),
+                            wxEmptyString, _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.fdd;*.dsk|all Files (*.*)|*.*"),
                             wxFD_OPEN);
 
     if (fileDialog.ShowModal() == wxID_OK) {
@@ -207,8 +225,8 @@ void MainWindow::onButtonClearMessagesClicked(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onButtonSaveMessagesClicked(wxCommandEvent &event) {
-    wxFileDialog fileDialog(this, _T("Save CIFE Messages"), wxStandardPaths::Get().GetUserDataDir(),
-                            wxEmptyString, _T("Text Files (*.txt,*.log)|*.txt;*.log|all Files (*.*)|*.*"),
+    wxFileDialog fileDialog(this, _("Save CIFE Messages"), wxStandardPaths::Get().GetUserDataDir(),
+                            wxEmptyString, _("Text Files (*.txt,*.log)|*.txt;*.log|all Files (*.*)|*.*"),
                             wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
     if (fileDialog.ShowModal() == wxID_OK) {
@@ -220,6 +238,7 @@ void MainWindow::onButtonSaveMessagesClicked(wxCommandEvent &event) {
 void MainWindow::onViewRefresh(wxCommandEvent &event) {
     listImageContents->DeleteAllItems();
     cpmtools->showDirectory();
+    listImageContents->SetFocus();
 }
 
 // --------------------------------------------------------------------------------
@@ -325,6 +344,32 @@ void MainWindow::onListItemRightClick(wxListEvent &event) {
         if (index != -1) {
             listImageContents->SetItemState(index, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
         }
+    }
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onSelectAll(wxCommandEvent &event) {
+    listImageContents->SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onDelete(wxCommandEvent &event) {
+    wxMessageDialog deleteDialog(this, _("Are you sure you want\ndelete selected File/s ?"),
+                                 _("Delete File/s"), wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
+
+    if (deleteDialog.ShowModal() == wxID_YES) {
+        long index = listImageContents->GetFirstSelected();
+        wxArrayString files;
+
+        while (index != -1) {
+            wxString file = listImageContents->GetItemText(index);
+            file.Replace(" ", "");
+            files.Add(file);
+            index = listImageContents->GetNextSelected(index);
+        }
+
+        cpmtools->deleteFile(files);
+        onViewRefresh(event);
     }
 }
 // --------------------------------------------------------------------------------

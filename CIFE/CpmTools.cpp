@@ -116,7 +116,6 @@ void CpmTools::showDirectory() {
         int totalBytes = 0, totalRecs = 0;
         qsort(gargv, gargc, sizeof(char *), namecmp);
         cpmStatFS(&root, &buf);
-        guiintf->setDirHeader();
 
         for (l = user = 0; user < 32; ++user) {
             for (i = 0; i < gargc; ++i) {
@@ -204,6 +203,37 @@ void CpmTools::showDirectory() {
 }
 
 // --------------------------------------------------------------------------------
+void CpmTools::deleteFile(wxArrayString files) {
+    CpmSuperBlock_t drive;
+    CpmInode_t root;
+    const char *err;
+    char **gargv;
+    int gargc;
+    cmd = "cpmls";
+
+    if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err));
+        return;
+    }
+
+    if (cpmReadSuper(&drive, &root, imageTypeName.c_str()) == -1) {
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo));
+        return;
+    }
+
+    for (size_t count = 0; count < files.GetCount(); count++) {
+        wxString fileName = files.Item(count);
+        cpmglob(fileName.c_str(), &root, &gargc, &gargv);
+
+        if (cpmUnlink(&root, gargv[0]) == -1) {
+            guiintf->printMsg(wxString::Format("%s: can not erase %s: %s\n", cmd, gargv[0], boo));
+        }
+    }
+
+    cpmUmount(&drive);
+}
+
+// --------------------------------------------------------------------------------
 // Basic File Input/Output
 // --------------------------------------------------------------------------------
 //
@@ -213,6 +243,7 @@ const char *CpmTools::Device_Open(Device_t *device, const char *filename, const 
     device->opened = ((device->file == NULL) ? false : true);
     return ((device->opened) ? (const char *)0 : strerror(errno));
 }
+
 // --------------------------------------------------------------------------------
 const char *CpmTools::Device_SetGeometry(Device_t *device, int secLength, int sectrk, int tracks, long offset) {
     device->secLength = secLength;
@@ -221,11 +252,13 @@ const char *CpmTools::Device_SetGeometry(Device_t *device, int secLength, int se
     device->offset = offset;
     return ((const char *)0);
 }
-// --------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
 const char *CpmTools::Device_Close(Device_t *device) {
     device->opened = (((fclose(device->file)) == 0) ? false : true);
     return ((device->opened) ? (const char *)0 : strerror(errno));
 }
+
 // --------------------------------------------------------------------------------
 const char *CpmTools::Device_ReadSector(const Device_t *device, int track, int sector, char *buffer) {
     if (fseek(device->file, (((sector + (track * device->sectrk)) * device->secLength) + device->offset), SEEK_SET) != 0) {
@@ -242,6 +275,7 @@ const char *CpmTools::Device_ReadSector(const Device_t *device, int track, int s
 
     return ((const char *)0);
 }
+
 // --------------------------------------------------------------------------------
 const char *CpmTools::Device_WriteSector(const Device_t *device, int track, int sector, const char *buffer) {
     if (fseek(device->file, (((sector + (track * device->sectrk)) * device->secLength) + device->offset), SEEK_SET) != 0) {
@@ -257,6 +291,7 @@ const char *CpmTools::Device_WriteSector(const Device_t *device, int track, int 
 
     return ((const char *)0);
 }
+
 // --------------------------------------------------------------------------------
 // CP/M File-System
 // --------------------------------------------------------------------------------
@@ -271,6 +306,7 @@ void CpmTools::memcpy7(char *dest, const char *src, int count) {
         ++src;
     }
 }
+
 // --------------------------------------------------------------------------------
 //  -- split file name into name and extension
 // --------------------------------------------------------------------------------
@@ -323,6 +359,7 @@ int CpmTools::splitFilename(const char *fullname, int type, char *name, char *ex
 
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- do two file names match?
 // --------------------------------------------------------------------------------
@@ -347,6 +384,7 @@ int CpmTools::isMatching(int user1, const char *name1, const char *ext1, int use
 
     return (1);
 }
+
 // --------------------------------------------------------------------------------
 //  -- convert CP/M time to UTC
 // --------------------------------------------------------------------------------
@@ -401,6 +439,7 @@ time_t CpmTools::cpm2unix_time(int days, int hour, int min) {
     t -= lt;
     return (t);
 }
+
 // --------------------------------------------------------------------------------
 //  -- convert UTC to CP/M time
 // --------------------------------------------------------------------------------
@@ -421,6 +460,7 @@ void CpmTools::unix2cpm_time(time_t now, int *days, int *hour, int *min) {
 
     *days += tms->tm_yday + 1;
 }
+
 // --------------------------------------------------------------------------------
 //  -- convert DS to Unix time
 // --------------------------------------------------------------------------------
@@ -451,6 +491,7 @@ time_t CpmTools::ds2unix_time(const DsEntry_t *entry) {
     tms.tm_year = yr;
     return mktime(&tms);
 }
+
 // --------------------------------------------------------------------------------
 //  -- convert Unix to DS time
 // --------------------------------------------------------------------------------
@@ -476,6 +517,7 @@ void CpmTools::unix2ds_time(time_t now, DsEntry_t *entry) {
         entry->year = BIN2BCD(yr);
     }
 }
+
 // --------------------------------------------------------------------------------
 //  -- init allocation vector
 // --------------------------------------------------------------------------------
@@ -510,6 +552,7 @@ void CpmTools::alvInit(const CpmSuperBlock_t *d) {
         }
     }
 }
+
 // --------------------------------------------------------------------------------
 //  -- allocate a new disk block
 // --------------------------------------------------------------------------------
@@ -538,6 +581,7 @@ int CpmTools::allocBlock(const CpmSuperBlock_t *drive) {
     boo = "device full";
     return (-1);
 }
+
 // --------------------------------------------------------------------------------
 //  -- read a (partial) block
 // --------------------------------------------------------------------------------
@@ -579,6 +623,7 @@ int CpmTools::readBlock(const CpmSuperBlock_t *d, int blockno, char *buffer, int
 
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- write a (partial) block
 // --------------------------------------------------------------------------------
@@ -613,6 +658,7 @@ int CpmTools::writeBlock(const CpmSuperBlock_t *d, int blockno, const char *buff
 
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- find first/next extent for a file
 // --------------------------------------------------------------------------------
@@ -630,6 +676,7 @@ int CpmTools::findFileExtent(const CpmSuperBlock_t *sb, int user, const char *na
     boo = "file not found";
     return (-1);
 }
+
 // --------------------------------------------------------------------------------
 //  -- find first free extent
 // --------------------------------------------------------------------------------
@@ -643,6 +690,7 @@ int CpmTools::findFreeExtent(const CpmSuperBlock_t *drive) {
     boo = "directory full";
     return (-1);
 }
+
 // --------------------------------------------------------------------------------
 //  -- convert time stamps to CP/M format
 // --------------------------------------------------------------------------------
@@ -699,6 +747,7 @@ void CpmTools::updateTimeStamps(const CpmInode_t *ino, int extent) {
         }
     }
 }
+
 // --------------------------------------------------------------------------------
 //  -- set time in datestamper file
 // --------------------------------------------------------------------------------
@@ -720,6 +769,7 @@ void CpmTools::updateDsStamps(const CpmInode_t *ino, int extent) {
     unix2ds_time(ino->atime, &stamp->access);
     ino->sb->dirtyDs = 1;
 }
+
 // --------------------------------------------------------------------------------
 //  -- read CP/M time stamp
 // --------------------------------------------------------------------------------
@@ -784,6 +834,7 @@ int CpmTools::readTimeStamps(CpmInode_t *i, int lowestExt) {
 
     return (protectMode);
 }
+
 // --------------------------------------------------------------------------------
 //  -- read datestamper time stamp
 // --------------------------------------------------------------------------------
@@ -800,6 +851,7 @@ void CpmTools::readDsStamps(CpmInode_t *i, int lowestExt) {
     i->ctime = ds2unix_time(&stamp->create);
     i->atime = ds2unix_time(&stamp->access);
 }
+
 // --------------------------------------------------------------------------------
 //  -- match filename against a pattern
 // --------------------------------------------------------------------------------
@@ -854,6 +906,7 @@ int CpmTools::recmatch(const char *a, const char *pattern) {
 
     return (*pattern == '\0' && *a == '\0');
 }
+
 // --------------------------------------------------------------------------------
 //  -- match filename against a pattern
 // --------------------------------------------------------------------------------
@@ -885,6 +938,7 @@ int CpmTools::match(const char *a, const char *pattern) {
 
     return recmatch(a, pat);
 }
+
 // --------------------------------------------------------------------------------
 //  -- expand CP/M style wildcards
 // --------------------------------------------------------------------------------
@@ -924,6 +978,7 @@ void CpmTools::cpmglob(const char *argv, CpmInode_t *root, int *gargc, char ***g
 
     free(dirent);
 }
+
 // --------------------------------------------------------------------------------
 //  -- read super block from diskdefs file
 // --------------------------------------------------------------------------------
@@ -1182,6 +1237,7 @@ int CpmTools::diskdefReadSuper(CpmSuperBlock_t *d, const char *format) {
 
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- read super block from amstrad disk
 // --------------------------------------------------------------------------------
@@ -1244,6 +1300,7 @@ int CpmTools::amsReadSuper(CpmSuperBlock_t *d, const char *format) {
     d->extents   = ((d->size >= 256 ? 8 : 16) * d->blksiz) / 16384;
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- read all datestamper timestamps
 // --------------------------------------------------------------------------------
@@ -1294,6 +1351,7 @@ int CpmTools::cpmCheckDs(CpmSuperBlock_t *sb) {
 
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- get DPB and init in-core data for drive
 // --------------------------------------------------------------------------------
@@ -1491,6 +1549,7 @@ int CpmTools::cpmReadSuper(CpmSuperBlock_t *d, CpmInode_t *root, const char *for
 
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- write all datestamper timestamps
 // --------------------------------------------------------------------------------
@@ -1529,6 +1588,7 @@ int CpmTools::syncDs(const CpmSuperBlock_t *sb) {
 
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- write directory back
 // --------------------------------------------------------------------------------
@@ -1555,6 +1615,7 @@ int CpmTools::cpmSync(CpmSuperBlock_t *sb) {
 
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- free super block
 // --------------------------------------------------------------------------------
@@ -1573,6 +1634,7 @@ void CpmTools::cpmUmount(CpmSuperBlock_t *sb) {
         free(sb->passwd);
     }
 }
+
 // --------------------------------------------------------------------------------
 //  -- map name to inode
 // --------------------------------------------------------------------------------
@@ -1733,6 +1795,7 @@ int CpmTools::cpmNamei(const CpmInode_t *dir, const char *filename, CpmInode_t *
     readDsStamps(i, lowestExt);
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- statfs
 // --------------------------------------------------------------------------------
@@ -1775,6 +1838,7 @@ void CpmTools::cpmStatFS(const CpmInode_t *ino, CpmStatFS_t *buf) {
 
     buf->f_namelen = 11;
 }
+
 // --------------------------------------------------------------------------------
 //  -- unlink
 // --------------------------------------------------------------------------------
@@ -1809,6 +1873,7 @@ int CpmTools::cpmUnlink(const CpmInode_t *dir, const char *fname) {
     alvInit(drive);
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- rename
 // --------------------------------------------------------------------------------
@@ -1853,6 +1918,7 @@ int CpmTools::cpmRename(const CpmInode_t *dir, const char *oldn, const char *new
 
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- opendir
 // --------------------------------------------------------------------------------
@@ -1867,6 +1933,7 @@ int CpmTools::cpmOpendir(CpmInode_t *dir, CpmFile_t *dirp) {
     dirp->mode = O_RDONLY;
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- readdir
 // --------------------------------------------------------------------------------
@@ -1967,6 +2034,7 @@ int CpmTools::cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent) {
         ++dir->pos;
     }
 }
+
 // --------------------------------------------------------------------------------
 //  -- stat
 // --------------------------------------------------------------------------------
@@ -1978,6 +2046,7 @@ void CpmTools::cpmStat(const CpmInode_t *ino, CpmStat_t *buf) {
     buf->mtime = ino->mtime;
     buf->ctime = ino->ctime;
 }
+
 // --------------------------------------------------------------------------------
 //  -- open
 // --------------------------------------------------------------------------------
@@ -1998,6 +2067,7 @@ int CpmTools::cpmOpen(CpmInode_t *ino, CpmFile_t *file, mode_t mode) {
         return (-1);
     }
 }
+
 // --------------------------------------------------------------------------------
 //  -- read
 // --------------------------------------------------------------------------------
@@ -2104,6 +2174,7 @@ int CpmTools::cpmRead(CpmFile_t *file, char *buf, int count) {
 
     return (got);
 }
+
 // --------------------------------------------------------------------------------
 //  -- write
 // --------------------------------------------------------------------------------
@@ -2267,12 +2338,14 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
 
     return (got);
 }
+
 // --------------------------------------------------------------------------------
 //  -- close
 // --------------------------------------------------------------------------------
 int CpmTools::cpmClose(CpmFile_t *file) {
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- creat
 // --------------------------------------------------------------------------------
@@ -2319,6 +2392,7 @@ int CpmTools::cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode
     updateDsStamps(ino, extent);
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- get CP/M attributes
 // --------------------------------------------------------------------------------
@@ -2326,6 +2400,7 @@ int CpmTools::cpmAttrGet(CpmInode_t *ino, cpm_attr_t *attrib) {
     *attrib = ino->attr;
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- set CP/M attributes
 // --------------------------------------------------------------------------------
@@ -2390,6 +2465,7 @@ int CpmTools::cpmAttrSet(CpmInode_t *ino, cpm_attr_t attrib) {
 
     return (0);
 }
+
 // --------------------------------------------------------------------------------
 //  -- set CP/M r/o & sys
 // --------------------------------------------------------------------------------
@@ -2403,6 +2479,7 @@ int CpmTools::cpmChmod(CpmInode_t *ino, mode_t mode) {
 
     return (cpmAttrSet(ino, newatt));
 }
+
 // --------------------------------------------------------------------------------
 //  -- set timestamps
 // --------------------------------------------------------------------------------
@@ -2413,6 +2490,7 @@ void CpmTools::cpmUtime(CpmInode_t *ino, utimbuf *times) {
     updateTimeStamps(ino, ino->ino);
     updateDsStamps(ino, ino->ino);
 }
+
 // --------------------------------------------------------------------------------
 // CP/M Tool-Functions
 // --------------------------------------------------------------------------------
@@ -2427,4 +2505,5 @@ int CpmTools::namecmp(const void *a, const void *b) {
 
     return strcmp(*((const char *const *)a), *((const char *const *)b));
 }
+
 // --------------------------------------------------------------------------------
