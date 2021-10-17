@@ -1,7 +1,7 @@
 {
 	"metadata":	{
 		"m_generatedFilesDir":	".",
-		"m_objCounter":	156,
+		"m_objCounter":	164,
 		"m_includeFiles":	[],
 		"m_bitmapFunction":	"wxCrafterbA4dhxInitBitmapResources",
 		"m_bitmapsFile":	"Ui_MainWindow_bitmaps.cpp",
@@ -244,7 +244,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/close.png"
+											"m_path":	""
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -307,7 +307,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/cut.png"
+											"m_path":	""
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -351,7 +351,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/copy.png"
+											"m_path":	""
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -395,7 +395,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/paste.png"
+											"m_path":	""
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -439,7 +439,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/select-all.png"
+											"m_path":	""
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -467,7 +467,7 @@
 										}, {
 											"type":	"string",
 											"m_label":	"Name:",
-											"m_value":	"menuSeparator"
+											"m_value":	"menuItemSeparator2"
 										}, {
 											"type":	"string",
 											"m_label":	"Label:",
@@ -527,7 +527,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/edit.png"
+											"m_path":	""
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -571,7 +571,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/delete.png"
+											"m_path":	""
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -599,7 +599,7 @@
 										}, {
 											"type":	"string",
 											"m_label":	"Name:",
-											"m_value":	"menuSeparator2"
+											"m_value":	"menuItemSeparator3"
 										}, {
 											"type":	"string",
 											"m_label":	"Label:",
@@ -659,7 +659,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/permission.png"
+											"m_path":	""
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -703,7 +703,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/attributes.png"
+											"m_path":	""
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -731,7 +731,7 @@
 										}, {
 											"type":	"string",
 											"m_label":	"Name:",
-											"m_value":	"menuSeparator3"
+											"m_value":	"menuItemSeparator4"
 										}, {
 											"type":	"string",
 											"m_label":	"Label:",
@@ -791,7 +791,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/create.png"
+											"m_path":	""
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -854,7 +854,70 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/refresh.png"
+											"m_path":	""
+										}, {
+											"type":	"choice",
+											"m_label":	"Kind:",
+											"m_selection":	0,
+											"m_options":	["normal", "checkable", "radio", "separator"]
+										}, {
+											"type":	"bool",
+											"m_label":	"Checked",
+											"m_value":	false
+										}],
+									"m_events":	[],
+									"m_children":	[]
+								}]
+						}, {
+							"m_type":	4458,
+							"proportion":	0,
+							"border":	5,
+							"gbSpan":	"1,1",
+							"gbPosition":	"0,0",
+							"m_styles":	[],
+							"m_sizerFlags":	["wxALL", "wxLEFT", "wxRIGHT", "wxTOP", "wxBOTTOM"],
+							"m_properties":	[{
+									"type":	"string",
+									"m_label":	"Name:",
+									"m_value":	"menuTools"
+								}, {
+									"type":	"string",
+									"m_label":	"Label:",
+									"m_value":	"Tools"
+								}],
+							"m_events":	[],
+							"m_children":	[{
+									"m_type":	4459,
+									"proportion":	0,
+									"border":	5,
+									"gbSpan":	"1,1",
+									"gbPosition":	"0,0",
+									"m_styles":	[],
+									"m_sizerFlags":	[],
+									"m_properties":	[{
+											"type":	"winid",
+											"m_label":	"ID:",
+											"m_winid":	"wxID_CHECK_IMAGE"
+										}, {
+											"type":	"string",
+											"m_label":	"Name:",
+											"m_value":	"menuItemCheckImage"
+										}, {
+											"type":	"string",
+											"m_label":	"Label:",
+											"m_value":	"Check Image"
+										}, {
+											"type":	"string",
+											"m_label":	"Shortcut:",
+											"m_value":	"F11"
+										}, {
+											"type":	"string",
+											"m_label":	"Help String:",
+											"m_value":	""
+										}, {
+											"type":	"bitmapPicker",
+											"m_label":	"Bitmap File:",
+											"m_path":	""
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -917,7 +980,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/about.png"
+											"m_path":	""
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -1941,7 +2004,7 @@
 																	"border":	4,
 																	"gbSpan":	"1,1",
 																	"gbPosition":	"0,0",
-																	"m_styles":	["wxLC_VRULES", "wxLC_REPORT", "wxFULL_REPAINT_ON_RESIZE", "wxBORDER_NONE"],
+																	"m_styles":	["wxLC_VRULES", "wxLC_REPORT", "wxBORDER_NONE"],
 																	"m_sizerFlags":	["wxEXPAND"],
 																	"m_properties":	[{
 																			"type":	"winid",
