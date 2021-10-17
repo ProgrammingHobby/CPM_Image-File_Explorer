@@ -44,6 +44,8 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
     EVT_COMBOBOX(wxID_IMAGE_TYPE, MainWindow::onImageTypeChanged)
+    EVT_LIST_ITEM_SELECTED(wxID_IMAGE_CONTENTS, MainWindow::onListItemSelected)
+    EVT_LIST_ITEM_RIGHT_CLICK(wxID_IMAGE_CONTENTS, MainWindow::onListItemRightClick)
 END_EVENT_TABLE()
 // --------------------------------------------------------------------------------
 #include "Bitmaps/appiconsmall.xpm"
@@ -61,17 +63,28 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     }
 
     comboboxImageType->Append(getImageTypes());
-    comboboxImageType->SetSelection(0);
+    comboboxImageType->SetSelection(3); // nur für Debug
     editImageFile->SetFocus();
-    menuItemRefresh->Enable(false);
+    //
     wxSize fontSize = this->GetFont().GetPixelSize();
     wxFont listFont = wxFont(fontSize, wxFontFamily::wxFONTFAMILY_TELETYPE, wxFontStyle::wxFONTSTYLE_NORMAL, wxFontWeight::wxFONTWEIGHT_NORMAL);
     listImageContents->SetFont(listFont);
     textContentsInfo->SetFont(listFont);
+    //
+    listImageContents->Bind(wxEVT_CONTEXT_MENU, &MainWindow::onShowContextMenu, this);
+    //
     cpmguiinterface = new CpmGuiInterface(listImageContents, textMessages, textContentsInfo);
     cpmtools = new CpmTools(cpmguiinterface);
     cpmtools->setImageType(comboboxImageType->GetValue());
+    //
+    isImageLoaded = false;
     correctWindowSize();
+    presetMenues();
+    //
+
+    if (listImageContents->GetItemCount() > 0) {
+        menuMainWindow->Enable(wxID_SELECTALL, true);
+    }
 }
 
 // --------------------------------------------------------------------------------
@@ -86,15 +99,8 @@ void MainWindow::correctWindowSize() {
 
 // --------------------------------------------------------------------------------
 MainWindow::~MainWindow() {
-    if (cpmguiinterface != nullptr) {
-        delete cpmguiinterface;
-        cpmguiinterface = nullptr;
-    }
-
-    if (cpmtools != nullptr) {
-        delete cpmtools;
-        cpmtools = nullptr;
-    }
+    wxDELETE(cpmguiinterface);
+    wxDELETE(cpmtools);
 }
 
 // --------------------------------------------------------------------------------
@@ -134,17 +140,31 @@ void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
     WXUNUSED(event)
     wxFileDialog fileDialog(this, _T("Open CP/M Disk Image File"), wxStandardPaths::Get().GetUserDataDir(),
                             wxEmptyString, _T("Image Files (*.img,*.fdd,*.dsk)|*.img;*.fdd;*.dsk|all Files (*.*)|*.*"),
-                            wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+                            wxFD_OPEN);
 
     if (fileDialog.ShowModal() == wxID_OK) {
-        editImageFile->SetValue(fileDialog.GetPath());
-        editImageFile->SetInsertionPoint(editImageFile->GetValue().length());
-        cpmtools->setImageFile(fileDialog.GetPath());
+        wxString filePath = fileDialog.GetPath();
+        editImageFile->SetValue(filePath);
+        editImageFile->SetInsertionPoint(filePath.length());
+        cpmtools->setImageFile(filePath);
+
+        if (!wxFileExists(filePath)) {
+            // Meldung Image nicht vorhanden, wird neu erstellt
+        }
+
+        isImageLoaded = true;
+        listImageContents->DeleteAllItems();
         cpmtools->showDirectory();
-        menuItemRefresh->Enable(true);
-    }
-    else {
-        menuItemRefresh->Enable(false);
+        listImageContents->SetFocus();
+        presetMenues();
+        menuMainWindow->Enable(wxID_REFRESH, true);
+        menuMainWindow->Enable(wxID_CREATE_NEW, true);
+        menuMainWindow->Enable(wxID_CHECK_IMAGE, true);
+        menuMainWindow->Enable(wxID_PASTE, true);
+
+        if (listImageContents->GetItemCount() > 0) {
+            menuMainWindow->Enable(wxID_SELECTALL, true);
+        }
     }
 }
 
@@ -198,6 +218,113 @@ void MainWindow::onButtonSaveMessagesClicked(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onViewRefresh(wxCommandEvent &event) {
+    listImageContents->DeleteAllItems();
     cpmtools->showDirectory();
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
+    if (isImageLoaded) {
+        wxMenu popupMenu;
+        popupMenu.Append(wxID_REFRESH, _("Refresh\tF5"), wxT(""), wxITEM_NORMAL);
+        popupMenu.AppendSeparator();
+        popupMenu.Append(wxID_CUT, _("Cut\tCtrl+X"), wxT(""), wxITEM_NORMAL)->Enable(false);
+        popupMenu.Append(wxID_COPY, _("Copy\tCtrl+C"), wxT(""), wxITEM_NORMAL)->Enable(false);
+        popupMenu.Append(wxID_PASTE, _("Paste\tCtrl+V"), wxT(""), wxITEM_NORMAL);
+        popupMenu.Append(wxID_SELECTALL, _("Select all\tCtrl+A"), wxT(""), wxITEM_NORMAL)->Enable(false);
+        popupMenu.AppendSeparator();
+        popupMenu.Append(wxID_EDIT, _("Rename\tF2"), wxT(""), wxITEM_NORMAL)->Enable(false);
+        popupMenu.Append(wxID_DELETE, _("Delete\tDel"), wxT(""), wxITEM_NORMAL)->Enable(false);
+        popupMenu.AppendSeparator();
+        popupMenu.Append(wxID_PERMISSIONS, _("Permissions\tF7"), wxT(""), wxITEM_NORMAL)->Enable(false);
+        popupMenu.Append(wxID_ATTRIBUTES, _("Attributes\tF9"), wxT(""), wxITEM_NORMAL)->Enable(false);
+        popupMenu.AppendSeparator();
+        popupMenu.Append(wxID_CHECK_IMAGE, _("Check Image\tF11"), wxT(""), wxITEM_NORMAL);
+
+        if (listImageContents->GetItemCount() > 0) {
+            popupMenu.Enable(wxID_SELECTALL, true);
+        }
+
+        if (listImageContents->GetSelectedItemCount() > 0) {
+            popupMenu.Enable(wxID_CUT, true);
+            popupMenu.Enable(wxID_COPY, true);
+            popupMenu.Enable(wxID_DELETE, true);
+            popupMenu.Enable(wxID_PERMISSIONS, true);
+            popupMenu.Enable(wxID_ATTRIBUTES, true);
+        }
+
+        if (listImageContents->GetSelectedItemCount() == 1) {
+            popupMenu.Enable(wxID_EDIT, true);
+        }
+
+        listImageContents->PopupMenu(&popupMenu);
+    }
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::presetMenues() {
+    menuMainWindow->Enable(wxID_CUT, false);
+    menuMainWindow->Enable(wxID_COPY, false);
+    menuMainWindow->Enable(wxID_PASTE, false);
+    menuMainWindow->Enable(wxID_SELECTALL, false);
+    menuMainWindow->Enable(wxID_EDIT, false);
+    menuMainWindow->Enable(wxID_DELETE, false);
+    menuMainWindow->Enable(wxID_PERMISSIONS, false);
+    menuMainWindow->Enable(wxID_ATTRIBUTES, false);
+    menuMainWindow->Enable(wxID_CREATE_NEW, false);
+    menuMainWindow->Enable(wxID_REFRESH, false);
+    menuMainWindow->Enable(wxID_CHECK_IMAGE, false);
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onListItemSelected(wxListEvent &event) {
+    if (listImageContents->GetSelectedItemCount() > 0) {
+        menuMainWindow->Enable(wxID_CUT, true);
+        menuMainWindow->Enable(wxID_COPY, true);
+        menuMainWindow->Enable(wxID_DELETE, true);
+        menuMainWindow->Enable(wxID_PERMISSIONS, true);
+        menuMainWindow->Enable(wxID_ATTRIBUTES, true);
+    }
+    else {
+        menuMainWindow->Enable(wxID_CUT, false);
+        menuMainWindow->Enable(wxID_COPY, false);
+        menuMainWindow->Enable(wxID_DELETE, false);
+        menuMainWindow->Enable(wxID_PERMISSIONS, false);
+        menuMainWindow->Enable(wxID_ATTRIBUTES, false);
+    }
+
+    if (listImageContents->GetSelectedItemCount() == 1) {
+        menuMainWindow->Enable(wxID_EDIT, true);
+    }
+    else {
+        menuMainWindow->Enable(wxID_EDIT, false);
+    }
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onListItemRightClick(wxListEvent &event) {
+    long index = event.GetIndex();
+    long nextIndex = listImageContents->GetNextSelected(index);
+    long firstIndex = listImageContents->GetFirstSelected();
+    long chkIndex = firstIndex;
+    long lastIndex = firstIndex;
+
+    while (chkIndex != -1) {
+        lastIndex = chkIndex;
+        chkIndex = listImageContents->GetNextSelected(chkIndex);
+    }
+
+    if (((index == firstIndex) && (nextIndex == lastIndex)) || ((index == lastIndex) && (nextIndex == -1) && (index == (firstIndex + 1)))) {
+        if (nextIndex == -1)  {
+            listImageContents->SetItemState(firstIndex, 0, wxLIST_STATE_SELECTED);
+        }
+        else {
+            listImageContents->SetItemState(nextIndex, 0, wxLIST_STATE_SELECTED);
+        }
+
+        if (index != -1) {
+            listImageContents->SetItemState(index, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+        }
+    }
 }
 // --------------------------------------------------------------------------------

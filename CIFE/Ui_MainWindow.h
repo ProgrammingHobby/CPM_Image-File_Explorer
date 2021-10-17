@@ -48,14 +48,15 @@
 class Ui_MainWindow : public wxFrame {
     public:
         enum {
-            wxID_BUTTON_SAVE_MESSAGES = 10001,
-            wxID_BUTTON_CLEAR_MESSAGES = 10002,
+            wxID_BUTTON_CLEAR_MESSAGES = 10001,
+            wxID_BUTTON_SAVE_MESSAGES = 10002,
             wxID_IMAGE_CONTENTS = 10003,
             wxID_BUTTON_IMAGE_FILE = 10004,
             wxID_IMAGE_TYPE = 10005,
-            wxID_CREATE_NEW = 10006,
-            wxID_ATTRIBUTES = 10007,
-            wxID_PERMISSIONS = 10008,
+            wxID_CHECK_IMAGE = 10006,
+            wxID_CREATE_NEW = 10007,
+            wxID_ATTRIBUTES = 10008,
+            wxID_PERMISSIONS = 10009,
         };
     protected:
         wxMenuBar *menuMainWindow;
@@ -66,16 +67,18 @@ class Ui_MainWindow : public wxFrame {
         wxMenuItem *menuItemCopy;
         wxMenuItem *menuItemPaste;
         wxMenuItem *menuItemSelectAll;
-        wxMenuItem *menuSeparator;
+        wxMenuItem *menuItemSeparator2;
         wxMenuItem *menuItemRename;
         wxMenuItem *menuItemDelete;
-        wxMenuItem *menuSeparator2;
+        wxMenuItem *menuItemSeparator3;
         wxMenuItem *menuItemPermissions;
         wxMenuItem *menuItemAttributes;
-        wxMenuItem *menuSeparator3;
+        wxMenuItem *menuItemSeparator4;
         wxMenuItem *menuItemCreateNew;
         wxMenu *menuView;
         wxMenuItem *menuItemRefresh;
+        wxMenu *menuTools;
+        wxMenuItem *menuItemCheckImage;
         wxMenu *menuHelp;
         wxMenuItem *menuItemAbout;
         wxStatusBar *statusMainWindow;

@@ -46,14 +46,19 @@ class MainWindow : public Ui_MainWindow {
         void onButtonSaveMessagesClicked(wxCommandEvent &event);
         void onImageTypeChanged(wxCommandEvent &event);
         void onViewRefresh(wxCommandEvent &event);
+        void onShowContextMenu(wxContextMenuEvent &event);
+        void onListItemSelected(wxListEvent &event);
+        void onListItemRightClick(wxListEvent &event);
 
     private:    // Attributes
         CpmTools *cpmtools;
         CpmGuiInterface *cpmguiinterface;
+        bool isImageLoaded;
 
-    private:    // Methode
+    private:    // Methods
         wxArrayString getImageTypes();
         void correctWindowSize();
+        void presetMenues();
 
         DECLARE_EVENT_TABLE()
 };
