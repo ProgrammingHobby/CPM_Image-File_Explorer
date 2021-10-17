@@ -46,6 +46,8 @@ class MainWindow : public Ui_MainWindow {
         void onButtonSaveMessagesClicked(wxCommandEvent &event);
         void onImageTypeChanged(wxCommandEvent &event);
         void onViewRefresh(wxCommandEvent &event);
+        void onSelectAll(wxCommandEvent &event);
+        void onDelete(wxCommandEvent &event);
         void onShowContextMenu(wxContextMenuEvent &event);
         void onListItemSelected(wxListEvent &event);
         void onListItemRightClick(wxListEvent &event);

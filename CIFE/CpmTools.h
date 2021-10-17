@@ -25,6 +25,7 @@
 #include <string>
 #include <utime.h>
 #include <time.h>
+#include <wx/arrstr.h>
 // --------------------------------------------------------------------------------
 class CpmGuiInterface;
 class wxString;
@@ -37,6 +38,7 @@ class CpmTools {
         void setImageType(wxString typeName);
         void setImageFile(wxString fileName);
         void showDirectory();
+        void deleteFile(wxArrayString files);
 
     public:     // Constructor & Destructor
         CpmTools(CpmGuiInterface *intf);
