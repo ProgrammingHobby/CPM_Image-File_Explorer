@@ -38,7 +38,6 @@ class CpmTools {
         void setImageType(wxString typeName);
         void setImageFile(wxString fileName);
         void showDirectory();
-        void deleteFile(wxArrayString files);
 
     public:     // Constructor & Destructor
         CpmTools(CpmGuiInterface *intf);
@@ -54,7 +53,7 @@ class CpmTools {
             int secLength;
             int tracks;
             int sectrk;
-            long offset;
+            off_t offset;
             FILE *file;
         } Device_t;
 
@@ -163,8 +162,8 @@ class CpmTools {
         std::string imageFileName;
         const char *boo;
         std::string cmd;
-        int s_ifdir = 1;
-        int s_ifreg = 1;
+        mode_t s_ifdir = 1;
+        mode_t s_ifreg = 1;
 
         const char *month[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
@@ -227,11 +226,6 @@ class CpmTools {
         // CP/M Tool-Functions
         // --------------------------------------------------------------------------------
         static int namecmp(const void *a, const void *b);
-        void olddir(char **dirent, int entries);
-        void oldddir(char **dirent, int entries, CpmInode_t *ino);
-        void old3dir(char **dirent, int entries, CpmInode_t *ino);
-        void ls(char **dirent, int entries, CpmInode_t *ino);
-        void lsattr(char **dirent, int entries, CpmInode_t *ino);
 };
 
 // --------------------------------------------------------------------------------
