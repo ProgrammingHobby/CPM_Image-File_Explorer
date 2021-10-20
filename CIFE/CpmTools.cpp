@@ -22,7 +22,6 @@
 #include "CpmGuiInterface.h"
 // --------------------------------------------------------------------------------
 #include <cstdio>
-#include <assert.h>
 #include <ctype.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -48,12 +47,12 @@
 #define CPM_ATTR_F3		4
 #define CPM_ATTR_F4		8
 /* F5-F8 are banned in CP/M 2 & 3, F7 is used by ZSDOS */
-#define CPM_ATTR_RO		256     /* Read-only */
-#define CPM_ATTR_SYS		512	/* System */
-#define CPM_ATTR_ARCV		1024	/* Archive */
-#define CPM_ATTR_PWDEL 		2048	/* Password required to delete */
-#define CPM_ATTR_PWWRITE	4096	/* Password required to write */
-#define CPM_ATTR_PWREAD		8192	/* Password required to read */
+#define CPM_ATTR_RO         256     /* Read-only */
+#define CPM_ATTR_SYS        512     /* System */
+#define CPM_ATTR_ARCV       1024    /* Archive */
+#define CPM_ATTR_PWDEL      2048    /* Password required to delete */
+#define CPM_ATTR_PWWRITE    4096    /* Password required to write */
+#define CPM_ATTR_PWREAD     8192    /* Password required to read */
 
 #define PASSWD_RECLEN 24
 #define RESERVED_ENTRIES 4
@@ -62,7 +61,6 @@
 #define BCD2BIN(x) ((((x)>>4)&0xf)*10 + ((x)&0xf))
 #define BIN2BCD(x) (((((x)/10)&0xf)<<4) + (((x)%10)&0xf))
 
-#define EXTENT(low,high) (((low)&0x1f)|(((high)&0x3f)<<5))
 #define ISFILECHAR(notFirst,c) (((notFirst) || (c)!=' ') && (c)>=' ' && !((c)&~0x7f) && (c)!='<' && (c)!='>' && (c)!='.' && (c)!=',' && (c)!=';' && (c)!=':' && (c)!='=' && (c)!='?' && (c)!='*' && (c)!= '[' && (c)!=']')
 #define EXTENT(low,high) (((low)&0x1f)|(((high)&0x3f)<<5))
 #define EXTENTL(extent) ((extent)&0x1f)
@@ -200,37 +198,11 @@ void CpmTools::showDirectory() {
     else {
         guiintf->printDirInfo(" No files.");
     }
-}
 
-// --------------------------------------------------------------------------------
-void CpmTools::deleteFile(wxArrayString files) {
-    CpmSuperBlock_t drive;
-    CpmInode_t root;
-    const char *err;
-    char **gargv;
-    int gargc;
-    cmd = "cpmls";
-
-    if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
-        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err));
+    if ((err = Device_Close(&drive.dev))) {
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err));
         return;
     }
-
-    if (cpmReadSuper(&drive, &root, imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo));
-        return;
-    }
-
-    for (size_t count = 0; count < files.GetCount(); count++) {
-        wxString fileName = files.Item(count);
-        cpmglob(fileName.c_str(), &root, &gargc, &gargv);
-
-        if (cpmUnlink(&root, gargv[0]) == -1) {
-            guiintf->printMsg(wxString::Format("%s: can not erase %s: %s\n", cmd, gargv[0], boo));
-        }
-    }
-
-    cpmUmount(&drive);
 }
 
 // --------------------------------------------------------------------------------
@@ -240,7 +212,7 @@ void CpmTools::deleteFile(wxArrayString files) {
 // --------------------------------------------------------------------------------
 const char *CpmTools::Device_Open(Device_t *device, const char *filename, const char *mode) {
     device->file = fopen(filename, mode);
-    device->opened = ((device->file == NULL) ? false : true);
+    device->opened = ((device->file == nullptr) ? false : true);
     return ((device->opened) ? (const char *)0 : strerror(errno));
 }
 
@@ -255,8 +227,14 @@ const char *CpmTools::Device_SetGeometry(Device_t *device, int secLength, int se
 
 //--------------------------------------------------------------------------------
 const char *CpmTools::Device_Close(Device_t *device) {
-    device->opened = (((fclose(device->file)) == 0) ? false : true);
-    return ((device->opened) ? (const char *)0 : strerror(errno));
+//    device->opened = (((fclose(device->file)) == 0) ? false : true);
+//    return ((device->opened) ? (const char *)0 : strerror(errno));
+    if (fflush(device->file) != 0) {
+        guiintf->printMsg(wxString::Format("error on writing data to disk."));
+    }
+
+    device->opened = false;
+    return ((fclose(device->file) == 0) ? (const char *)0 : strerror(errno));
 }
 
 // --------------------------------------------------------------------------------
@@ -312,10 +290,6 @@ void CpmTools::memcpy7(char *dest, const char *src, int count) {
 // --------------------------------------------------------------------------------
 int CpmTools::splitFilename(const char *fullname, int type, char *name, char *ext, int *user) {
     int i, j;
-    assert(fullname != (const char *)0);
-    assert(name != (char *)0);
-    assert(ext != (char *)0);
-    assert(user != (int *)0);
     memset(name, ' ', 8);
     memset(ext, ' ', 3);
 
@@ -332,24 +306,28 @@ int CpmTools::splitFilename(const char *fullname, int type, char *name, char *ex
         return (-1);
     }
 
-    for (i = 0; i < 8 && fullname[i] && fullname[i] != '.'; ++i) if (!ISFILECHAR(i, fullname[i])) {
+    for (i = 0; i < 8 && fullname[i] && fullname[i] != '.'; ++i) {
+        if (!ISFILECHAR(i, fullname[i])) {
             boo = "illegal CP/M filename";
             return (-1);
         }
         else {
             name[i] = toupper(fullname[i]);
         }
+    }
 
     if (fullname[i] == '.') {
         ++i;
 
-        for (j = 0; j < 3 && fullname[i]; ++i, ++j) if (!ISFILECHAR(1, fullname[i])) {
+        for (j = 0; j < 3 && fullname[i]; ++i, ++j) {
+            if (!ISFILECHAR(1, fullname[i])) {
                 boo = "illegal CP/M filename";
                 return (-1);
             }
             else {
                 ext[j] = toupper(fullname[i]);
             }
+        }
 
         if (i == 1 && j == 0) {
             boo = "illegal CP/M filename";
@@ -365,22 +343,22 @@ int CpmTools::splitFilename(const char *fullname, int type, char *name, char *ex
 // --------------------------------------------------------------------------------
 int CpmTools::isMatching(int user1, const char *name1, const char *ext1, int user2, const char *name2, const char *ext2) {
     int i;
-    assert(name1 != (const char *)0);
-    assert(ext1 != (const char *)0);
-    assert(name2 != (const char *)0);
-    assert(ext2 != (const char *)0);
 
     if (user1 != user2) {
         return (0);
     }
 
-    for (i = 0; i < 8; ++i) if ((name1[i] & 0x7f) != (name2[i] & 0x7f)) {
+    for (i = 0; i < 8; ++i) {
+        if ((name1[i] & 0x7f) != (name2[i] & 0x7f)) {
             return (0);
         }
+    }
 
-    for (i = 0; i < 3; ++i) if ((ext1[i] & 0x7f) != (ext2[i] & 0x7f)) {
+    for (i = 0; i < 3; ++i) {
+        if ((ext1[i] & 0x7f) != (ext2[i] & 0x7f)) {
             return (0);
         }
+    }
 
     return (1);
 }
@@ -394,7 +372,7 @@ time_t CpmTools::cpm2unix_time(int days, int hour, int min) {
     /* the current offset from UTC is most sensible, but not perfect. */
     int year, days_per_year;
     static int days_per_month[] = {31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    struct tm tms;
+    tm tms;
     time_t lt, t;
     time(&lt);
     t = lt;
@@ -444,7 +422,7 @@ time_t CpmTools::cpm2unix_time(int days, int hour, int min) {
 //  -- convert UTC to CP/M time
 // --------------------------------------------------------------------------------
 void CpmTools::unix2cpm_time(time_t now, int *days, int *hour, int *min) {
-    struct tm *tms;
+    tm *tms;
     int i;
     tms = localtime(&now);
     *min = ((tms->tm_min / 10) << 4) | (tms->tm_min % 10);
@@ -465,7 +443,7 @@ void CpmTools::unix2cpm_time(time_t now, int *days, int *hour, int *min) {
 //  -- convert DS to Unix time
 // --------------------------------------------------------------------------------
 time_t CpmTools::ds2unix_time(const DsEntry_t *entry) {
-    struct tm tms;
+    tm tms;
     int yr;
 
     if (entry->minute == 0 &&
@@ -496,7 +474,7 @@ time_t CpmTools::ds2unix_time(const DsEntry_t *entry) {
 //  -- convert Unix to DS time
 // --------------------------------------------------------------------------------
 void CpmTools::unix2ds_time(time_t now, DsEntry_t *entry) {
-    struct tm *tms;
+    tm *tms;
     int yr;
 
     if (now == 0) {
@@ -523,7 +501,6 @@ void CpmTools::unix2ds_time(time_t now, DsEntry_t *entry) {
 // --------------------------------------------------------------------------------
 void CpmTools::alvInit(const CpmSuperBlock_t *d) {
     int i, j, offset, block;
-    assert(d != (CpmSuperBlock_t *)0);
     /* clean bitmap */
     memset(d->alv, 0, d->alvSize * sizeof(int));
 
@@ -558,7 +535,6 @@ void CpmTools::alvInit(const CpmSuperBlock_t *d) {
 // --------------------------------------------------------------------------------
 int CpmTools::allocBlock(const CpmSuperBlock_t *drive) {
     int i, j, bits, block;
-    assert(drive != (CpmSuperBlock_t *)0);
 
     for (i = 0; i < drive->alvSize; ++i) {
         for (j = 0, bits = drive->alv[i]; j < INTBITS; ++j) {
@@ -587,9 +563,6 @@ int CpmTools::allocBlock(const CpmSuperBlock_t *drive) {
 // --------------------------------------------------------------------------------
 int CpmTools::readBlock(const CpmSuperBlock_t *d, int blockno, char *buffer, int start, int end) {
     int sect, track, counter;
-    assert(d);
-    assert(blockno >= 0);
-    assert(buffer);
 
     if (blockno >= d->size) {
         boo = "Attempting to access block beyond end of disk";
@@ -629,9 +602,6 @@ int CpmTools::readBlock(const CpmSuperBlock_t *d, int blockno, char *buffer, int
 // --------------------------------------------------------------------------------
 int CpmTools::writeBlock(const CpmSuperBlock_t *d, int blockno, const char *buffer, int start, int end) {
     int sect, track, counter;
-    assert(blockno >= 0);
-    assert(blockno < d->size);
-    assert(buffer != (const char *)0);
 
     if (end < 0) {
         end = d->blksiz / d->secLength - 1;
@@ -857,8 +827,6 @@ void CpmTools::readDsStamps(CpmInode_t *i, int lowestExt) {
 // --------------------------------------------------------------------------------
 int CpmTools::recmatch(const char *a, const char *pattern) {
     int first = 1;
-    assert(a);
-    assert(pattern);
 
     while (*pattern) {
         switch (*pattern) {
@@ -913,9 +881,6 @@ int CpmTools::recmatch(const char *a, const char *pattern) {
 int CpmTools::match(const char *a, const char *pattern) {
     int user;
     char pat[257];
-    assert(a);
-    assert(pattern);
-    assert(strlen(pattern) < 255);
 
     if (isdigit(*pattern) && *(pattern + 1) == ':') {
         user = (*pattern - '0');
@@ -1360,13 +1325,9 @@ int CpmTools::cpmReadSuper(CpmSuperBlock_t *d, CpmInode_t *root, const char *for
         s_ifdir <<= 1;
     }
 
-    assert(s_ifdir);
-
     while (s_ifreg && !S_ISREG(s_ifreg)) {
         s_ifreg <<= 1;
     }
-
-    assert(s_ifreg);
 
     if (strcmp(format, "amstrad") == 0) {
         amsReadSuper(d, format);
@@ -1393,9 +1354,6 @@ int CpmTools::cpmReadSuper(CpmSuperBlock_t *d, CpmInode_t *root, const char *for
 
         for (i = j = 0; i < d->sectrk; ++i, j = (j + d->skew) % d->sectrk) {
             while (1) {
-                assert(i < d->sectrk);
-                assert(j < d->sectrk);
-
                 for (k = 0; k < i && d->skewtab[k] != j; ++k);
 
                 if (k < i) {
@@ -1419,15 +1377,14 @@ int CpmTools::cpmReadSuper(CpmSuperBlock_t *d, CpmInode_t *root, const char *for
             return (-1);
         }
     }
-    /* allocate directory buffer */
-    assert(sizeof(PhysDirectoryEntry_t) == 32);
 
+    /* allocate directory buffer */
     if ((d->dir = (PhysDirectoryEntry_t *) malloc(((d->maxdir * 32 + d->blksiz - 1) / d->blksiz) * d->blksiz)) == (PhysDirectoryEntry_t *)0) {
         boo = strerror(errno);
         return (-1);
     }
 
-    if (d->dev.opened == 0) { /* create empty directory in core */
+    if (d->dev.opened == false) { /* create empty directory in core */
         memset(d->dir, 0xe5, d->maxdir * 32);
     }
     else { /* read directory in core */
@@ -2018,7 +1975,6 @@ int CpmTools::cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent) {
                     }
 
                     *bufp = '\0';
-                    assert(bufp <= buf + sizeof(buf));
                     ent->reclen = bufp - buf;
                     strcpy(ent->name, buf);
                     ent->off = dir->pos;
