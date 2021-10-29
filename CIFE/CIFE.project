@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="CIFE" Version="11000" InternalType="GUI">
   <VirtualDirectory Name="Resource Files">
+    <File Name="Ui_RenameFileDialog.wxcp"/>
     <File Name="cife.rc"/>
     <File Name="Ui_MainWindow_bitmaps.xrc"/>
     <File Name="Ui_MainWindow.wxcp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Header Files">
+    <File Name="Ui_RenameFileDialog.h"/>
+    <File Name="RenameFileDialog.h"/>
     <File Name="Version.h"/>
     <File Name="CpmGuiInterface.h"/>
     <File Name="CpmTools.h"/>
@@ -15,6 +18,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="Source Files">
+    <File Name="Ui_RenameFileDialog_bitmaps.cpp"/>
+    <File Name="Ui_RenameFileDialog.cpp"/>
+    <File Name="RenameFileDialog.cpp"/>
     <File Name="CpmGuiInterface.cpp"/>
     <File Name="CpmTools.cpp"/>
     <File Name="Ui_MainWindow_bitmaps.cpp"/>
