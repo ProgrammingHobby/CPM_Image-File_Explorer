@@ -118,7 +118,7 @@
 				}, {
 					"type":	"bitmapPicker",
 					"m_label":	"Bitmap File (64x64)  :",
-					"m_path":	""
+					"m_path":	"Bitmaps/appiconsmall.png"
 				}, {
 					"type":	"bitmapPicker",
 					"m_label":	"Bitmap File (128x128):",
@@ -244,7 +244,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/close.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -307,7 +307,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/cut.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -351,7 +351,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/copy.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -395,7 +395,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/paste.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -439,7 +439,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/select_all.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -527,7 +527,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/edit.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -571,7 +571,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/delete.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -659,7 +659,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/permissions.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -703,7 +703,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/attributes.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -791,7 +791,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/create_new.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -854,7 +854,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/refresh.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -917,7 +917,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/check_image.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -980,7 +980,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	""
+											"m_path":	"Bitmaps/about.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",

@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc">
   <!-- Handler Generation is ON -->
+  <object class="wxBitmap" name="about">Bitmaps/about.png</object>
+  <object class="wxBitmap" name="appiconsmall">Bitmaps/appiconsmall.png</object>
+  <object class="wxBitmap" name="attributes">Bitmaps/attributes.png</object>
+  <object class="wxBitmap" name="check_image">Bitmaps/check_image.png</object>
+  <object class="wxBitmap" name="close">Bitmaps/close.png</object>
+  <object class="wxBitmap" name="copy">Bitmaps/copy.png</object>
+  <object class="wxBitmap" name="create_new">Bitmaps/create_new.png</object>
+  <object class="wxBitmap" name="cut">Bitmaps/cut.png</object>
+  <object class="wxBitmap" name="delete">Bitmaps/delete.png</object>
+  <object class="wxBitmap" name="edit">Bitmaps/edit.png</object>
+  <object class="wxBitmap" name="paste">Bitmaps/paste.png</object>
+  <object class="wxBitmap" name="permissions">Bitmaps/permissions.png</object>
+  <object class="wxBitmap" name="refresh">Bitmaps/refresh.png</object>
+  <object class="wxBitmap" name="select_all">Bitmaps/select_all.png</object>
 </resource>
