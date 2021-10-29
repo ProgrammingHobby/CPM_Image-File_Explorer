@@ -95,7 +95,7 @@ void CpmTools::showDirectory() {
     const char *err;
     char **gargv;
     int gargc, row = 0;
-    cmd = "cpmls";
+    cmd = "Show Directory";
 
     if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "rb"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err));
@@ -125,8 +125,8 @@ void CpmTools::showDirectory() {
                     cpmAttrGet(&file, &attrib);
                     totalBytes += statbuf.size;
                     totalRecs += (statbuf.size + 127) / 128;
-                    /*    user : name    */
-                    guiintf->printDirEntry(0, row, wxString::Format("%d : %s", user, (gargv[i] + 2)));
+                    /*    user: name    */
+                    guiintf->printDirEntry(0, row, wxString::Format("%2d: %s", user, (gargv[i] + 2)));
                     /*    bytes    */
                     guiintf->printDirEntry(1, row, wxString::Format("%5.1ldK", (long)(statbuf.size + buf.f_bsize - 1) / buf.f_bsize * (buf.f_bsize / 1024)));
                     /*    records    */
@@ -206,6 +206,77 @@ void CpmTools::showDirectory() {
 }
 
 // --------------------------------------------------------------------------------
+void CpmTools::deleteFile(wxArrayString files) {
+    CpmSuperBlock_t drive;
+    CpmInode_t root;
+    const char *err;
+    char **gargv;
+    int gargc;
+    cmd = "Delete File";
+
+    if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        return;
+    }
+
+    if (cpmReadSuper(&drive, &root, imageTypeName.c_str()) == -1) {
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
+        return;
+    }
+
+    for (size_t count = 0; count < files.GetCount(); count++) {
+        wxString fileName = files.Item(count);
+        cpmglob(fileName.c_str(), &root, &gargc, &gargv);
+
+        if (cpmUnlink(&root, gargv[0]) == -1) {
+            guiintf->printMsg(wxString::Format("%s: can not erase %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
+        }
+    }
+
+    cpmUmount(&drive);
+
+    if ((err = Device_Close(&drive.dev))) {
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        return;
+    }
+}
+
+// --------------------------------------------------------------------------------
+void CpmTools::renameFile(wxString oldName, wxString newName) {
+    CpmSuperBlock_t drive;
+    CpmInode_t root;
+    const char *err;
+    char nName[15];
+    char **gargv;
+    int gargc;
+    cmd = "Rename File";
+
+    if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        return;
+    }
+
+    if (cpmReadSuper(&drive, &root, imageTypeName.c_str()) == -1) {
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
+        return;
+    }
+
+    cpmglob(oldName.c_str(), &root, &gargc, &gargv);
+    convertFilename(newName.c_str(), nName);
+
+    if (cpmRename(&root, gargv[0], nName) == -1) {
+        guiintf->printMsg(wxString::Format("%s: can not rename %s in %s:  %s\n", cmd, oldName, newName, boo), CpmGuiInterface::msgColRed);
+    }
+
+    cpmUmount(&drive);
+
+    if ((err = Device_Close(&drive.dev))) {
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        return;
+    }
+}
+
+// --------------------------------------------------------------------------------
 // Basic File Input/Output
 // --------------------------------------------------------------------------------
 //
@@ -227,12 +298,6 @@ const char *CpmTools::Device_SetGeometry(Device_t *device, int secLength, int se
 
 //--------------------------------------------------------------------------------
 const char *CpmTools::Device_Close(Device_t *device) {
-//    device->opened = (((fclose(device->file)) == 0) ? false : true);
-//    return ((device->opened) ? (const char *)0 : strerror(errno));
-    if (fflush(device->file) != 0) {
-        guiintf->printMsg(wxString::Format("error on writing data to disk."));
-    }
-
     device->opened = false;
     return ((fclose(device->file) == 0) ? (const char *)0 : strerror(errno));
 }
@@ -2460,6 +2525,29 @@ int CpmTools::namecmp(const void *a, const void *b) {
     }
 
     return strcmp(*((const char *const *)a), *((const char *const *)b));
+}
+
+// --------------------------------------------------------------------------------
+//  -- get User Number from Filename (UU:NNNNNNNN.EEE)
+// --------------------------------------------------------------------------------
+int CpmTools::getUserNumber(const char *filename) {
+    if (isdigit(*filename) && *(filename + 1) == ':') {
+        return (*filename - '0');
+    }
+
+    if (isdigit(*filename) && isdigit(*(filename + 1)) && *(filename + 2) == ':') {
+        return (10 * (*filename - '0') + (*(filename + 1) - '0'));
+    }
+
+    return -1;
+}
+
+// --------------------------------------------------------------------------------
+//  -- convert Filename from UU:NNNNNNNN.EEE to UUNNNNNNNN.EEE
+// --------------------------------------------------------------------------------
+void CpmTools::convertFilename(const char *filename, char *cpmname) {
+    memset(cpmname, ' ', (2 + 8 + 1 + 3 + 1));
+    snprintf(cpmname, 15, "%02d%s", getUserNumber(filename), strchr(filename, ':') + 1);
 }
 
 // --------------------------------------------------------------------------------

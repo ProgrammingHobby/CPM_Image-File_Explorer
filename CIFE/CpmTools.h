@@ -38,6 +38,8 @@ class CpmTools {
         void setImageType(wxString typeName);
         void setImageFile(wxString fileName);
         void showDirectory();
+        void deleteFile(wxArrayString files);
+        void renameFile(wxString oldName, wxString newName);
 
     public:     // Constructor & Destructor
         CpmTools(CpmGuiInterface *intf);
@@ -226,6 +228,8 @@ class CpmTools {
         // CP/M Tool-Functions
         // --------------------------------------------------------------------------------
         static int namecmp(const void *a, const void *b);
+        int getUserNumber(const char *filename);
+        void convertFilename(const char *filename, char *cpmname);
 };
 
 // --------------------------------------------------------------------------------
