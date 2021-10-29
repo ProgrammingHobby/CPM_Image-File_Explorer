@@ -1,2 +1,6 @@
+==================== v0.0.2 ====================
+- neue Icons
+- es können nun Dateien gelöscht und Umbennant werden
+
 ==================== v0.0.1 ====================
 - erste Version mit funktionierender Verzeichnisansicht 
