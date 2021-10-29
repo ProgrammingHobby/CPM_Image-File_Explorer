@@ -48,6 +48,7 @@ class MainWindow : public Ui_MainWindow {
         void onViewRefresh(wxCommandEvent &event);
         void onSelectAll(wxCommandEvent &event);
         void onDelete(wxCommandEvent &event);
+        void onRename(wxCommandEvent &event);
         void onShowContextMenu(wxContextMenuEvent &event);
         void onListItemSelected(wxListEvent &event);
         void onListItemRightClick(wxListEvent &event);

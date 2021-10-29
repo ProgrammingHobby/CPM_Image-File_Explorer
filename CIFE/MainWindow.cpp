@@ -23,6 +23,7 @@
 #include "Version.h"
 #include "CpmTools.h"
 #include "CpmGuiInterface.h"
+#include "RenameFileDialog.h"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/platinfo.h>
@@ -43,6 +44,7 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_REFRESH, MainWindow::onViewRefresh)
     EVT_MENU(wxID_SELECTALL, MainWindow::onSelectAll)
     EVT_MENU(wxID_DELETE, MainWindow::onDelete)
+    EVT_MENU(wxID_EDIT, MainWindow::onRename)
     EVT_BUTTON(wxID_BUTTON_IMAGE_FILE, MainWindow::onButtonImageFileClicked)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
@@ -51,22 +53,12 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_LIST_ITEM_RIGHT_CLICK(wxID_IMAGE_CONTENTS, MainWindow::onListItemRightClick)
 END_EVENT_TABLE()
 // --------------------------------------------------------------------------------
-#include "Bitmaps/appiconsmall.xpm"
-// --------------------------------------------------------------------------------
 MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     int size = editImageFile->GetSize().GetHeight();
     buttonImageFile->SetMinSize(wxSize(size, size));
     buttonImageFile->SetMaxSize(wxSize(size, size));
-    wxBitmap iconBmp(appiconsmall_xpm);
-
-    if (iconBmp.IsOk()) {
-        wxIcon icn;
-        icn.CopyFromBitmap(iconBmp);
-        SetIcon(icn);
-    }
-
     comboboxImageType->Append(getImageTypes());
-    comboboxImageType->SetSelection(3); //========== nur für Debug ==========//
+    comboboxImageType->SetSelection(0);
     editImageFile->SetFocus();
     //
     wxSize fontSize = this->GetFont().GetPixelSize();
@@ -83,22 +75,6 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     isImageLoaded = false;
     correctWindowSize();
     presetMenues();
-    //
-    //========== nur für Debug ==========//
-    wxString filePath = "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/Test_Disk-Images/Test_1440kb.fdd";
-    editImageFile->SetValue(filePath);
-    editImageFile->SetInsertionPoint(filePath.length());
-    cpmtools->setImageFile(filePath);
-    isImageLoaded = true;
-    listImageContents->DeleteAllItems();
-    cpmtools->showDirectory();
-    listImageContents->SetFocus();
-    presetMenues();
-    menuMainWindow->Enable(wxID_REFRESH, true);
-    menuMainWindow->Enable(wxID_CREATE_NEW, true);
-    menuMainWindow->Enable(wxID_CHECK_IMAGE, true);
-    menuMainWindow->Enable(wxID_PASTE, true);
-    //========== nur für Debug ==========//
 
     if (listImageContents->GetItemCount() > 0) {
         menuMainWindow->Enable(wxID_SELECTALL, true);
@@ -134,7 +110,6 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
     wxVersionInfo versionInfo("", wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER);
     aboutInfo.SetName("CP/M Image-File Explorer");
     aboutInfo.SetVersion(VERSION_STRING);
-    aboutInfo.SetIcon(this->GetIcon());
     aboutInfo.SetDescription(_("Written in C/C++ with CodeLite-IDE\n"
                                "Using wxWidgets GUI - Framework Version ") + versionInfo.GetVersionString() +
                              _("\n\nCP/M Images Functionality based on the CP/M-Tools\n"
@@ -142,7 +117,7 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
     aboutInfo.SetCopyright("Uwe Merker  (C) 2021");
     aboutInfo.SetWebSite("http://www.moria.de/~michael/cpmtools\n"
                          "https://github.com/ProgrammingHobby/CPM_Image-File_Explorer.git");
-    wxBitmap iconBmp(appiconsmall_xpm);
+    wxBitmap iconBmp = wxXmlResource::Get()->LoadBitmap(wxT("appiconsmall"));
 
     if (iconBmp.IsOk()) {
         wxIcon icn;
@@ -244,39 +219,59 @@ void MainWindow::onViewRefresh(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
     if (isImageLoaded) {
-        wxMenu popupMenu;
-        popupMenu.Append(wxID_REFRESH, _("Refresh\tF5"), wxT(""), wxITEM_NORMAL);
-        popupMenu.AppendSeparator();
-        popupMenu.Append(wxID_CUT, _("Cut\tCtrl+X"), wxT(""), wxITEM_NORMAL)->Enable(false);
-        popupMenu.Append(wxID_COPY, _("Copy\tCtrl+C"), wxT(""), wxITEM_NORMAL)->Enable(false);
-        popupMenu.Append(wxID_PASTE, _("Paste\tCtrl+V"), wxT(""), wxITEM_NORMAL);
-        popupMenu.Append(wxID_SELECTALL, _("Select all\tCtrl+A"), wxT(""), wxITEM_NORMAL)->Enable(false);
-        popupMenu.AppendSeparator();
-        popupMenu.Append(wxID_EDIT, _("Rename\tF2"), wxT(""), wxITEM_NORMAL)->Enable(false);
-        popupMenu.Append(wxID_DELETE, _("Delete\tDel"), wxT(""), wxITEM_NORMAL)->Enable(false);
-        popupMenu.AppendSeparator();
-        popupMenu.Append(wxID_PERMISSIONS, _("Permissions\tF7"), wxT(""), wxITEM_NORMAL)->Enable(false);
-        popupMenu.Append(wxID_ATTRIBUTES, _("Attributes\tF9"), wxT(""), wxITEM_NORMAL)->Enable(false);
-        popupMenu.AppendSeparator();
-        popupMenu.Append(wxID_CHECK_IMAGE, _("Check Image\tF11"), wxT(""), wxITEM_NORMAL);
+        wxMenu *popupMenu = new wxMenu();
+        wxMenuItem *popupItemRefresh = new wxMenuItem(popupMenu, wxID_REFRESH, _("Refresh\tF5"), wxT(""), wxITEM_NORMAL);
+        popupItemRefresh->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("refresh")));
+        popupMenu->Append(popupItemRefresh);
+        popupMenu->AppendSeparator();
+        wxMenuItem *popupItemCut = new wxMenuItem(popupMenu, wxID_CUT, _("Cut\tCtrl+X"), wxT(""), wxITEM_NORMAL);
+        popupItemCut->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("cut")));
+        popupMenu->Append(popupItemCut);
+        wxMenuItem *popupItemCopy = new wxMenuItem(popupMenu, wxID_COPY, _("Copy\tCtrl+C"), wxT(""), wxITEM_NORMAL);
+        popupItemCopy->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("copy")));
+        popupMenu->Append(popupItemCopy);
+        wxMenuItem *popupItemPaste = new wxMenuItem(popupMenu, wxID_PASTE, _("Paste\tCtrl+V"), wxT(""), wxITEM_NORMAL);
+        popupItemPaste->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("paste")));
+        popupMenu->Append(popupItemPaste);
+        wxMenuItem *popupItemSelectAll = new wxMenuItem(popupMenu, wxID_SELECTALL, _("Select all\tCtrl+A"), wxT(""), wxITEM_NORMAL);
+        popupItemSelectAll->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("select_all")));
+        popupMenu->Append(popupItemSelectAll);
+        popupMenu->AppendSeparator();
+        wxMenuItem *popupItemRename = new wxMenuItem(popupMenu, wxID_EDIT, _("Rename\tF2"), wxT(""), wxITEM_NORMAL);
+        popupItemRename->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("edit")));
+        popupMenu->Append(popupItemRename);
+        wxMenuItem *popupItemDelete = new wxMenuItem(popupMenu, wxID_DELETE, _("Delete\tDel"), wxT(""), wxITEM_NORMAL);
+        popupItemDelete->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("delete")));
+        popupMenu->Append(popupItemDelete);
+        popupMenu->AppendSeparator();
+        wxMenuItem *popupItemPermissions = new wxMenuItem(popupMenu, wxID_PERMISSIONS, _("Permissions\tF7"), wxT(""), wxITEM_NORMAL);
+        popupItemPermissions->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("permissions")));
+        popupMenu->Append(popupItemPermissions);
+        wxMenuItem *popupItemAttributes = new wxMenuItem(popupMenu, wxID_ATTRIBUTES, _("Attributes\tF9"), wxT(""), wxITEM_NORMAL);
+        popupItemAttributes->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("attributes")));
+        popupMenu->Append(popupItemAttributes);
+        popupMenu->AppendSeparator();
+        wxMenuItem *popupItemCheckImage = new wxMenuItem(popupMenu, wxID_CHECK_IMAGE, _("Check Image\tF11"), wxT(""), wxITEM_NORMAL);
+        popupItemCheckImage->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("check_image")));
+        popupMenu->Append(popupItemCheckImage);
 
-        if (listImageContents->GetItemCount() > 0) {
-            popupMenu.Enable(wxID_SELECTALL, true);
+        if (listImageContents->GetItemCount() == 0) {
+            popupMenu->Enable(wxID_SELECTALL, false);
         }
 
-        if (listImageContents->GetSelectedItemCount() > 0) {
-            popupMenu.Enable(wxID_CUT, true);
-            popupMenu.Enable(wxID_COPY, true);
-            popupMenu.Enable(wxID_DELETE, true);
-            popupMenu.Enable(wxID_PERMISSIONS, true);
-            popupMenu.Enable(wxID_ATTRIBUTES, true);
+        if (listImageContents->GetSelectedItemCount() == 0) {
+            popupMenu->Enable(wxID_CUT, false);
+            popupMenu->Enable(wxID_COPY, false);
+            popupMenu->Enable(wxID_DELETE, false);
+            popupMenu->Enable(wxID_PERMISSIONS, false);
+            popupMenu->Enable(wxID_ATTRIBUTES, false);
         }
 
-        if (listImageContents->GetSelectedItemCount() == 1) {
-            popupMenu.Enable(wxID_EDIT, true);
+        if (listImageContents->GetSelectedItemCount() != 1) {
+            popupMenu->Enable(wxID_EDIT, false);
         }
 
-        listImageContents->PopupMenu(&popupMenu);
+        listImageContents->PopupMenu(popupMenu);
     }
 }
 
@@ -354,8 +349,8 @@ void MainWindow::onSelectAll(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onDelete(wxCommandEvent &event) {
-    wxMessageDialog deleteDialog(this, _("Are you sure you want\ndelete selected File/s ?"),
-                                 _("Delete File/s"), wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
+    wxMessageDialog deleteDialog(NULL, _("Are you sure you want delete selected File/s ?"),
+                                 _("Delete File/s"), wxYES_NO | wxYES_DEFAULT | wxICON_WARNING);
 
     if (deleteDialog.ShowModal() == wxID_YES) {
         long index = listImageContents->GetFirstSelected();
@@ -371,5 +366,27 @@ void MainWindow::onDelete(wxCommandEvent &event) {
         cpmtools->deleteFile(files);
         onViewRefresh(event);
     }
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onRename(wxCommandEvent &event) {
+    RenameFileDialog *dialog = new RenameFileDialog(this);
+    long index = listImageContents->GetFirstSelected();
+    wxString oldName = listImageContents->GetItemText(index);
+    oldName.Replace(" ", "");
+    wxString name = oldName.AfterLast(':');
+    wxString user = oldName.BeforeFirst(':');
+    dialog->setOldName(name);
+    dialog->setOldUser(wxAtoi(user));
+
+    if (dialog->ShowModal() == wxID_OK) {
+        wxString newName = dialog->getNewName();
+        int newUser = dialog->getNewUser();
+        newName = wxString::Format(("%i"), newUser) + ":" + newName;
+        cpmtools->renameFile(oldName, newName);
+        onViewRefresh(event);
+    }
+
+    wxDELETE(dialog);
 }
 // --------------------------------------------------------------------------------
