@@ -106,6 +106,8 @@ class Ui_MainWindow : public wxFrame {
         wxButton *buttonClearMessages;
         wxButton *buttonSaveMessages;
         wxStaticLine *lineTextMessages;
+        wxPanel *panelTextMessages;
+        wxBoxSizer *sizerTextMessages;
         wxTextCtrl *textMessages;
 
     protected:
@@ -161,6 +163,9 @@ class Ui_MainWindow : public wxFrame {
         }
         wxTextCtrl *GetTextMessages() {
             return textMessages;
+        }
+        wxPanel *GetPanelTextMessages() {
+            return panelTextMessages;
         }
         wxPanel *GetSplitterPageMessages() {
             return splitterPageMessages;

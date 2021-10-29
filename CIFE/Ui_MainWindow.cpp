@@ -91,7 +91,7 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
     sizerMainWindow = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(sizerMainWindow);
     panelImageFile = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxTAB_TRAVERSAL);
-    sizerMainWindow->Add(panelImageFile, 0, wxEXPAND, WXC_FROM_DIP(4));
+    sizerMainWindow->Add(panelImageFile, 0, wxLEFT | wxRIGHT | wxEXPAND, WXC_FROM_DIP(4));
     sizerImage = new wxGridBagSizer(0, 0);
     panelImageFile->SetSizer(sizerImage);
     textImageType = new wxStaticText(panelImageFile, wxID_ANY, _("Image Type :"), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
@@ -112,7 +112,7 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
 #endif
     sizerImage->Add(editImageFile, wxGBPosition(1, 1), wxGBSpan(1, 1), wxRIGHT | wxBOTTOM | wxEXPAND, WXC_FROM_DIP(2));
     buttonImageFile = new wxButton(panelImageFile, wxID_BUTTON_IMAGE_FILE, _("..."), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
-    sizerImage->Add(buttonImageFile, wxGBPosition(1, 2), wxGBSpan(1, 1), wxRIGHT, WXC_FROM_DIP(4));
+    sizerImage->Add(buttonImageFile, wxGBPosition(1, 2), wxGBSpan(1, 1), wxRIGHT | wxBOTTOM, WXC_FROM_DIP(2));
     sizerImage->AddGrowableCol(1);
     panelImageViews = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxBORDER_NONE);
     sizerMainWindow->Add(panelImageViews, 1, wxEXPAND, WXC_FROM_DIP(5));
@@ -147,8 +147,14 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
     lineTextMessages = new wxStaticLine(splitterPageMessages, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(splitterPageMessages, wxSize(-1, 1)), wxLI_HORIZONTAL | wxBORDER_NONE);
     sizerMessages->Add(lineTextMessages, 0, wxTOP | wxEXPAND, WXC_FROM_DIP(5));
     lineTextMessages->SetMinSize(wxSize(-1, 1));
-    textMessages = new wxTextCtrl(splitterPageMessages, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(splitterPageMessages, wxSize(-1, -1)), wxTE_RICH2 | wxTE_READONLY | wxTE_MULTILINE | wxTE_DONTWRAP | wxBORDER_NONE | wxBORDER_THEME);
-    sizerMessages->Add(textMessages, 1, wxEXPAND, WXC_FROM_DIP(5));
+    panelTextMessages = new wxPanel(splitterPageMessages, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(splitterPageMessages, wxSize(-1, -1)), wxTAB_TRAVERSAL);
+    panelTextMessages->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
+    panelTextMessages->SetForegroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
+    sizerMessages->Add(panelTextMessages, 1, wxEXPAND, WXC_FROM_DIP(5));
+    sizerTextMessages = new wxBoxSizer(wxVERTICAL);
+    panelTextMessages->SetSizer(sizerTextMessages);
+    textMessages = new wxTextCtrl(panelTextMessages, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelTextMessages, wxSize(-1, -1)), wxTE_RICH2 | wxTE_READONLY | wxTE_MULTILINE | wxTE_DONTWRAP | wxBORDER_NONE | wxBORDER_THEME);
+    sizerTextMessages->Add(textMessages, 1, wxALL | wxEXPAND, WXC_FROM_DIP(4));
     SetName(wxT("Ui_MainWindow"));
     SetSize(wxDLG_UNIT(this, wxSize(640, 480)));
 
