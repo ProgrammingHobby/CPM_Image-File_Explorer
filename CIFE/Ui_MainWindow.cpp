@@ -31,6 +31,7 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
         app_icons.AddIcon(icn);
     }
     SetIcons(app_icons);
+    this->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
     menuMainWindow = new wxMenuBar(0);
     this->SetMenuBar(menuMainWindow);
     menuFile = new wxMenu();
@@ -90,7 +91,7 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
     this->SetStatusBar(statusMainWindow);
     sizerMainWindow = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(sizerMainWindow);
-    panelImageFile = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxTAB_TRAVERSAL);
+    panelImageFile = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxTAB_TRAVERSAL | wxBORDER_NONE);
     sizerMainWindow->Add(panelImageFile, 0, wxLEFT | wxRIGHT | wxEXPAND, WXC_FROM_DIP(4));
     sizerImage = new wxGridBagSizer(0, 0);
     panelImageFile->SetSizer(sizerImage);
@@ -110,12 +111,12 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
 #if wxVERSION_NUMBER >= 3000
     editImageFile->SetHint(wxT(""));
 #endif
-    sizerImage->Add(editImageFile, wxGBPosition(1, 1), wxGBSpan(1, 1), wxRIGHT | wxBOTTOM | wxEXPAND, WXC_FROM_DIP(2));
+    sizerImage->Add(editImageFile, wxGBPosition(1, 1), wxGBSpan(1, 1), wxRIGHT | wxEXPAND, WXC_FROM_DIP(2));
     buttonImageFile = new wxButton(panelImageFile, wxID_BUTTON_IMAGE_FILE, _("..."), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1, -1)), 0);
-    sizerImage->Add(buttonImageFile, wxGBPosition(1, 2), wxGBSpan(1, 1), wxRIGHT | wxBOTTOM, WXC_FROM_DIP(2));
+    sizerImage->Add(buttonImageFile, wxGBPosition(1, 2), wxGBSpan(1, 1), wxRIGHT | wxEXPAND, WXC_FROM_DIP(4));
     sizerImage->AddGrowableCol(1);
     panelImageViews = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxBORDER_NONE);
-    sizerMainWindow->Add(panelImageViews, 1, wxEXPAND, WXC_FROM_DIP(5));
+    sizerMainWindow->Add(panelImageViews, 1, wxBOTTOM | wxEXPAND, WXC_FROM_DIP(4));
     sizerImageViews = new wxBoxSizer(wxVERTICAL);
     panelImageViews->SetSizer(sizerImageViews);
     splitterImageViews = new wxSplitterWindow(panelImageViews, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(panelImageViews, wxSize(-1, -1)), wxSP_LIVE_UPDATE | wxSP_NOBORDER);
@@ -148,13 +149,13 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
     sizerMessages->Add(lineTextMessages, 0, wxTOP | wxEXPAND, WXC_FROM_DIP(5));
     lineTextMessages->SetMinSize(wxSize(-1, 1));
     panelTextMessages = new wxPanel(splitterPageMessages, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(splitterPageMessages, wxSize(-1, -1)), wxTAB_TRAVERSAL);
-    panelTextMessages->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
-    panelTextMessages->SetForegroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
+    panelTextMessages->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
     sizerMessages->Add(panelTextMessages, 1, wxEXPAND, WXC_FROM_DIP(5));
     sizerTextMessages = new wxBoxSizer(wxVERTICAL);
     panelTextMessages->SetSizer(sizerTextMessages);
-    textMessages = new wxTextCtrl(panelTextMessages, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelTextMessages, wxSize(-1, -1)), wxTE_RICH2 | wxTE_READONLY | wxTE_MULTILINE | wxTE_DONTWRAP | wxBORDER_NONE | wxBORDER_THEME);
+    textMessages = new wxTextCtrl(panelTextMessages, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelTextMessages, wxSize(-1, -1)), wxTE_RICH | wxTE_READONLY | wxTE_MULTILINE | wxTE_DONTWRAP | wxBORDER_NONE | wxBORDER_THEME);
     sizerTextMessages->Add(textMessages, 1, wxALL | wxEXPAND, WXC_FROM_DIP(4));
+    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
     SetName(wxT("Ui_MainWindow"));
     SetSize(wxDLG_UNIT(this, wxSize(640, 480)));
 

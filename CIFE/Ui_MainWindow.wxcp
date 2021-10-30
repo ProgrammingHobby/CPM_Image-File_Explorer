@@ -40,7 +40,7 @@
 				}, {
 					"type":	"colour",
 					"m_label":	"Bg Colour:",
-					"colour":	"<Default>"
+					"colour":	"Window"
 				}, {
 					"type":	"colour",
 					"m_label":	"Fg Colour:",
@@ -1099,7 +1099,7 @@
 							"border":	4,
 							"gbSpan":	"1,1",
 							"gbPosition":	"0,0",
-							"m_styles":	["wxTAB_TRAVERSAL"],
+							"m_styles":	["wxTAB_TRAVERSAL", "wxBORDER_NONE"],
 							"m_sizerFlags":	["wxLEFT", "wxRIGHT", "wxEXPAND"],
 							"m_properties":	[{
 									"type":	"winid",
@@ -1559,7 +1559,7 @@
 											"gbSpan":	"1,1",
 											"gbPosition":	"1,1",
 											"m_styles":	["wxTE_READONLY"],
-											"m_sizerFlags":	["wxRIGHT", "wxBOTTOM", "wxEXPAND"],
+											"m_sizerFlags":	["wxRIGHT", "wxEXPAND"],
 											"m_properties":	[{
 													"type":	"winid",
 													"m_label":	"ID:",
@@ -1642,11 +1642,11 @@
 										}, {
 											"m_type":	4400,
 											"proportion":	0,
-											"border":	2,
+											"border":	4,
 											"gbSpan":	"1,1",
 											"gbPosition":	"1,2",
 											"m_styles":	[],
-											"m_sizerFlags":	["wxRIGHT", "wxBOTTOM"],
+											"m_sizerFlags":	["wxRIGHT", "wxEXPAND"],
 											"m_properties":	[{
 													"type":	"winid",
 													"m_label":	"ID:",
@@ -1732,11 +1732,11 @@
 						}, {
 							"m_type":	4408,
 							"proportion":	1,
-							"border":	5,
+							"border":	4,
 							"gbSpan":	"1,1",
 							"gbPosition":	"0,0",
 							"m_styles":	["wxBORDER_NONE"],
-							"m_sizerFlags":	["wxEXPAND"],
+							"m_sizerFlags":	["wxBOTTOM", "wxEXPAND"],
 							"m_properties":	[{
 									"type":	"winid",
 									"m_label":	"ID:",
@@ -2635,11 +2635,11 @@
 																		}, {
 																			"type":	"colour",
 																			"m_label":	"Bg Colour:",
-																			"colour":	"AppWorkspace"
+																			"colour":	"Window"
 																		}, {
 																			"type":	"colour",
 																			"m_label":	"Fg Colour:",
-																			"colour":	"AppWorkspace"
+																			"colour":	"<Default>"
 																		}, {
 																			"type":	"font",
 																			"m_label":	"Font:",
@@ -2703,7 +2703,7 @@
 																					"border":	4,
 																					"gbSpan":	"1,1",
 																					"gbPosition":	"0,0",
-																					"m_styles":	["wxTE_RICH2", "wxTE_READONLY", "wxTE_MULTILINE", "wxTE_DONTWRAP", "wxBORDER_NONE", "wxBORDER_THEME"],
+																					"m_styles":	["wxTE_RICH", "wxTE_READONLY", "wxTE_MULTILINE", "wxTE_DONTWRAP", "wxBORDER_NONE", "wxBORDER_THEME"],
 																					"m_sizerFlags":	["wxALL", "wxLEFT", "wxRIGHT", "wxTOP", "wxBOTTOM", "wxEXPAND"],
 																					"m_properties":	[{
 																							"type":	"winid",
