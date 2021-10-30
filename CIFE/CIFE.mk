@@ -14,7 +14,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Uwe
-Date                   :=29.10.2021
+Date                   :=30.10.2021
 CodeLitePath           :=/home/uwe/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -35,7 +35,7 @@ ArchiveOutputSwitch    :=
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :=$(IntermediateDirectory)/ObjectsList.txt
 PCHCompileFlags        :=
-LinkOptions            :=  -no-pie $(shell /usr/local/bin/wx-config --libs --unicode=yes --static=yes)
+LinkOptions            :=  -s -no-pie $(shell /usr/local/bin/wx-config --libs --unicode=yes --static=yes)
 IncludePath            :=  $(IncludeSwitch). 
 IncludePCH             := 
 RcIncludePath          := 

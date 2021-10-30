@@ -153,7 +153,7 @@
       <Compiler Options="-O3;-Wall;$(shell /usr/bin/wx-config --cxxflags --unicode=yes --static=no)" C_Options="-O3;-Wall;$(shell /usr/bin/wx-config --cxxflags --unicode=yes --static=no)" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
-      <Linker Options="-no-pie;$(shell /usr/bin/wx-config --libs --unicode=yes --static=no)" Required="yes"/>
+      <Linker Options="-s;-no-pie;$(shell /usr/bin/wx-config --libs --unicode=yes --static=no)" Required="yes"/>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(ProjectName)" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="CodeLite Makefile Generator"/>
@@ -192,7 +192,7 @@
       <Compiler Options="-O3;-Wall;$(shell /usr/local/bin/wx-config --cxxflags --unicode=yes --static=yes)" C_Options="-O3;-Wall;$(shell /usr/local/bin/wx-config --cxxflags --unicode=yes --static=yes)" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
-      <Linker Options="-no-pie;$(shell /usr/local/bin/wx-config --libs --unicode=yes --static=yes)" Required="yes"/>
+      <Linker Options="-s;-no-pie;$(shell /usr/local/bin/wx-config --libs --unicode=yes --static=yes)" Required="yes"/>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(ProjectName)" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="CodeLite Makefile Generator"/>
@@ -231,7 +231,7 @@
       <Compiler Options="-O3;-Wall;$(shell wx-config --cxxflags --unicode=yes --static=yes)" C_Options="-O3;-Wall;$(shell wx-config --cxxflags --unicode=yes --static=yes)" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
-      <Linker Options="-mwindows;$(shell wx-config --libs --unicode=yes --static=yes)" Required="yes"/>
+      <Linker Options="-s;-mwindows;$(shell wx-config --libs --unicode=yes --static=yes)" Required="yes"/>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(ProjectName)" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="CodeLite Makefile Generator"/>
