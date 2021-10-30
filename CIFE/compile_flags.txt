@@ -11,5 +11,6 @@
 -D__WXGTK__
 -DwxDEBUG_LEVEL=0
 -D_FILE_OFFSET_BITS=64
+-DNDEBUG
 -target
 x86_64-linux-gnu
