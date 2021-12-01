@@ -56,7 +56,6 @@ class Ui_MainWindow : public wxFrame {
             wxID_CHECK_IMAGE = 10006,
             wxID_CREATE_NEW = 10007,
             wxID_ATTRIBUTES = 10008,
-            wxID_PERMISSIONS = 10009,
         };
     protected:
         wxMenuBar *menuMainWindow;
@@ -71,7 +70,6 @@ class Ui_MainWindow : public wxFrame {
         wxMenuItem *menuItemRename;
         wxMenuItem *menuItemDelete;
         wxMenuItem *menuItemSeparator3;
-        wxMenuItem *menuItemPermissions;
         wxMenuItem *menuItemAttributes;
         wxMenuItem *menuItemSeparator4;
         wxMenuItem *menuItemCreateNew;
