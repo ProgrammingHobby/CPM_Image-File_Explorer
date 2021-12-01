@@ -244,9 +244,6 @@ void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
         popupItemDelete->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("delete")));
         popupMenu->Append(popupItemDelete);
         popupMenu->AppendSeparator();
-        wxMenuItem *popupItemPermissions = new wxMenuItem(popupMenu, wxID_PERMISSIONS, _("Permissions\tF7"), wxT(""), wxITEM_NORMAL);
-        popupItemPermissions->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("permissions")));
-        popupMenu->Append(popupItemPermissions);
         wxMenuItem *popupItemAttributes = new wxMenuItem(popupMenu, wxID_ATTRIBUTES, _("Attributes\tF9"), wxT(""), wxITEM_NORMAL);
         popupItemAttributes->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("attributes")));
         popupMenu->Append(popupItemAttributes);
@@ -263,7 +260,6 @@ void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
             popupMenu->Enable(wxID_CUT, false);
             popupMenu->Enable(wxID_COPY, false);
             popupMenu->Enable(wxID_DELETE, false);
-            popupMenu->Enable(wxID_PERMISSIONS, false);
             popupMenu->Enable(wxID_ATTRIBUTES, false);
         }
 
@@ -283,7 +279,6 @@ void MainWindow::presetMenues() {
     menuMainWindow->Enable(wxID_SELECTALL, false);
     menuMainWindow->Enable(wxID_EDIT, false);
     menuMainWindow->Enable(wxID_DELETE, false);
-    menuMainWindow->Enable(wxID_PERMISSIONS, false);
     menuMainWindow->Enable(wxID_ATTRIBUTES, false);
     menuMainWindow->Enable(wxID_CREATE_NEW, false);
     menuMainWindow->Enable(wxID_REFRESH, false);
@@ -296,14 +291,12 @@ void MainWindow::onListItemSelected(wxListEvent &event) {
         menuMainWindow->Enable(wxID_CUT, true);
         menuMainWindow->Enable(wxID_COPY, true);
         menuMainWindow->Enable(wxID_DELETE, true);
-        menuMainWindow->Enable(wxID_PERMISSIONS, true);
         menuMainWindow->Enable(wxID_ATTRIBUTES, true);
     }
     else {
         menuMainWindow->Enable(wxID_CUT, false);
         menuMainWindow->Enable(wxID_COPY, false);
         menuMainWindow->Enable(wxID_DELETE, false);
-        menuMainWindow->Enable(wxID_PERMISSIONS, false);
         menuMainWindow->Enable(wxID_ATTRIBUTES, false);
     }
 
