@@ -54,8 +54,8 @@ class Ui_RenameFileDialog : public wxDialog {
         wxTextCtrl *editNewFileName;
         wxCheckBox *checkboxChangeUser;
         wxBoxSizer *sizerButtons;
-        wxButton *buttonOk;
         wxButton *buttonCancel;
+        wxButton *buttonOk;
 
     protected:
 
@@ -81,11 +81,11 @@ class Ui_RenameFileDialog : public wxDialog {
         wxCheckBox *GetCheckboxChangeUser() {
             return checkboxChangeUser;
         }
-        wxButton *GetButtonOk() {
-            return buttonOk;
-        }
         wxButton *GetButtonCancel() {
             return buttonCancel;
+        }
+        wxButton *GetButtonOk() {
+            return buttonOk;
         }
         Ui_RenameFileDialog(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("Rename File"), const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxSize(-1, -1), long style = wxCAPTION);
         virtual ~Ui_RenameFileDialog();

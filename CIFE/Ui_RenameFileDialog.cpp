@@ -61,11 +61,11 @@ Ui_RenameFileDialog::Ui_RenameFileDialog(wxWindow *parent, wxWindowID id, const 
     gridBagSizer14->AddGrowableRow(2);
     sizerButtons = new wxBoxSizer(wxHORIZONTAL);
     sizerRenameFile->Add(sizerButtons, 0, wxALL | wxEXPAND, WXC_FROM_DIP(4));
+    buttonCancel = new wxButton(this, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
+    sizerButtons->Add(buttonCancel, 1, wxALL | wxEXPAND, WXC_FROM_DIP(5));
     buttonOk = new wxButton(this, wxID_OK, _("Ok"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
     buttonOk->SetDefault();
     sizerButtons->Add(buttonOk, 1, wxALL | wxEXPAND, WXC_FROM_DIP(5));
-    buttonCancel = new wxButton(this, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
-    sizerButtons->Add(buttonCancel, 1, wxALL | wxEXPAND, WXC_FROM_DIP(5));
     SetName(wxT("Ui_RenameFileDialog"));
     SetSize(wxDLG_UNIT(this, wxSize(-1, -1)));
 
