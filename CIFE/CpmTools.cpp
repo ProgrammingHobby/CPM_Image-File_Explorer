@@ -137,6 +137,7 @@ void CpmTools::showDirectory() {
                     attribute += ((attrib & CPM_ATTR_F2)      ? '2' : '-');
                     attribute += ((attrib & CPM_ATTR_F3)      ? '3' : '-');
                     attribute += ((attrib & CPM_ATTR_F4)      ? '4' : '-');
+                    attribute += ((attrib & CPM_ATTR_RO)      ? 'r' : '-');
                     attribute += ((attrib & CPM_ATTR_SYS)     ? 's' : '-');
                     attribute += ((attrib & CPM_ATTR_ARCV)    ? 'a' : '-');
                     attribute += ((attrib & CPM_ATTR_PWREAD)  ? 'r' : '-');
