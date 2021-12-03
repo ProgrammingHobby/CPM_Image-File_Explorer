@@ -311,7 +311,7 @@
 												}, {
 													"type":	"string",
 													"m_label":	"Label:",
-													"m_value":	"F1 (used by M/PM)"
+													"m_value":	"F1 (used by MP/M)"
 												}, {
 													"type":	"bool",
 													"m_label":	"Value:",
@@ -386,7 +386,7 @@
 												}, {
 													"type":	"string",
 													"m_label":	"Label:",
-													"m_value":	"F2 (used by M/PM)"
+													"m_value":	"F2 (used by MP/M)"
 												}, {
 													"type":	"bool",
 													"m_label":	"Value:",
@@ -461,7 +461,7 @@
 												}, {
 													"type":	"string",
 													"m_label":	"Label:",
-													"m_value":	"F3 (used by M/PM)"
+													"m_value":	"F3 (used by MP/M)"
 												}, {
 													"type":	"bool",
 													"m_label":	"Value:",
@@ -536,7 +536,7 @@
 												}, {
 													"type":	"string",
 													"m_label":	"Label:",
-													"m_value":	"F4 (used by M/PM)"
+													"m_value":	"F4 (used by MP/M)"
 												}, {
 													"type":	"bool",
 													"m_label":	"Value:",
