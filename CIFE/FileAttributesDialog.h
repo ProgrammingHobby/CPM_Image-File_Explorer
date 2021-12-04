@@ -46,9 +46,6 @@ class FileAttributesDialog : public Ui_FileAttributesDialog {
         const int CPM_ATTR_RO = 256;   /* Read-only */
         const int CPM_ATTR_SYS = 512;   /* System */
         const int CPM_ATTR_ARCV = 1024;  /* Archive */
-        const int CPM_ATTR_PWDEL = 2048;  /* Password required to delete */
-        const int CPM_ATTR_PWWRITE = 4096;  /* Password required to write */
-        const int CPM_ATTR_PWREAD = 8192;  /* Password required to read */
         wxCheckBox *checkBoxes[7];
 
     private:    // Methods
