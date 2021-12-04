@@ -37,6 +37,8 @@ FileAttributesDialog::~FileAttributesDialog() {
 
 // --------------------------------------------------------------------------------
 void FileAttributesDialog::setAttributes(wxString attributes) {
+    attributes.Replace(" ", "");
+
     for (int i = 0; i < 7; i++) {
         if (attributes[i] != '-') {
             checkBoxes[i]->SetValue(true);

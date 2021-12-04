@@ -77,8 +77,8 @@ void CpmGuiInterface::setDirHeader() {
     listContents->AppendColumn("User: Name", wxLIST_FORMAT_LEFT, (14 * charWidth));
     listContents->AppendColumn("Bytes", wxLIST_FORMAT_RIGHT, (7 * charWidth));
     listContents->AppendColumn("Recs", wxLIST_FORMAT_RIGHT, (7 * charWidth));
-    listContents->AppendColumn("Attributes", wxLIST_FORMAT_CENTER, (10 * charWidth));
-    listContents->AppendColumn("Permissions", wxLIST_FORMAT_CENTER, (10 * charWidth));
+    listContents->AppendColumn("Attributes", wxLIST_FORMAT_CENTER, (9 * charWidth));
+    listContents->AppendColumn("Protections", wxLIST_FORMAT_CENTER, (10 * charWidth));
     listContents->AppendColumn("Updated", wxLIST_FORMAT_CENTER, (15 * charWidth));
     listContents->AppendColumn("Created", wxLIST_FORMAT_CENTER, (15 * charWidth));
     listContents->AppendColumn("Last Access", wxLIST_FORMAT_CENTER, (15 * charWidth));

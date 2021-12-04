@@ -137,26 +137,19 @@ void CpmTools::showDirectory() {
                     attribute += ((attrib & CPM_ATTR_F2)      ? '2' : '-');
                     attribute += ((attrib & CPM_ATTR_F3)      ? '3' : '-');
                     attribute += ((attrib & CPM_ATTR_F4)      ? '4' : '-');
+                    attribute += ' ';
                     attribute += ((attrib & CPM_ATTR_RO)      ? 'r' : '-');
                     attribute += ((attrib & CPM_ATTR_SYS)     ? 's' : '-');
                     attribute += ((attrib & CPM_ATTR_ARCV)    ? 'a' : '-');
-                    attribute += ((attrib & CPM_ATTR_PWREAD)  ? 'r' : '-');
-                    attribute += ((attrib & CPM_ATTR_PWWRITE) ? 'w' : '-');
-                    attribute += ((attrib & CPM_ATTR_PWDEL)   ? 'e' : '-');
                     guiintf->printDirEntry(3, row, attribute);
                     /*    permissions    */
-                    std::string permissions;
-                    permissions += (S_ISDIR(statbuf.mode) ? 'd' : '-');
-                    permissions += (statbuf.mode & 0400 ? 'r' : '-');
-                    permissions += (statbuf.mode & 0200 ? 'w' : '-');
-                    permissions += (statbuf.mode & 0100 ? 'x' : '-');
-                    permissions += (statbuf.mode & 0040 ? 'r' : '-');
-                    permissions += (statbuf.mode & 0020 ? 'w' : '-');
-                    permissions += (statbuf.mode & 0010 ? 'x' : '-');
-                    permissions += (statbuf.mode & 0004 ? 'r' : '-');
-                    permissions += (statbuf.mode & 0002 ? 'w' : '-');
-                    permissions += (statbuf.mode & 0001 ? 'x' : '-');
-                    guiintf->printDirEntry(4, row, permissions);
+                    std::string protections;
+                    protections += ((attrib & CPM_ATTR_PWREAD)  ? "rd" : "--");
+                    protections += ' ';
+                    protections += ((attrib & CPM_ATTR_PWWRITE) ? "wr" : "--");
+                    protections += ' ';
+                    protections += ((attrib & CPM_ATTR_PWDEL)   ? "del" : "---");
+                    guiintf->printDirEntry(4, row, protections);
 
                     /*    updated    */
                     if (statbuf.mtime) {
