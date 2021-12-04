@@ -28,6 +28,8 @@ class FileAttributesDialog : public Ui_FileAttributesDialog {
     public:     // Attributes
 
     public:     // Methods
+        void setAttributes(wxString attributes);
+        int getAttributes();
 
     public:     // Constructor & Destructor
         FileAttributesDialog(wxWindow *parent);
@@ -36,6 +38,18 @@ class FileAttributesDialog : public Ui_FileAttributesDialog {
     protected:  // Event Methods
 
     private:    // Attributes
+        /* CP/M file attributes */
+        const int CPM_ATTR_F1 = 1;
+        const int CPM_ATTR_F2 = 2;
+        const int CPM_ATTR_F3 = 4;
+        const int CPM_ATTR_F4 = 8;
+        const int CPM_ATTR_RO = 256;   /* Read-only */
+        const int CPM_ATTR_SYS = 512;   /* System */
+        const int CPM_ATTR_ARCV = 1024;  /* Archive */
+        const int CPM_ATTR_PWDEL = 2048;  /* Password required to delete */
+        const int CPM_ATTR_PWWRITE = 4096;  /* Password required to write */
+        const int CPM_ATTR_PWREAD = 8192;  /* Password required to read */
+        wxCheckBox *checkBoxes[7];
 
     private:    // Methods
 };

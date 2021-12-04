@@ -24,6 +24,7 @@
 #include "CpmTools.h"
 #include "CpmGuiInterface.h"
 #include "RenameFileDialog.h"
+#include "FileAttributesDialog.h"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/platinfo.h>
@@ -45,6 +46,7 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_SELECTALL, MainWindow::onSelectAll)
     EVT_MENU(wxID_DELETE, MainWindow::onDelete)
     EVT_MENU(wxID_EDIT, MainWindow::onRename)
+    EVT_MENU(wxID_ATTRIBUTES, MainWindow::onAttributes)
     EVT_BUTTON(wxID_BUTTON_IMAGE_FILE, MainWindow::onButtonImageFileClicked)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
@@ -244,7 +246,7 @@ void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
         popupItemDelete->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("delete")));
         popupMenu->Append(popupItemDelete);
         popupMenu->AppendSeparator();
-        wxMenuItem *popupItemAttributes = new wxMenuItem(popupMenu, wxID_ATTRIBUTES, _("Attributes\tF9"), wxT(""), wxITEM_NORMAL);
+        wxMenuItem *popupItemAttributes = new wxMenuItem(popupMenu, wxID_ATTRIBUTES, _("Attributes\tF7"), wxT(""), wxITEM_NORMAL);
         popupItemAttributes->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("attributes")));
         popupMenu->Append(popupItemAttributes);
         popupMenu->AppendSeparator();
@@ -291,19 +293,19 @@ void MainWindow::onListItemSelected(wxListEvent &event) {
         menuMainWindow->Enable(wxID_CUT, true);
         menuMainWindow->Enable(wxID_COPY, true);
         menuMainWindow->Enable(wxID_DELETE, true);
-        menuMainWindow->Enable(wxID_ATTRIBUTES, true);
     }
     else {
         menuMainWindow->Enable(wxID_CUT, false);
         menuMainWindow->Enable(wxID_COPY, false);
         menuMainWindow->Enable(wxID_DELETE, false);
-        menuMainWindow->Enable(wxID_ATTRIBUTES, false);
     }
 
     if (listImageContents->GetSelectedItemCount() == 1) {
+        menuMainWindow->Enable(wxID_ATTRIBUTES, true);
         menuMainWindow->Enable(wxID_EDIT, true);
     }
     else {
+        menuMainWindow->Enable(wxID_ATTRIBUTES, false);
         menuMainWindow->Enable(wxID_EDIT, false);
     }
 }
@@ -350,7 +352,7 @@ void MainWindow::onDelete(wxCommandEvent &event) {
         wxArrayString files;
 
         while (index != -1) {
-            wxString file = listImageContents->GetItemText(index);
+            wxString file = listImageContents->GetItemText(index, 0);
             file.Replace(" ", "");
             files.Add(file);
             index = listImageContents->GetNextSelected(index);
@@ -365,7 +367,7 @@ void MainWindow::onDelete(wxCommandEvent &event) {
 void MainWindow::onRename(wxCommandEvent &event) {
     RenameFileDialog *dialog = new RenameFileDialog(this);
     long index = listImageContents->GetFirstSelected();
-    wxString oldName = listImageContents->GetItemText(index);
+    wxString oldName = listImageContents->GetItemText(index, 0);
     oldName.Replace(" ", "");
     wxString name = oldName.AfterLast(':');
     wxString user = oldName.BeforeFirst(':');
@@ -377,6 +379,23 @@ void MainWindow::onRename(wxCommandEvent &event) {
         int newUser = dialog->getNewUser();
         newName = wxString::Format(("%i"), newUser) + ":" + newName;
         cpmtools->renameFile(oldName, newName);
+        onViewRefresh(event);
+    }
+
+    wxDELETE(dialog);
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onAttributes(wxCommandEvent &event) {
+    FileAttributesDialog *dialog = new FileAttributesDialog(this);
+    long index = listImageContents->GetFirstSelected();
+    wxString name = listImageContents->GetItemText(index, 0);
+    name.Replace(" ", "");
+    dialog->setAttributes(listImageContents->GetItemText(index, 3));
+
+    if (dialog->ShowModal() == wxID_OK) {
+        int attr = dialog->getAttributes();
+        cpmtools->setFileAttributes(name, attr);
         onViewRefresh(event);
     }
 

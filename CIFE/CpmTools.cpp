@@ -238,7 +238,6 @@ void CpmTools::deleteFile(wxArrayString files) {
 
     if ((err = Device_Close(&drive.dev))) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
-        return;
     }
 }
 
@@ -274,6 +273,42 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     if ((err = Device_Close(&drive.dev))) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
         return;
+    }
+}
+
+// --------------------------------------------------------------------------------
+void CpmTools::setFileAttributes(wxString name, int attributes) {
+    CpmSuperBlock_t drive;
+    CpmInode_t root;
+    const char *err;
+    char **gargv;
+    int gargc;
+    cmd = "Set File Attributes";
+
+    if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        return;
+    }
+
+    if (cpmReadSuper(&drive, &root, imageTypeName.c_str()) == -1) {
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
+        return;
+    }
+
+    cpmglob(name.c_str(), &root, &gargc, &gargv);
+    CpmInode_t ino;
+
+    if (cpmNamei(&root, gargv[0], &ino) == -1) {
+        guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
+    }
+    else if (cpmAttrSet(&ino, attributes) == -1) {
+        guiintf->printMsg(wxString::Format("%s: can not change mod %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
+    }
+
+    cpmUmount(&drive);
+
+    if ((err = Device_Close(&drive.dev))) {
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
     }
 }
 
