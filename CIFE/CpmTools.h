@@ -40,6 +40,7 @@ class CpmTools {
         void showDirectory();
         void deleteFile(wxArrayString files);
         void renameFile(wxString oldName, wxString newName);
+        void setFileAttributes(wxString name, int attributes);
 
     public:     // Constructor & Destructor
         CpmTools(CpmGuiInterface *intf);
