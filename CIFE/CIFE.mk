@@ -2,9 +2,9 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release_-_GTK_wx3.1_static
+## Debug_-_GTK_wx3.1_static
 ProjectName            :=CIFE
-ConfigurationName      :=Release-GTK_wx3.1_static
+ConfigurationName      :=Debug-GTK_wx3.1_static
 WorkspaceConfiguration := $(ConfigurationName)
 WorkspacePath          :=/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer
 ProjectPath            :=/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE
@@ -14,7 +14,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Uwe
-Date                   :=30.10.2021
+Date                   :=04.12.2021
 CodeLitePath           :=/home/uwe/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -29,13 +29,13 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=../build-$(ConfigurationName)/bin/$(ProjectName)
-Preprocessors          :=$(PreprocessorSwitch)NDEBUG 
+Preprocessors          :=
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :=$(IntermediateDirectory)/ObjectsList.txt
 PCHCompileFlags        :=
-LinkOptions            :=  -s -no-pie $(shell /usr/local/bin/wx-config --libs --unicode=yes --static=yes)
+LinkOptions            :=  -no-pie $(shell /usr/local/bin/wx-config --libs --unicode=yes --static=yes)
 IncludePath            :=  $(IncludeSwitch). 
 IncludePCH             := 
 RcIncludePath          := 
@@ -50,8 +50,8 @@ LibPath                := $(LibraryPathSwitch).
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++
 CC       := /usr/bin/gcc
-CXXFLAGS :=  -O3 -Wall $(shell /usr/local/bin/wx-config --cxxflags --unicode=yes --static=yes) $(Preprocessors)
-CFLAGS   :=  -O3 -Wall $(shell /usr/local/bin/wx-config --cxxflags --unicode=yes --static=yes) $(Preprocessors)
+CXXFLAGS :=  -g -O0 -Wall $(shell /usr/local/bin/wx-config --cxxflags --unicode=yes --static=yes) $(Preprocessors)
+CFLAGS   :=  -g -O0 -Wall $(shell /usr/local/bin/wx-config --cxxflags --unicode=yes --static=yes) $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -60,7 +60,8 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=../build-$(ConfigurationName)/CIFE/main.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/Ui_MainWindow.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/CpmTools.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/RenameFileDialog.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/CpmGuiInterface.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/Ui_MainWindow_bitmaps.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/Ui_RenameFileDialog.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/Ui_RenameFileDialog_bitmaps.cpp$(ObjectSuffix) 
+Objects0=../build-$(ConfigurationName)/CIFE/main.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/Ui_MainWindow.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/CpmTools.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/RenameFileDialog.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/CpmGuiInterface.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/FileAttributesDialog.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog_bitmaps.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/Ui_MainWindow_bitmaps.cpp$(ObjectSuffix) \
+	../build-$(ConfigurationName)/CIFE/Ui_RenameFileDialog.cpp$(ObjectSuffix) ../build-$(ConfigurationName)/CIFE/Ui_RenameFileDialog_bitmaps.cpp$(ObjectSuffix) 
 
 
 
@@ -99,14 +100,6 @@ PreBuild:
 ../build-$(ConfigurationName)/CIFE/main.cpp$(PreprocessSuffix): main.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CIFE/main.cpp$(PreprocessSuffix) main.cpp
 
-../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(ObjectSuffix): MainWindow.cpp ../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/MainWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) $(IncludePath)
-../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(DependSuffix): MainWindow.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(ObjectSuffix) -MF../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(DependSuffix) -MM MainWindow.cpp
-
-../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(PreprocessSuffix): MainWindow.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(PreprocessSuffix) MainWindow.cpp
-
 ../build-$(ConfigurationName)/CIFE/Ui_MainWindow.cpp$(ObjectSuffix): Ui_MainWindow.cpp ../build-$(ConfigurationName)/CIFE/Ui_MainWindow.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/Ui_MainWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Ui_MainWindow.cpp$(ObjectSuffix) $(IncludePath)
 ../build-$(ConfigurationName)/CIFE/Ui_MainWindow.cpp$(DependSuffix): Ui_MainWindow.cpp
@@ -138,6 +131,38 @@ PreBuild:
 
 ../build-$(ConfigurationName)/CIFE/CpmGuiInterface.cpp$(PreprocessSuffix): CpmGuiInterface.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CIFE/CpmGuiInterface.cpp$(PreprocessSuffix) CpmGuiInterface.cpp
+
+../build-$(ConfigurationName)/CIFE/FileAttributesDialog.cpp$(ObjectSuffix): FileAttributesDialog.cpp ../build-$(ConfigurationName)/CIFE/FileAttributesDialog.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/FileAttributesDialog.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FileAttributesDialog.cpp$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CIFE/FileAttributesDialog.cpp$(DependSuffix): FileAttributesDialog.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CIFE/FileAttributesDialog.cpp$(ObjectSuffix) -MF../build-$(ConfigurationName)/CIFE/FileAttributesDialog.cpp$(DependSuffix) -MM FileAttributesDialog.cpp
+
+../build-$(ConfigurationName)/CIFE/FileAttributesDialog.cpp$(PreprocessSuffix): FileAttributesDialog.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CIFE/FileAttributesDialog.cpp$(PreprocessSuffix) FileAttributesDialog.cpp
+
+../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog_bitmaps.cpp$(ObjectSuffix): Ui_FileAttributesDialog_bitmaps.cpp ../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog_bitmaps.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/Ui_FileAttributesDialog_bitmaps.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Ui_FileAttributesDialog_bitmaps.cpp$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog_bitmaps.cpp$(DependSuffix): Ui_FileAttributesDialog_bitmaps.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog_bitmaps.cpp$(ObjectSuffix) -MF../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog_bitmaps.cpp$(DependSuffix) -MM Ui_FileAttributesDialog_bitmaps.cpp
+
+../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog_bitmaps.cpp$(PreprocessSuffix): Ui_FileAttributesDialog_bitmaps.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog_bitmaps.cpp$(PreprocessSuffix) Ui_FileAttributesDialog_bitmaps.cpp
+
+../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(ObjectSuffix): MainWindow.cpp ../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/MainWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(DependSuffix): MainWindow.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(ObjectSuffix) -MF../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(DependSuffix) -MM MainWindow.cpp
+
+../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(PreprocessSuffix): MainWindow.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CIFE/MainWindow.cpp$(PreprocessSuffix) MainWindow.cpp
+
+../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog.cpp$(ObjectSuffix): Ui_FileAttributesDialog.cpp ../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/Ui_FileAttributesDialog.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Ui_FileAttributesDialog.cpp$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog.cpp$(DependSuffix): Ui_FileAttributesDialog.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog.cpp$(ObjectSuffix) -MF../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog.cpp$(DependSuffix) -MM Ui_FileAttributesDialog.cpp
+
+../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog.cpp$(PreprocessSuffix): Ui_FileAttributesDialog.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CIFE/Ui_FileAttributesDialog.cpp$(PreprocessSuffix) Ui_FileAttributesDialog.cpp
 
 ../build-$(ConfigurationName)/CIFE/Ui_MainWindow_bitmaps.cpp$(ObjectSuffix): Ui_MainWindow_bitmaps.cpp ../build-$(ConfigurationName)/CIFE/Ui_MainWindow_bitmaps.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/Ui_MainWindow_bitmaps.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Ui_MainWindow_bitmaps.cpp$(ObjectSuffix) $(IncludePath)
