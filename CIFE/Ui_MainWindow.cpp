@@ -61,7 +61,7 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
     menuItemDelete->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("delete")));
     menuEdit->Append(menuItemDelete);
     menuEdit->AppendSeparator();
-    menuItemAttributes = new wxMenuItem(menuEdit, wxID_ATTRIBUTES, _("Attributes\tF9"), wxT(""), wxITEM_NORMAL);
+    menuItemAttributes = new wxMenuItem(menuEdit, wxID_ATTRIBUTES, _("Attributes\tF7"), wxT(""), wxITEM_NORMAL);
     menuItemAttributes->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("attributes")));
     menuEdit->Append(menuItemAttributes);
     menuEdit->AppendSeparator();
