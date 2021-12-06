@@ -41,6 +41,7 @@ class CpmTools {
         void deleteFile(wxArrayString files);
         void renameFile(wxString oldName, wxString newName);
         void setFileAttributes(wxString name, int attributes);
+        void setFileProtections(wxString name, int protections);
 
     public:     // Constructor & Destructor
         CpmTools(CpmGuiInterface *intf);
@@ -223,7 +224,7 @@ class CpmTools {
         int cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode_t mode);
         int cpmAttrGet(CpmInode_t *ino, cpm_attr_t *attrib);
         int cpmAttrSet(CpmInode_t *ino, cpm_attr_t attrib);
-        int cpmChmod(CpmInode_t *ino, mode_t mode);
+        int cpmProtSet(CpmInode_t *ino, mode_t pmode);
         void cpmUtime(CpmInode_t *ino, utimbuf *times);
         // --------------------------------------------------------------------------------
         // CP/M Tool-Functions
