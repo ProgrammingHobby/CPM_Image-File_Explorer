@@ -25,6 +25,7 @@
 #include "CpmGuiInterface.h"
 #include "RenameFileDialog.h"
 #include "FileAttributesDialog.h"
+#include "FileProtectionsDialog.h"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/platinfo.h>
@@ -47,6 +48,7 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_DELETE, MainWindow::onDelete)
     EVT_MENU(wxID_EDIT, MainWindow::onRename)
     EVT_MENU(wxID_ATTRIBUTES, MainWindow::onAttributes)
+    EVT_MENU(wxID_PROTECTIONS, MainWindow::onProtections)
     EVT_BUTTON(wxID_BUTTON_IMAGE_FILE, MainWindow::onButtonImageFileClicked)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
@@ -249,6 +251,9 @@ void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
         wxMenuItem *popupItemAttributes = new wxMenuItem(popupMenu, wxID_ATTRIBUTES, _("Attributes\tF7"), wxT(""), wxITEM_NORMAL);
         popupItemAttributes->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("attributes")));
         popupMenu->Append(popupItemAttributes);
+        wxMenuItem *popupItemProtections = new wxMenuItem(popupMenu, wxID_PROTECTIONS, _("Protections\tF9"), wxT(""), wxITEM_NORMAL);
+        popupItemProtections->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("permissions")));
+        popupMenu->Append(popupItemProtections);
         popupMenu->AppendSeparator();
         wxMenuItem *popupItemCheckImage = new wxMenuItem(popupMenu, wxID_CHECK_IMAGE, _("Check Image\tF11"), wxT(""), wxITEM_NORMAL);
         popupItemCheckImage->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("check_image")));
@@ -263,6 +268,7 @@ void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
             popupMenu->Enable(wxID_COPY, false);
             popupMenu->Enable(wxID_DELETE, false);
             popupMenu->Enable(wxID_ATTRIBUTES, false);
+            popupMenu->Enable(wxID_PROTECTIONS, false);
         }
 
         if (listImageContents->GetSelectedItemCount() != 1) {
@@ -282,6 +288,7 @@ void MainWindow::presetMenues() {
     menuMainWindow->Enable(wxID_EDIT, false);
     menuMainWindow->Enable(wxID_DELETE, false);
     menuMainWindow->Enable(wxID_ATTRIBUTES, false);
+    menuMainWindow->Enable(wxID_PROTECTIONS, false);
     menuMainWindow->Enable(wxID_CREATE_NEW, false);
     menuMainWindow->Enable(wxID_REFRESH, false);
     menuMainWindow->Enable(wxID_CHECK_IMAGE, false);
@@ -302,10 +309,12 @@ void MainWindow::onListItemSelected(wxListEvent &event) {
 
     if (listImageContents->GetSelectedItemCount() == 1) {
         menuMainWindow->Enable(wxID_ATTRIBUTES, true);
+        menuMainWindow->Enable(wxID_PROTECTIONS, true);
         menuMainWindow->Enable(wxID_EDIT, true);
     }
     else {
         menuMainWindow->Enable(wxID_ATTRIBUTES, false);
+        menuMainWindow->Enable(wxID_PROTECTIONS, false);
         menuMainWindow->Enable(wxID_EDIT, false);
     }
 }
@@ -394,11 +403,27 @@ void MainWindow::onAttributes(wxCommandEvent &event) {
     dialog->setAttributes(listImageContents->GetItemText(index, 3));
 
     if (dialog->ShowModal() == wxID_OK) {
-        int attr = dialog->getAttributes();
-        cpmtools->setFileAttributes(name, attr);
+        cpmtools->setFileAttributes(name, dialog->getAttributes());
         onViewRefresh(event);
     }
 
     wxDELETE(dialog);
 }
+
+// --------------------------------------------------------------------------------
+void MainWindow::onProtections(wxCommandEvent &event) {
+    FileProtectionsDialog *dialog = new FileProtectionsDialog(this);
+    long index = listImageContents->GetFirstSelected();
+    wxString name = listImageContents->GetItemText(index, 0);
+    name.Replace(" ", "");
+    dialog->setProtections(listImageContents->GetItemText(index, 4));
+
+    if (dialog->ShowModal() == wxID_OK) {
+        cpmtools->setFileProtections(name, dialog->getProtections());
+        onViewRefresh(event);
+    }
+
+    wxDELETE(dialog);
+}
+
 // --------------------------------------------------------------------------------

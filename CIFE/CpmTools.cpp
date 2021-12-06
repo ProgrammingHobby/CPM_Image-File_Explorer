@@ -295,7 +295,43 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
         guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
     }
     else if (cpmAttrSet(&ino, attributes) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not change mod %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not set attributes %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
+    }
+
+    cpmUmount(&drive);
+
+    if ((err = Device_Close(&drive.dev))) {
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+    }
+}
+
+// --------------------------------------------------------------------------------
+void CpmTools::setFileProtections(wxString name, int protections) {
+    CpmSuperBlock_t drive;
+    CpmInode_t root;
+    const char *err;
+    char **gargv;
+    int gargc;
+    cmd = "Set File Protections";
+
+    if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        return;
+    }
+
+    if (cpmReadSuper(&drive, &root, imageTypeName.c_str()) == -1) {
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
+        return;
+    }
+
+    cpmglob(name.c_str(), &root, &gargc, &gargv);
+    CpmInode_t ino;
+
+    if (cpmNamei(&root, gargv[0], &ino) == -1) {
+        guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
+    }
+    else if (cpmProtSet(&ino, protections) == -1) {
+        guiintf->printMsg(wxString::Format("%s: can not set protections %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
     }
 
     cpmUmount(&drive);
@@ -2517,17 +2553,47 @@ int CpmTools::cpmAttrSet(CpmInode_t *ino, cpm_attr_t attrib) {
 }
 
 // --------------------------------------------------------------------------------
-//  -- set CP/M r/o & sys
+//  -- set CP/M file protection mode
 // --------------------------------------------------------------------------------
-int CpmTools::cpmChmod(CpmInode_t *ino, mode_t mode) {
-    /* Convert the chmod() into a chattr() call that affects RO */
-    int newatt = ino->attr & ~CPM_ATTR_RO;
+int CpmTools::cpmProtSet(CpmInode_t *ino, mode_t pmode) {
+    PhysDirectoryEntry_t *date;
+    int protectMode = 0;
+    int lowestExt = ino->ino;
 
-    if (!(mode & (S_IWUSR | S_IWGRP | S_IWOTH))) {
-        newatt |= CPM_ATTR_RO;
+    if (pmode & CPM_ATTR_PWDEL) {
+        protectMode |= 0x20;
     }
 
-    return (cpmAttrSet(ino, newatt));
+    if (pmode & CPM_ATTR_PWWRITE) {
+        protectMode |= 0x40;
+    }
+
+    if (pmode & CPM_ATTR_PWREAD) {
+        protectMode |= 0x80;
+    }
+
+    if ((ino->sb->type & CPMFS_CPM3_DATES) && (date = ino->sb->dir + (lowestExt | 3))->status == 0x21) {
+        ino->sb->dirtyDirectory = 1;
+
+        switch (lowestExt & 3) {
+            case 0: {
+                    date->ext[0] = protectMode;
+                    break;
+                }
+
+            case 1: {
+                    date->pointers[3] = protectMode;
+                    break;
+                }
+
+            case 2: {
+                    date->pointers[13] = protectMode;
+                    break;
+                }
+        }
+    }
+
+    return (0);
 }
 
 // --------------------------------------------------------------------------------
