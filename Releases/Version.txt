@@ -1,3 +1,9 @@
+==================== v0.0.3 ====================
+- Verzeichnisspalte 'Permissions' sowie Menüpunkt 'Permissions' entfernt.
+- neue Verzeichnisspalte 'Protections' angelegt.
+- es können nun für einzelne Dateien die Datei-Attribute gesetzt und der
+  Protection Modus eingestellt werden.
+
 ==================== v0.0.2 ====================
 - neue Icons
 - es können nun Dateien gelöscht und Umbennant werden
