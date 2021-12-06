@@ -64,6 +64,9 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
     menuItemAttributes = new wxMenuItem(menuEdit, wxID_ATTRIBUTES, _("Attributes\tF7"), wxT(""), wxITEM_NORMAL);
     menuItemAttributes->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("attributes")));
     menuEdit->Append(menuItemAttributes);
+    menuItemProtections = new wxMenuItem(menuEdit, wxID_PROTECTIONS, _("Protections\tF9"), wxT(""), wxITEM_NORMAL);
+    menuItemProtections->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("permissions")));
+    menuEdit->Append(menuItemProtections);
     menuEdit->AppendSeparator();
     menuItemCreateNew = new wxMenuItem(menuEdit, wxID_CREATE_NEW, _("Create New Image"), wxT(""), wxITEM_NORMAL);
     menuItemCreateNew->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("create_new")));
@@ -125,7 +128,7 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
     splitterPageImageContents->SetSizer(sizerImageContents);
     listImageContents = new wxListView(splitterPageImageContents, wxID_IMAGE_CONTENTS, wxDefaultPosition, wxDLG_UNIT(splitterPageImageContents, wxSize(-1, -1)), wxLC_VRULES | wxLC_REPORT | wxBORDER_NONE);
     listImageContents->SetBackgroundColour(wxColour(wxT("rgb(203,230,162)")));
-    sizerImageContents->Add(listImageContents, 2, wxEXPAND, WXC_FROM_DIP(4));
+    sizerImageContents->Add(listImageContents, 1, wxEXPAND, WXC_FROM_DIP(4));
     lineImageContents = new wxStaticLine(splitterPageImageContents, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(splitterPageImageContents, wxSize(1, 1)), wxLI_HORIZONTAL);
     sizerImageContents->Add(lineImageContents, 0, wxEXPAND, WXC_FROM_DIP(5));
     lineImageContents->SetMinSize(wxSize(1, 1));

@@ -12,6 +12,7 @@
   <object class="wxBitmap" name="delete">Bitmaps/delete.png</object>
   <object class="wxBitmap" name="edit">Bitmaps/edit.png</object>
   <object class="wxBitmap" name="paste">Bitmaps/paste.png</object>
+  <object class="wxBitmap" name="permissions">Bitmaps/permissions.png</object>
   <object class="wxBitmap" name="refresh">Bitmaps/refresh.png</object>
   <object class="wxBitmap" name="select_all">Bitmaps/select_all.png</object>
 </resource>
