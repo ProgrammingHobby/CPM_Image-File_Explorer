@@ -49,6 +49,7 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_EDIT, MainWindow::onRename)
     EVT_MENU(wxID_ATTRIBUTES, MainWindow::onAttributes)
     EVT_MENU(wxID_PROTECTIONS, MainWindow::onProtections)
+    EVT_MENU(wxID_CREATE_NEW, MainWindow::onCreateNew)
     EVT_BUTTON(wxID_BUTTON_IMAGE_FILE, MainWindow::onButtonImageFileClicked)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
@@ -392,6 +393,18 @@ void MainWindow::onRename(wxCommandEvent &event) {
     }
 
     wxDELETE(dialog);
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onCreateNew(wxCommandEvent &event) {
+    wxMessageDialog createDialog(NULL, _("Are you sure you want create an new empty Image-File ?"
+                                         "\nAll existing Data will be lost !"),
+                                 _("Create New Image-File"), wxYES_NO | wxYES_DEFAULT | wxICON_WARNING);
+
+    if (createDialog.ShowModal() == wxID_YES) {
+        cpmtools->createNewImage();
+        onViewRefresh(event);
+    }
 }
 
 // --------------------------------------------------------------------------------
