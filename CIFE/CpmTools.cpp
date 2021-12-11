@@ -95,7 +95,7 @@ void CpmTools::showDirectory() {
     const char *err;
     char **gargv;
     int gargc, row = 0;
-    cmd = "Show Directory";
+    cmd = "cpmls";
 
     if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "rb"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err));
@@ -142,7 +142,7 @@ void CpmTools::showDirectory() {
                     attribute += ((attrib & CPM_ATTR_SYS)     ? 's' : '-');
                     attribute += ((attrib & CPM_ATTR_ARCV)    ? 'a' : '-');
                     guiintf->printDirEntry(3, row, attribute);
-                    /*    permissions    */
+                    /*    protections    */
                     std::string protections;
                     protections += ((attrib & CPM_ATTR_PWREAD)  ? "rd" : "--");
                     protections += ' ';
@@ -206,7 +206,7 @@ void CpmTools::deleteFile(wxArrayString files) {
     const char *err;
     char **gargv;
     int gargc;
-    cmd = "Delete File";
+    cmd = "cpmrm";
 
     if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
@@ -242,7 +242,7 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     char nName[15];
     char **gargv;
     int gargc;
-    cmd = "Rename File";
+    cmd = "cpmrn";
 
     if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
@@ -276,7 +276,7 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
     const char *err;
     char **gargv;
     int gargc;
-    cmd = "Set File Attributes";
+    cmd = "cpmchattr";
 
     if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
@@ -312,7 +312,7 @@ void CpmTools::setFileProtections(wxString name, int protections) {
     const char *err;
     char **gargv;
     int gargc;
-    cmd = "Set File Protections";
+    cmd = "cpmchprot";
 
     if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
@@ -338,6 +338,56 @@ void CpmTools::setFileProtections(wxString name, int protections) {
 
     if ((err = Device_Close(&drive.dev))) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+    }
+}
+
+// --------------------------------------------------------------------------------
+void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootTrackFile) {
+    CpmSuperBlock_t drive;
+    CpmInode_t root;
+    size_t bootTrackSize;
+    char *bootTracks;
+    cmd = "cpmmkfs";
+    drive.dev.opened = 0;
+    cpmReadSuper(&drive, &root, imageTypeName.c_str());
+    bootTrackSize = drive.boottrk * drive.secLength * drive.sectrk;
+
+    if ((bootTracks = (char *)malloc(bootTrackSize)) == (char *)0) {
+        guiintf->printMsg(wxString::Format("%s: can not allocate boot track buffer: %s\n", cmd, strerror(errno)), CpmGuiInterface::msgColRed);
+        return;
+    }
+
+    memset(bootTracks, 0xe5, bootTrackSize);
+
+    if (!bootTrackFile.IsEmpty() && (bootTrackSize > 0)) {
+        FILE *fd;
+        size_t filesize, readsize;
+
+        if ((fd = fopen(bootTrackFile.c_str(), "rb")) == (FILE *)0) {
+            guiintf->printMsg(wxString::Format("%s: can not open %s: %s\n", cmd, bootTrackFile.c_str(), strerror(errno)), CpmGuiInterface::msgColRed);
+            return;
+        }
+
+        fseek(fd, 0, SEEK_END);
+        filesize = ftell(fd);
+
+        if (filesize > bootTrackSize) {
+            guiintf->printMsg(wxString::Format("%s: boottrack file is bigger than boottracks size.\n", cmd), CpmGuiInterface::msgColRed);
+            return;
+        }
+
+        rewind(fd);
+        readsize = fread(bootTracks, sizeof(char), filesize, fd);
+
+        if (readsize < filesize) {
+            guiintf->printMsg(wxString::Format("%s: error reading boottrack file.\n", cmd), CpmGuiInterface::msgColRed);
+            return;
+        }
+    }
+
+    if (mkfs(&drive, imageTypeName.c_str(), label.c_str(), bootTracks, (useTimeStamps ? 1 : 0)) == -1) {
+        guiintf->printMsg(wxString::Format("%s: can not make new file system: %s\n", cmd, boo), CpmGuiInterface::msgColRed);
+        return;
     }
 }
 
@@ -2643,6 +2693,171 @@ int CpmTools::getUserNumber(const char *filename) {
 void CpmTools::convertFilename(const char *filename, char *cpmname) {
     memset(cpmname, ' ', (2 + 8 + 1 + 3 + 1));
     snprintf(cpmname, 15, "%02d%s", getUserNumber(filename), strchr(filename, ':') + 1);
+}
+
+// --------------------------------------------------------------------------------
+//  -- create new empty binary Image-File
+// --------------------------------------------------------------------------------
+int CpmTools::mkfs(CpmSuperBlock_t *drive, const char *format, const char *label, char *bootTracks, int timeStamps) {
+    /* variables */
+    unsigned int i;
+    char buf[128];
+    char firstbuf[128];
+    FILE *fd;
+    unsigned int bytes;
+    unsigned int trkbytes;
+
+    /* check for empty label */
+    if (strcmp(label, "") == 0) {
+        label = "UNLABELED";
+    }
+
+    /* open image file */
+    if ((fd = fopen(imageFileName.c_str(), "w+b")) == (FILE *)0) {
+        boo = strerror(errno);
+        return -1;
+    }
+
+    /* write system tracks */
+    /* this initialises only whole tracks, so it skew is not an issue */
+    trkbytes = drive->secLength * drive->sectrk;
+
+    for (i = 0; i < trkbytes * drive->boottrk; i += drive->secLength) {
+        if (fwrite(bootTracks + i, sizeof(char), drive->secLength, fd) != (size_t)drive->secLength) {
+            boo = strerror(errno);
+            fclose(fd);
+            return -1;
+        }
+    }
+
+    /* write directory */
+    memset(buf, 0xe5, 128);
+    bytes = drive->maxdir * 32;
+
+    if (bytes % trkbytes) {
+        bytes = ((bytes + trkbytes) / trkbytes) * trkbytes;
+    }
+
+    if (timeStamps && (drive->type == CPMFS_P2DOS || drive->type == CPMFS_DR3)) {
+        buf[3 * 32] = 0x21;
+    }
+
+    memcpy(firstbuf, buf, 128);
+
+    if (drive->type == CPMFS_DR3) {
+        time_t now;
+        struct tm *t;
+        int min, hour, days;
+        firstbuf[0] = 0x20;
+
+        for (i = 0; i < 11 && *label; ++i, ++label) {
+            firstbuf[1 + i] = toupper(*label & 0x7f);
+        }
+
+        while (i < 11) {
+            firstbuf[1 + i++] = ' ';
+        }
+
+        firstbuf[12] = timeStamps ? 0x11 : 0x01; /* label set and first time stamp is creation date */
+        memset(&firstbuf[13], 0, 1 + 2 + 8);
+
+        if (timeStamps) {
+            int year;
+            /* Stamp label. */
+            time(&now);
+            t = localtime(&now);
+            min = ((t->tm_min / 10) << 4) | (t->tm_min % 10);
+            hour = ((t->tm_hour / 10) << 4) | (t->tm_hour % 10);
+
+            for (year = 1978, days = 0; year < 1900 + t->tm_year; ++year) {
+                days += 365;
+
+                if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
+                    ++days;
+                }
+            }
+
+            days += t->tm_yday + 1;
+            firstbuf[24] = firstbuf[28] = days & 0xff;
+            firstbuf[25] = firstbuf[29] = days >> 8;
+            firstbuf[26] = firstbuf[30] = hour;
+            firstbuf[27] = firstbuf[31] = min;
+        }
+    }
+
+    for (i = 0; i < bytes; i += 128) {
+        if (fwrite((i == 0 ? firstbuf : buf), sizeof(char), 128, fd) != 128) {
+            boo = strerror(errno);
+            fclose(fd);
+            return -1;
+        }
+    }
+
+    /* fill remaining size */
+    memset(buf, 0xe5, 128);
+    int imagesize = (drive->secLength * drive->sectrk * drive->tracks);
+
+    for (i = 0; i < (imagesize - (bytes + (trkbytes * drive->boottrk))); i += 128) {
+        if (fwrite(buf, sizeof(char), 128, fd) != 128) {
+            boo = strerror(errno);
+            fclose(fd);
+            return -1;
+        }
+    }
+
+    /* close image file */
+    if (fclose(fd) == -1) {
+        boo = strerror(errno);
+        return -1;
+    }
+
+    if (timeStamps && !(drive->type == CPMFS_P2DOS || drive->type == CPMFS_DR3)) { /*{{{*/
+        int offset, j;
+        CpmInode_t ino, root;
+        static const char sig[] = "!!!TIME";
+        unsigned int records;
+        DsDate_t *ds;
+        CpmSuperBlock_t super;
+        const char *err;
+
+        if ((err = Device_Open(&super.dev, imageFileName.c_str(), "r+b"))) {
+            guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+            exit(1);
+        }
+
+        cpmReadSuper(&super, &root, format);
+        records = root.sb->maxdir / 8;
+
+        if (!(ds = (DsDate_t *)malloc(records * 128))) {
+            cpmUmount(&super);
+            return -1;
+        }
+
+        memset(ds, 0, records * 128);
+        offset = 15;
+
+        for (i = 0; i < records; i++) {
+            for (j = 0; j < 7; j++, offset += 16) {
+                *((char *)ds + offset) = sig[j];
+            }
+
+            /* skip checksum byte */
+            offset += 16;
+        }
+
+        /* Set things up so cpmSync will generate checksums and write the * file. */
+        if (cpmCreat(&root, "00!!!TIME&.DAT", &ino, 0) == -1) {
+            guiintf->printMsg(wxString::Format("%s: Unable to create DateStamper file: %s\n", cmd, boo), CpmGuiInterface::msgColRed);
+            return -1;
+        }
+
+        root.sb->ds = ds;
+        root.sb->dirtyDs = 1;
+        cpmUmount(&super);
+    }
+
+    /*}}}*/
+    return 0;
 }
 
 // --------------------------------------------------------------------------------

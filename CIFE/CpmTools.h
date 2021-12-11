@@ -42,6 +42,7 @@ class CpmTools {
         void renameFile(wxString oldName, wxString newName);
         void setFileAttributes(wxString name, int attributes);
         void setFileProtections(wxString name, int protections);
+        void createNewImage(wxString label, bool useTimeStamps, wxString bootTrackFile);
 
     public:     // Constructor & Destructor
         CpmTools(CpmGuiInterface *intf);
@@ -232,6 +233,7 @@ class CpmTools {
         static int namecmp(const void *a, const void *b);
         int getUserNumber(const char *filename);
         void convertFilename(const char *filename, char *cpmname);
+        int mkfs(CpmSuperBlock_t *drive, const char *format, const char *label, char *bootTracks, int timeStamps);
 };
 
 // --------------------------------------------------------------------------------
