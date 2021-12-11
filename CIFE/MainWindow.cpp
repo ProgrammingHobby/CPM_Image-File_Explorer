@@ -26,6 +26,7 @@
 #include "RenameFileDialog.h"
 #include "FileAttributesDialog.h"
 #include "FileProtectionsDialog.h"
+#include "CreateFileDialog.h"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/platinfo.h>
@@ -137,7 +138,8 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
 void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
     WXUNUSED(event)
     wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"), wxStandardPaths::Get().GetUserDataDir(),
-                            wxEmptyString, _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.fdd;*.dsk|all Files (*.*)|*.*"),
+                            wxEmptyString, _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;*.fdd;*.FDD;*.dsk;*.DSK|"
+                                    "all Files (*.*)|*.*"),
                             wxFD_OPEN);
 
     if (fileDialog.ShowModal() == wxID_OK) {
@@ -397,14 +399,14 @@ void MainWindow::onRename(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onCreateNew(wxCommandEvent &event) {
-    wxMessageDialog createDialog(NULL, _("Are you sure you want create an new empty Image-File ?"
-                                         "\nAll existing Data will be lost !"),
-                                 _("Create New Image-File"), wxYES_NO | wxYES_DEFAULT | wxICON_WARNING);
+    CreateFileDialog *dialog = new CreateFileDialog(this);
 
-    if (createDialog.ShowModal() == wxID_YES) {
-        cpmtools->createNewImage();
+    if (dialog->ShowModal() == wxID_OK) {
+        cpmtools->createNewImage(dialog->getFileSystemLabel(), dialog->getUseTimestamps(), dialog->getBootTrackFile());
         onViewRefresh(event);
     }
+
+    wxDELETE(dialog);
 }
 
 // --------------------------------------------------------------------------------
