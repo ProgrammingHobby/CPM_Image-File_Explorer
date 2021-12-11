@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="CIFE" Version="11000" InternalType="GUI">
   <VirtualDirectory Name="Resource Files">
+    <File Name="Ui_CreateFileDialog.wxcp"/>
     <File Name="Ui_FileProtectionsDialog.wxcp"/>
     <File Name="Ui_FileAttributesDialog.wxcp"/>
     <File Name="Ui_RenameFileDialog.wxcp"/>
     <File Name="cife.rc"/>
-    <File Name="Ui_MainWindow_bitmaps.xrc"/>
     <File Name="Ui_MainWindow.wxcp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Header Files">
+    <File Name="CreateFileDialog.h"/>
+    <File Name="Ui_CreateFileDialog.h"/>
     <File Name="Ui_FileProtectionsDialog.h"/>
     <File Name="FileProtectionsDialog.h"/>
     <File Name="Ui_FileAttributesDialog.h"/>
@@ -24,6 +26,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="Source Files">
+    <File Name="CreateFileDialog.cpp"/>
+    <File Name="Ui_CreateFileDialog_cife_bitmaps.cpp"/>
+    <File Name="Ui_CreateFileDialog.cpp"/>
     <File Name="Ui_FileProtectionsDialog_bitmaps.cpp"/>
     <File Name="Ui_FileProtectionsDialog.cpp"/>
     <File Name="FileProtectionsDialog.cpp"/>
