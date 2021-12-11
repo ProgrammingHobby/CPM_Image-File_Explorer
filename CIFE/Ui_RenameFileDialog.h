@@ -87,7 +87,7 @@ class Ui_RenameFileDialog : public wxDialog {
         wxButton *GetButtonOk() {
             return buttonOk;
         }
-        Ui_RenameFileDialog(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("Rename File"), const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxSize(-1, -1), long style = wxCAPTION);
+        Ui_RenameFileDialog(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("Rename File"), const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxSize(-1, -1), long style = wxDEFAULT_DIALOG_STYLE);
         virtual ~Ui_RenameFileDialog();
 };
 
