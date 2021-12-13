@@ -29,7 +29,6 @@
 #include "CreateFileDialog.h"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
-#include <wx/platinfo.h>
 #include <wx/versioninfo.h>
 #include <wx/filedlg.h>
 #include <wx/stdpaths.h>
@@ -38,7 +37,6 @@
 #include <wx/tokenzr.h>
 #include <wx/bitmap.h>
 #include <wx/icon.h>
-#include <wx/settings.h>
 #include <wx/msgdlg.h>
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
@@ -51,6 +49,7 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_ATTRIBUTES, MainWindow::onAttributes)
     EVT_MENU(wxID_PROTECTIONS, MainWindow::onProtections)
     EVT_MENU(wxID_CREATE_NEW, MainWindow::onCreateNew)
+    EVT_MENU(wxID_CHECK_IMAGE, MainWindow::onCheckImage)
     EVT_BUTTON(wxID_BUTTON_IMAGE_FILE, MainWindow::onButtonImageFileClicked)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
@@ -417,6 +416,11 @@ void MainWindow::onCreateNew(wxCommandEvent &event) {
     }
 
     wxDELETE(dialog);
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onCheckImage(wxCommandEvent &event) {
+    cpmtools->checkImage(false);
 }
 
 // --------------------------------------------------------------------------------

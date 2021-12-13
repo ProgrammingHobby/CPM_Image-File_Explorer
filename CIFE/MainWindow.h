@@ -52,6 +52,7 @@ class MainWindow : public Ui_MainWindow {
         void onAttributes(wxCommandEvent &event);
         void onProtections(wxCommandEvent &event);
         void onCreateNew(wxCommandEvent &event);
+        void onCheckImage(wxCommandEvent &event);
         void onShowContextMenu(wxContextMenuEvent &event);
         void onListItemSelected(wxListEvent &event);
         void onListItemRightClick(wxListEvent &event);
