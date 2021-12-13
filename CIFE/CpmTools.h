@@ -42,6 +42,7 @@ class CpmTools {
         void renameFile(wxString oldName, wxString newName);
         void setFileAttributes(wxString name, int attributes);
         void setFileProtections(wxString name, int protections);
+        bool getBootTracksEnabled();
         void createNewImage(wxString label, bool useTimeStamps, wxString bootTrackFile);
 
     public:     // Constructor & Destructor
@@ -169,6 +170,7 @@ class CpmTools {
         std::string cmd;
         mode_t s_ifdir = 1;
         mode_t s_ifreg = 1;
+        bool boottracksused;
 
         const char *month[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 

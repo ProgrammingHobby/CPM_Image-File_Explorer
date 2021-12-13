@@ -342,6 +342,11 @@ void CpmTools::setFileProtections(wxString name, int protections) {
 }
 
 // --------------------------------------------------------------------------------
+bool CpmTools::getBootTracksEnabled() {
+    return (boottracksused);
+}
+
+// --------------------------------------------------------------------------------
 void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootTrackFile) {
     CpmSuperBlock_t drive;
     CpmInode_t root;
@@ -1516,6 +1521,7 @@ int CpmTools::cpmReadSuper(CpmSuperBlock_t *d, CpmInode_t *root, const char *for
         diskdefReadSuper(d, format);
     }
 
+    boottracksused = (d->boottrk > 0) ? true : false;
     boo = Device_SetGeometry(&d->dev, d->secLength, d->sectrk, d->tracks, d->offset);
 
     if (boo) {

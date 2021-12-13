@@ -65,6 +65,7 @@ class MainWindow : public Ui_MainWindow {
         wxArrayString getImageTypes();
         void correctWindowSize();
         void presetMenues();
+        void showDirectory();
 
         DECLARE_EVENT_TABLE()
 };

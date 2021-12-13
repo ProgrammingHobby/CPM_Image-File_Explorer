@@ -28,15 +28,6 @@ Ui_CreateFileDialog::Ui_CreateFileDialog(wxWindow *parent, wxWindowID id, const 
     sizerCreateFileDialog->Add(sizerImageSettings, 1, wxBOTTOM | wxEXPAND, WXC_FROM_DIP(4));
     textBootTrackFile = new wxStaticText(this, wxID_ANY, _("Boottrack File:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
     sizerImageSettings->Add(textBootTrackFile, wxGBPosition(0, 0), wxGBSpan(1, 1), wxLEFT | wxTOP | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
-    sizerBootTrackFile = new wxBoxSizer(wxHORIZONTAL);
-    sizerImageSettings->Add(sizerBootTrackFile, wxGBPosition(0, 1), wxGBSpan(1, 1), wxLEFT | wxRIGHT | wxTOP | wxEXPAND, WXC_FROM_DIP(4));
-    editBootTrackFile = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
-#if wxVERSION_NUMBER >= 3000
-    editBootTrackFile->SetHint(wxT(""));
-#endif
-    sizerBootTrackFile->Add(editBootTrackFile, 1, wxTOP | wxBOTTOM | wxEXPAND | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
-    buttonBootTrackFile = new wxButton(this, wxID_BUTTON_BOOTFILE, _("..."), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
-    sizerBootTrackFile->Add(buttonBootTrackFile, 0, wxLEFT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
     textFileSystemLabel = new wxStaticText(this, wxID_ANY, _("File-System Label:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
     sizerImageSettings->Add(textFileSystemLabel, wxGBPosition(1, 0), wxGBSpan(1, 1), wxLEFT | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
     editFileSystemLabel = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
@@ -47,6 +38,17 @@ Ui_CreateFileDialog::Ui_CreateFileDialog(wxWindow *parent, wxWindowID id, const 
     checkboxUseTimeStamps = new wxCheckBox(this, wxID_ANY, _("use File-System Timestamps"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxCHK_2STATE);
     checkboxUseTimeStamps->SetValue(true);
     sizerImageSettings->Add(checkboxUseTimeStamps, wxGBPosition(2, 0), wxGBSpan(1, 2), wxBOTTOM, WXC_FROM_DIP(4));
+    panelBootTrackFile = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxTAB_TRAVERSAL);
+    sizerImageSettings->Add(panelBootTrackFile, wxGBPosition(0, 1), wxGBSpan(1, 1), wxALL | wxEXPAND, WXC_FROM_DIP(4));
+    sizerBootTrackFile = new wxBoxSizer(wxHORIZONTAL);
+    panelBootTrackFile->SetSizer(sizerBootTrackFile);
+    editBootTrackFile = new wxTextCtrl(panelBootTrackFile, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelBootTrackFile, wxSize(-1, -1)), 0);
+#if wxVERSION_NUMBER >= 3000
+    editBootTrackFile->SetHint(wxT(""));
+#endif
+    sizerBootTrackFile->Add(editBootTrackFile, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+    buttonBootTrackFile = new wxButton(panelBootTrackFile, wxID_BUTTON_BOOTFILE, _("..."), wxDefaultPosition, wxDLG_UNIT(panelBootTrackFile, wxSize(-1, -1)), 0);
+    sizerBootTrackFile->Add(buttonBootTrackFile, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
     sizerImageSettings->AddGrowableCol(1);
     sizerImageSettings->AddGrowableRow(0);
     panelCreationWarning = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxTAB_TRAVERSAL | wxBORDER_THEME);

@@ -32,6 +32,7 @@ class CreateFileDialog : public Ui_CreateFileDialog {
         wxString getBootTrackFile();
         wxString getFileSystemLabel();
         bool getUseTimestamps();
+        void setBootTracksUsed(bool value);
 
     public:     // Constructor & Destructor
         CreateFileDialog(wxWindow *parent);

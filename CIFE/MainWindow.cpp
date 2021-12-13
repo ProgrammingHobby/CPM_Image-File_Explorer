@@ -153,18 +153,7 @@ void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
         }
 
         isImageLoaded = true;
-        listImageContents->DeleteAllItems();
-        cpmtools->showDirectory();
-        listImageContents->SetFocus();
-        presetMenues();
-        menuMainWindow->Enable(wxID_REFRESH, true);
-        menuMainWindow->Enable(wxID_CREATE_NEW, true);
-        menuMainWindow->Enable(wxID_CHECK_IMAGE, true);
-        menuMainWindow->Enable(wxID_PASTE, true);
-
-        if (listImageContents->GetItemCount() > 0) {
-            menuMainWindow->Enable(wxID_SELECTALL, true);
-        }
+        showDirectory();
     }
 }
 
@@ -172,6 +161,10 @@ void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
 void MainWindow::onImageTypeChanged(wxCommandEvent &event) {
     WXUNUSED(event)
     cpmtools->setImageType(comboboxImageType->GetValue());
+
+    if (isImageLoaded) {
+        showDirectory();
+    }
 }
 
 // --------------------------------------------------------------------------------
@@ -298,6 +291,22 @@ void MainWindow::presetMenues() {
 }
 
 // --------------------------------------------------------------------------------
+void MainWindow::showDirectory() {
+    listImageContents->DeleteAllItems();
+    cpmtools->showDirectory();
+    listImageContents->SetFocus();
+    presetMenues();
+    menuMainWindow->Enable(wxID_REFRESH, true);
+    menuMainWindow->Enable(wxID_CREATE_NEW, true);
+    menuMainWindow->Enable(wxID_CHECK_IMAGE, true);
+    menuMainWindow->Enable(wxID_PASTE, true);
+
+    if (listImageContents->GetItemCount() > 0) {
+        menuMainWindow->Enable(wxID_SELECTALL, true);
+    }
+}
+
+// --------------------------------------------------------------------------------
 void MainWindow::onListItemSelected(wxListEvent &event) {
     if (listImageContents->GetSelectedItemCount() > 0) {
         menuMainWindow->Enable(wxID_CUT, true);
@@ -400,6 +409,7 @@ void MainWindow::onRename(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onCreateNew(wxCommandEvent &event) {
     CreateFileDialog *dialog = new CreateFileDialog(this);
+    dialog->setBootTracksUsed(cpmtools->getBootTracksEnabled());
 
     if (dialog->ShowModal() == wxID_OK) {
         cpmtools->createNewImage(dialog->getFileSystemLabel(), dialog->getUseTimestamps(), dialog->getBootTrackFile());

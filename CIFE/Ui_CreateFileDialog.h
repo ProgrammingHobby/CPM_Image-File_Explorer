@@ -18,9 +18,9 @@
 #include <wx/gbsizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/panel.h>
+#include <wx/button.h>
 #if wxVERSION_NUMBER >= 2900
     #include <wx/persist.h>
     #include <wx/persist/toplevel.h>
@@ -48,12 +48,13 @@ class Ui_CreateFileDialog : public wxDialog {
         wxBoxSizer *sizerCreateFileDialog;
         wxGridBagSizer *sizerImageSettings;
         wxStaticText *textBootTrackFile;
-        wxBoxSizer *sizerBootTrackFile;
-        wxTextCtrl *editBootTrackFile;
-        wxButton *buttonBootTrackFile;
         wxStaticText *textFileSystemLabel;
         wxTextCtrl *editFileSystemLabel;
         wxCheckBox *checkboxUseTimeStamps;
+        wxPanel *panelBootTrackFile;
+        wxBoxSizer *sizerBootTrackFile;
+        wxTextCtrl *editBootTrackFile;
+        wxButton *buttonBootTrackFile;
         wxPanel *panelCreationWarning;
         wxBoxSizer *sizerCreationWarning;
         wxStaticText *m_staticText38;
@@ -68,12 +69,6 @@ class Ui_CreateFileDialog : public wxDialog {
         wxStaticText *GetTextBootTrackFile() {
             return textBootTrackFile;
         }
-        wxTextCtrl *GetEditBootTrackFile() {
-            return editBootTrackFile;
-        }
-        wxButton *GetButtonBootTrackFile() {
-            return buttonBootTrackFile;
-        }
         wxStaticText *GetTextFileSystemLabel() {
             return textFileSystemLabel;
         }
@@ -82,6 +77,15 @@ class Ui_CreateFileDialog : public wxDialog {
         }
         wxCheckBox *GetCheckboxUseTimeStamps() {
             return checkboxUseTimeStamps;
+        }
+        wxTextCtrl *GetEditBootTrackFile() {
+            return editBootTrackFile;
+        }
+        wxButton *GetButtonBootTrackFile() {
+            return buttonBootTrackFile;
+        }
+        wxPanel *GetPanelBootTrackFile() {
+            return panelBootTrackFile;
         }
         wxStaticText *GetStaticText38() {
             return m_staticText38;

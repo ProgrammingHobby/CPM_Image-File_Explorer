@@ -70,3 +70,8 @@ void CreateFileDialog::onButtonBootFileClicked(wxCommandEvent &event) {
 }
 
 // --------------------------------------------------------------------------------
+void CreateFileDialog::setBootTracksUsed(bool value) {
+    panelBootTrackFile->Enable(value);
+}
+
+// --------------------------------------------------------------------------------
