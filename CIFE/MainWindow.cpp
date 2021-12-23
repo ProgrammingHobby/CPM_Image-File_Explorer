@@ -70,6 +70,7 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     wxFont listFont = wxFont(fontSize, wxFontFamily::wxFONTFAMILY_TELETYPE, wxFontStyle::wxFONTSTYLE_NORMAL, wxFontWeight::wxFONTWEIGHT_NORMAL);
     listImageContents->SetFont(listFont);
     textContentsInfo->SetFont(listFont);
+    textMessages->SetFont(listFont);
     //
     listImageContents->Bind(wxEVT_CONTEXT_MENU, &MainWindow::onShowContextMenu, this);
     //
@@ -200,7 +201,7 @@ void MainWindow::onButtonClearMessagesClicked(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onButtonSaveMessagesClicked(wxCommandEvent &event) {
     wxFileDialog fileDialog(this, _("Save CIFE Messages"), wxStandardPaths::Get().GetUserDataDir(),
-                            wxEmptyString, _("Text Files (*.txt,*.log)|*.txt;*.log|all Files (*.*)|*.*"),
+                            "CIFE.msg", _("Text Files (*.txt,*.log)|*.txt;*.log|all Files (*.*)|*.*"),
                             wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
     if (fileDialog.ShowModal() == wxID_OK) {
@@ -268,6 +269,8 @@ void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
 
         if (listImageContents->GetSelectedItemCount() != 1) {
             popupMenu->Enable(wxID_EDIT, false);
+            popupMenu->Enable(wxID_ATTRIBUTES, false);
+            popupMenu->Enable(wxID_PROTECTIONS, false);
         }
 
         listImageContents->PopupMenu(popupMenu);
