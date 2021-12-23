@@ -36,6 +36,7 @@ class CpmGuiInterface {
         void printDirInfo(wxString info);
         void setDirHeader();
         void printDirEntry(int col, int row, wxString data);
+        bool askBox(const wxString Message, const wxString title);
 
     public:     // Constructor & Destructor
         CpmGuiInterface(wxListView *listView, wxTextCtrl *textCtrl, wxTextCtrl *statText);

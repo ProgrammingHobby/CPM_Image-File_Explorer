@@ -25,6 +25,7 @@
 #include <wx/listctrl.h>
 #include <wx/string.h>
 #include <wx/colour.h>
+#include <wx/msgdlg.h>
 // --------------------------------------------------------------------------------
 CpmGuiInterface::CpmGuiInterface(wxListView *listView, wxTextCtrl *textCtrl, wxTextCtrl *statText) {
     textMessages = textCtrl;
@@ -92,6 +93,17 @@ void CpmGuiInterface::printDirEntry(int col, int row, wxString data) {
     else {
         listContents->SetItem(row, col, data);
     }
+}
+
+// --------------------------------------------------------------------------------
+bool CpmGuiInterface::askBox(const wxString Message, const wxString title) {
+    wxMessageDialog deleteDialog(NULL, "\n" + Message, title, wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
+
+    if (deleteDialog.ShowModal() == wxID_YES) {
+        return (true);
+    }
+
+    return (false);
 }
 
 // --------------------------------------------------------------------------------
