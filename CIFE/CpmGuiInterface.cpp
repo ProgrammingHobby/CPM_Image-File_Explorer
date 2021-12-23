@@ -51,7 +51,7 @@ void CpmGuiInterface::printMsg(wxString msg, msgColor col) {
             }
 
         case msgColGreen: {
-                textMessages->SetForegroundColour(*wxGREEN);
+                textMessages->SetForegroundColour(0x00B000);
                 break;
             }
 
