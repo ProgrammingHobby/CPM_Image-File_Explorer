@@ -25,11 +25,11 @@ Ui_CreateFileDialog::Ui_CreateFileDialog(wxWindow *parent, wxWindowID id, const 
     sizerCreateFileDialog = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(sizerCreateFileDialog);
     sizerImageSettings = new wxGridBagSizer(0, 0);
-    sizerCreateFileDialog->Add(sizerImageSettings, 1, wxBOTTOM | wxEXPAND, WXC_FROM_DIP(4));
+    sizerCreateFileDialog->Add(sizerImageSettings, 1, wxLEFT | wxBOTTOM | wxEXPAND, WXC_FROM_DIP(4));
     textBootTrackFile = new wxStaticText(this, wxID_ANY, _("Boottrack File:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
-    sizerImageSettings->Add(textBootTrackFile, wxGBPosition(0, 0), wxGBSpan(1, 1), wxLEFT | wxTOP | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+    sizerImageSettings->Add(textBootTrackFile, wxGBPosition(0, 0), wxGBSpan(1, 1), wxTOP | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
     textFileSystemLabel = new wxStaticText(this, wxID_ANY, _("File-System Label:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
-    sizerImageSettings->Add(textFileSystemLabel, wxGBPosition(1, 0), wxGBSpan(1, 1), wxLEFT | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+    sizerImageSettings->Add(textFileSystemLabel, wxGBPosition(1, 0), wxGBSpan(1, 1), wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
     editFileSystemLabel = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
 #if wxVERSION_NUMBER >= 3000
     editFileSystemLabel->SetHint(wxT(""));

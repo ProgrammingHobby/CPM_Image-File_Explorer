@@ -158,7 +158,7 @@
 							"gbSpan":	"1,1",
 							"gbPosition":	"0,0",
 							"m_styles":	[],
-							"m_sizerFlags":	["wxBOTTOM", "wxEXPAND"],
+							"m_sizerFlags":	["wxLEFT", "wxBOTTOM", "wxEXPAND"],
 							"m_properties":	[{
 									"type":	"string",
 									"m_label":	"Minimum Size:",
@@ -196,7 +196,7 @@
 									"gbSpan":	"1,1",
 									"gbPosition":	"0,0",
 									"m_styles":	[],
-									"m_sizerFlags":	["wxLEFT", "wxTOP", "wxALIGN_CENTER_VERTICAL"],
+									"m_sizerFlags":	["wxTOP", "wxALIGN_CENTER_VERTICAL"],
 									"m_properties":	[{
 											"type":	"winid",
 											"m_label":	"ID:",
@@ -271,7 +271,7 @@
 									"gbSpan":	"1,1",
 									"gbPosition":	"1,0",
 									"m_styles":	[],
-									"m_sizerFlags":	["wxLEFT", "wxALIGN_CENTER_VERTICAL"],
+									"m_sizerFlags":	["wxALIGN_CENTER_VERTICAL"],
 									"m_properties":	[{
 											"type":	"winid",
 											"m_label":	"ID:",
