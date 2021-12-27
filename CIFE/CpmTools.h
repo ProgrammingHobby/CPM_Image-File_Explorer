@@ -44,6 +44,7 @@ class CpmTools {
         void setFileProtections(wxString name, int protections);
         bool getBootTracksEnabled();
         void createNewImage(wxString label, bool useTimeStamps, wxString bootTrackFile);
+        void checkImage(bool doRepair);
 
     public:     // Constructor & Destructor
         CpmTools(CpmGuiInterface *intf);
@@ -171,6 +172,7 @@ class CpmTools {
         mode_t s_ifdir = 1;
         mode_t s_ifreg = 1;
         bool boottracksused;
+        int norepair;
 
         const char *month[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
@@ -235,7 +237,13 @@ class CpmTools {
         static int namecmp(const void *a, const void *b);
         int getUserNumber(const char *filename);
         void convertFilename(const char *filename, char *cpmname);
+        int bcdCheck(int n, int max, const char *msg, const char *unit, int extent1, int extent2);
+        int pwdCheck(int extent, const char *pwd, char decode);
+        int ask(const char *msg);
+        char *prfile(CpmSuperBlock_t *sb, int extent);
         int mkfs(CpmSuperBlock_t *drive, const char *format, const char *label, char *bootTracks, int timeStamps);
+        int fsck(CpmInode_t *root, const char *image, bool repair);
+
 };
 
 // --------------------------------------------------------------------------------

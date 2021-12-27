@@ -65,6 +65,29 @@
 #define EXTENT(low,high) (((low)&0x1f)|(((high)&0x3f)<<5))
 #define EXTENTL(extent) ((extent)&0x1f)
 #define EXTENTH(extent) (((extent>>5))&0x3f)
+
+#define OK 0
+#define MODIFIED 1
+#define BROKEN 2
+
+#define T0 'G'
+#define T1 'E'
+#define T2 'H'
+#define T3 'E'
+#define T4 'I'
+#define T5 'M'
+#define T6 ' '
+#define T7 ' '
+
+#define PB ((char)(T0+T1+T2+T3+T4+T5+T6+T7))
+#define P0 ((char)(T7^PB))
+#define P1 ((char)(T6^PB))
+#define P2 ((char)(T5^PB))
+#define P3 ((char)(T4^PB))
+#define P4 ((char)(T3^PB))
+#define P5 ((char)(T2^PB))
+#define P6 ((char)(T1^PB))
+#define P7 ((char)(T0^PB))
 // --------------------------------------------------------------------------------
 CpmTools::CpmTools(CpmGuiInterface *intf) {
     guiintf = intf;
@@ -96,9 +119,10 @@ void CpmTools::showDirectory() {
     char **gargv;
     int gargc, row = 0;
     cmd = "cpmls";
+    std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "rb"))) {
-        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err));
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err));
         return;
     }
 
@@ -194,7 +218,7 @@ void CpmTools::showDirectory() {
     }
 
     if ((err = Device_Close(&drive.dev))) {
-        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err));
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err));
         return;
     }
 }
@@ -207,9 +231,10 @@ void CpmTools::deleteFile(wxArrayString files) {
     char **gargv;
     int gargc;
     cmd = "cpmrm";
+    std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
-        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -230,7 +255,7 @@ void CpmTools::deleteFile(wxArrayString files) {
     cpmUmount(&drive);
 
     if ((err = Device_Close(&drive.dev))) {
-        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
     }
 }
 
@@ -243,9 +268,10 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     char **gargv;
     int gargc;
     cmd = "cpmrn";
+    std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
-        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -264,7 +290,7 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     cpmUmount(&drive);
 
     if ((err = Device_Close(&drive.dev))) {
-        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
         return;
     }
 }
@@ -277,9 +303,10 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
     char **gargv;
     int gargc;
     cmd = "cpmchattr";
+    std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
-        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -301,7 +328,7 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
     cpmUmount(&drive);
 
     if ((err = Device_Close(&drive.dev))) {
-        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
     }
 }
 
@@ -313,9 +340,10 @@ void CpmTools::setFileProtections(wxString name, int protections) {
     char **gargv;
     int gargc;
     cmd = "cpmchprot";
+    std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = Device_Open(&drive.dev, imageFileName.c_str(), "r+b"))) {
-        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -337,7 +365,7 @@ void CpmTools::setFileProtections(wxString name, int protections) {
     cpmUmount(&drive);
 
     if ((err = Device_Close(&drive.dev))) {
-        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
     }
 }
 
@@ -352,7 +380,8 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
     CpmInode_t root;
     size_t bootTrackSize;
     char *bootTracks;
-    cmd = "cpmmkfs";
+    cmd = "cpm.mkfs";
+    wxString bootImage = bootTrackFile.substr(bootTrackFile.find_last_of("/\\") + 1);
     drive.dev.opened = 0;
     cpmReadSuper(&drive, &root, imageTypeName.c_str());
     bootTrackSize = drive.boottrk * drive.secLength * drive.sectrk;
@@ -369,7 +398,7 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
         size_t filesize, readsize;
 
         if ((fd = fopen(bootTrackFile.c_str(), "rb")) == (FILE *)0) {
-            guiintf->printMsg(wxString::Format("%s: can not open %s: %s\n", cmd, bootTrackFile.c_str(), strerror(errno)), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("%s: can not open %s: %s\n", cmd, bootImage.c_str(), strerror(errno)), CpmGuiInterface::msgColRed);
             return;
         }
 
@@ -394,6 +423,50 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
         guiintf->printMsg(wxString::Format("%s: can not make new file system: %s\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
+}
+
+// --------------------------------------------------------------------------------
+void CpmTools::checkImage(bool doRepair) {
+    CpmSuperBlock_t sb;
+    CpmInode_t root;
+    const char *err;
+    int ret;
+    cmd = "cpm.fsck";
+    std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
+
+    if ((err = Device_Open(&sb.dev, imageFileName.c_str(), (doRepair ? "r+b" : "rb")))) {
+        if ((err = Device_Open(&sb.dev, imageFileName.c_str(), "rb"))) {
+            guiintf->printMsg(wxString::Format("%s: cannot open %s: %s\n", cmd, image.c_str(), err), CpmGuiInterface::msgColRed);
+            return;
+        }
+        else {
+            guiintf->printMsg(wxString::Format("%s: cannot open %s for writing, no repair possible\n", cmd, image.c_str()), CpmGuiInterface::msgColRed);
+        }
+    }
+
+    if (cpmReadSuper(&sb, &root, imageTypeName.c_str()) == -1) {
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
+        return;
+    }
+
+    ret = fsck(&root, image.c_str(), doRepair);
+
+    if (ret & MODIFIED) {
+        if (cpmSync(&sb) == -1) {
+            guiintf->printMsg(wxString::Format("%s: write error on %s: %s\n", cmd, image.c_str(), strerror(errno)), CpmGuiInterface::msgColRed);
+            ret |= BROKEN;
+        }
+
+        guiintf->printMsg(wxString::Format("%s: FILE SYSTEM ON %s MODIFIED", cmd, image.c_str()), CpmGuiInterface::msgColBlue);
+
+        if (ret & BROKEN) {
+            guiintf->printMsg(wxString::Format(", PLEASE CHECK AGAIN"), CpmGuiInterface::msgColBlue);
+        }
+
+        guiintf->printMsg(wxString::Format("\n"), CpmGuiInterface::msgColBlue);
+    }
+
+    cpmUmount(&sb);
 }
 
 // --------------------------------------------------------------------------------
@@ -2862,8 +2935,572 @@ int CpmTools::mkfs(CpmSuperBlock_t *drive, const char *format, const char *label
         cpmUmount(&super);
     }
 
-    /*}}}*/
     return 0;
+}
+
+// --------------------------------------------------------------------------------
+//  -- check format and range of BCD digit
+// --------------------------------------------------------------------------------
+int CpmTools::bcdCheck(int n, int max, const char *msg, const char *unit, int extent1, int extent2) {
+    if (((n >> 4) & 0xf) > 10 || (n & 0xf) > 10 || (((n >> 4) & 0xf) * 10 + (n & 0xf)) >= max) {
+        guiintf->printMsg(wxString::Format("Bad %s %s (extent=%d/%d, %s=%02x)\n", msg, unit, extent1, extent2, unit, (n & 0xff)), CpmGuiInterface::msgColRed);
+        return -1;
+    }
+    else {
+        return 0;
+    }
+}
+
+// --------------------------------------------------------------------------------
+//  -- check password
+// --------------------------------------------------------------------------------
+int CpmTools::pwdCheck(int extent, const char *pwd, char decode) {
+    char c;
+    int i;
+
+    for (i = 0; i < 8; ++i) if ((c = ((char)(pwd[7 - i] ^ decode))) < ' ' || c & 0x80) {
+            wxString passwd;
+
+            for (i = 0; i < 8; ++i) {
+                c = pwd[7 - i] ^ decode;
+
+                if (c < ' ' || c & 0x80) {
+                    passwd += "\\";
+                    passwd += ('0' + ((c >> 6) & 0x03));
+                    passwd += ('0' + ((c >> 3) & 0x03));
+                    passwd += ('0' + (c & 0x03));
+                }
+                else {
+                    passwd += (c);
+                }
+            }
+
+            guiintf->printMsg(wxString::Format("Non-printable character in password (extent=%d, password=%s)\n", extent, passwd), CpmGuiInterface::msgColRed);
+            return -1;
+        }
+
+    return 0;
+}
+
+// --------------------------------------------------------------------------------
+//  -- ask user and return answer
+// --------------------------------------------------------------------------------
+int CpmTools::ask(const char *msg) {
+    if (guiintf->askBox(msg, cmd)) {
+        guiintf->printMsg(wxString::Format("    %s [Y]? Y\n", msg), CpmGuiInterface::msgColGreen);
+        return 1;
+    }
+
+    guiintf->printMsg(wxString::Format("    %s [Y]? N\n", msg), CpmGuiInterface::msgColGreen);
+    return 0;
+}
+
+// --------------------------------------------------------------------------------
+//  -- print file name
+// --------------------------------------------------------------------------------
+char *CpmTools::prfile(CpmSuperBlock_t *sb, int extent) {
+    PhysDirectoryEntry_t *dir;
+    static char name[80];
+    char *s = name;
+    int i;
+    char c;
+    dir = sb->dir + extent;
+
+    for (i = 0; i < 8; ++i) {
+        c = dir->name[i];
+
+        if ((c & 0x7f) < ' ') {
+            *s++ = '\\';
+            *s++ = ('0' + ((c >> 6) & 0x01));
+            *s++ = ('0' + ((c >> 3) & 0x03));
+            *s++ = ('0' + (c & 0x03));
+        }
+        else {
+            *s++ = (c & 0x7f);
+        }
+    }
+
+    *s++ = '.';
+
+    for (i = 0; i < 3; ++i) {
+        c = dir->ext[i];
+
+        if ((c & 0x7f) < ' ') {
+            *s++ = '\\';
+            *s++ = ('0' + ((c >> 6) & 0x01));
+            *s++ = ('0' + ((c >> 3) & 0x03));
+            *s++ = ('0' + (c & 0x03));
+        }
+        else {
+            *s++ = (c & 0x7f);
+        }
+    }
+
+    *s = '\0';
+    return name;
+}
+
+// --------------------------------------------------------------------------------
+//  -- file system check
+// --------------------------------------------------------------------------------
+int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
+    /* variables */
+    int ret = OK;
+    int extent, extent2;
+    PhysDirectoryEntry_t *dir, *dir2;
+    CpmSuperBlock_t *sb = root->sb;
+    /* Phase 1: check extent fields */
+    guiintf->printMsg("====================================================================================================\n", CpmGuiInterface::msgColGreen);
+    guiintf->printMsg("  Phase 1: check extent fields\n", CpmGuiInterface::msgColGreen);
+
+    for (extent = 0; extent < sb->maxdir; ++extent) {
+        char *status;
+        int usedBlocks = 0;
+        dir = sb->dir + extent;
+        status = &dir->status;
+
+        if (*status >= 0 && *status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) { /* directory entry */
+            /* check name and extension */
+            {
+                int i;
+                char *c;
+
+                for (i = 0; i < 8; ++i) {
+                    c = &(dir->name[i]);
+
+                    if (!ISFILECHAR(i, *c & 0x7f) || islower(*c & 0x7f)) {
+                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(sb, extent), i), CpmGuiInterface::msgColGreen);
+
+                        if (repair && ask("Remove file")) {
+                            *status = (char)0xE5;
+                            ret |= MODIFIED;
+                            break;
+                        }
+                        else {
+                            ret |= BROKEN;
+                        }
+                    }
+                }
+
+                if (*status == (char)0xe5) {
+                    continue;
+                }
+
+                for (i = 0; i < 3; ++i) {
+                    c = &(dir->ext[i]);
+
+                    if (!ISFILECHAR(1, *c & 0x7f) || islower(*c & 0x7f)) {
+                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(sb, extent), i), CpmGuiInterface::msgColGreen);
+
+                        if (repair && ask("Remove file")) {
+                            *status = (char)0xE5;
+                            ret |= MODIFIED;
+                            break;
+                        }
+                        else {
+                            ret |= BROKEN;
+                        }
+                    }
+                }
+
+                if (*status == (char)0xe5) {
+                    continue;
+                }
+            }
+
+            /* check extent number */
+            if ((dir->extnol & 0xff) > 0x1f) {
+                guiintf->printMsg(wxString::Format("    Error: Bad lower bits of extent number (extent=%d, name=\"%s\", low bits=%d)\n", extent, prfile(sb, extent), dir->extnol & 0xff), CpmGuiInterface::msgColGreen);
+
+                if (repair && ask("Remove file")) {
+                    *status = (char)0xE5;
+                    ret |= MODIFIED;
+                }
+                else {
+                    ret |= BROKEN;
+                }
+            }
+
+            if (*status == (char)0xe5) {
+                continue;
+            }
+
+            if ((dir->extnoh & 0xff) > 0x3f) {
+                guiintf->printMsg(wxString::Format("    Error: Bad higher bits of extent number (extent=%d, name=\"%s\", high bits=%d)\n", extent, prfile(sb, extent), dir->extnoh & 0xff), CpmGuiInterface::msgColGreen);
+
+                if (repair && ask("Remove file")) {
+                    *status = (char)0xE5;
+                    ret |= MODIFIED;
+                }
+                else {
+                    ret |= BROKEN;
+                }
+            }
+
+            if (*status == (char)0xe5) {
+                continue;
+            }
+
+            /* check last record byte count */
+            if ((dir->lrc & 0xff) > 128) {
+                guiintf->printMsg(wxString::Format("    Error: Bad last record byte count (extent=%d, name=\"%s\", lrc=%d)\n", extent, prfile(sb, extent), dir->lrc & 0xff), CpmGuiInterface::msgColGreen);
+
+                if (repair && ask("Clear last record byte count")) {
+                    dir->lrc = (char)0;
+                    ret |= MODIFIED;
+                }
+                else {
+                    ret |= BROKEN;
+                }
+            }
+
+            if (*status == (char)0xe5) {
+                continue;
+            }
+
+            /* check block number range */
+            {
+                int block, min, max, i;
+                min = (sb->maxdir * 32 + sb->blksiz - 1) / sb->blksiz;
+                max = sb->size;
+
+                for (i = 0; i < 16; ++i) {
+                    block = dir->pointers[i] & 0xff;
+
+                    if (sb->size >= 256) {
+                        block += (dir->pointers[++i] & 0xff) << 8;
+                    }
+
+                    if (block > 0) {
+                        ++usedBlocks;
+
+                        if (block < min || block >= max) {
+                            guiintf->printMsg(wxString::Format("    Error: Bad block number (extent=%d, name=\"%s\", block=%d)\n", extent, prfile(sb, extent), block), CpmGuiInterface::msgColGreen);
+
+                            if (repair && ask("Remove file")) {
+                                *status = (char)0xE5;
+                                ret |= MODIFIED;
+                                break;
+                            }
+                            else {
+                                ret |= BROKEN;
+                            }
+                        }
+                    }
+                }
+
+                if (*status == (char)0xe5) {
+                    continue;
+                }
+            }
+            /* check number of used blocks ? */
+            /* check record count */
+            {
+                int i, min, max, recordsInBlocks, used = 0;
+                min = (dir->extnol % sb->extents) * 16 / sb->extents;
+                max = ((dir->extnol % sb->extents) + 1) * 16 / sb->extents;
+                assert(min < max);
+
+                for (i = min; i < max; ++i) {
+                    /* [JCE] Rewritten because the previous implementation didn't work
+                     *       properly with Visual C++ */
+                    if (dir->pointers[i] || (sb->size >= 256 && dir->pointers[i + 1])) {
+                        ++used;
+                    }
+
+                    if (sb->size >= 256) {
+                        ++i;
+                    }
+                }
+
+                recordsInBlocks = (((unsigned char)dir->blkcnt) * 128 + sb->blksiz - 1) / sb->blksiz;
+
+                if (recordsInBlocks != used) {
+                    guiintf->printMsg(wxString::Format("    Error: Bad record count (extent=%d, name=\"%s\", record count=%d)\n", extent, prfile(sb, extent), dir->blkcnt & 0xff), CpmGuiInterface::msgColGreen);
+
+                    if (repair && ask("Remove file")) {
+                        *status = (char)0xE5;
+                        ret |= MODIFIED;
+                    }
+                    else {
+                        ret |= BROKEN;
+                    }
+                }
+
+                if (*status == (char)0xe5) {
+                    continue;
+                }
+            }
+
+            /* check for too large .com files */
+            if (((EXTENT(dir->extnol, dir->extnoh) == 3 && dir->blkcnt >= 126) || EXTENT(dir->extnol, dir->extnoh) >= 4) && (dir->ext[0] & 0x7f) == 'C' && (dir->ext[1] & 0x7f) == 'O' && (dir->ext[2] & 0x7f) == 'M') {
+                guiintf->printMsg(wxString::Format("    Warning: Oversized .COM file (extent=%d, name=\"%s\")\n", extent, prfile(sb, extent)), CpmGuiInterface::msgColGreen);
+            }
+        }
+        else if ((sb->type == CPMFS_P2DOS || sb->type == CPMFS_DR3) && *status == 33) { /* check time stamps ? */
+            unsigned long created, modified;
+            char s;
+
+            if ((s = sb->dir[extent2 = (extent & ~3)].status) >= 0 && s <= (sb->type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for first of the three extents */
+                bcdCheck(dir->name[2], 24, sb->cnotatime ? "creation date" : "access date", "hour", extent, extent2);
+                bcdCheck(dir->name[3], 60, sb->cnotatime ? "creation date" : "access date", "minute", extent, extent2);
+                bcdCheck(dir->name[6], 24, "modification date", "hour", extent, extent2);
+                bcdCheck(dir->name[7], 60, "modification date", "minute", extent, extent2);
+                created = (dir->name[4] + (dir->name[1] << 8)) * (0x60 * 0x60) + dir->name[2] * 0x60 + dir->name[3];
+                modified = (dir->name[0] + (dir->name[5] << 8)) * (0x60 * 0x60) + dir->name[6] * 0x60 + dir->name[7];
+
+                if (sb->cnotatime && modified < created) {
+                    guiintf->printMsg(wxString::Format("    Warning: Modification date earlier than creation date (extent=%d/%d)\n", extent, extent2), CpmGuiInterface::msgColGreen);
+                }
+            }
+
+            if ((s = sb->dir[extent2 = (extent & ~3) + 1].status) >= 0 && s <= (sb->type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for second */
+                bcdCheck(dir->lrc, 24, sb->cnotatime ? "creation date" : "access date", "hour", extent, extent2);
+                bcdCheck(dir->extnoh, 60, sb->cnotatime ? "creation date" : "access date", "minute", extent, extent2);
+                bcdCheck(dir->pointers[1], 24, "modification date", "hour", extent, extent2);
+                bcdCheck(dir->pointers[2], 60, "modification date", "minute", extent, extent2);
+                created = (dir->ext[2] + (dir->extnol << 8)) * (0x60 * 0x60) + dir->lrc * 0x60 + dir->extnoh;
+                modified = (dir->blkcnt + (dir->pointers[0] << 8)) * (0x60 * 0x60) + dir->pointers[1] * 0x60 + dir->pointers[2];
+
+                if (sb->cnotatime && modified < created) {
+                    guiintf->printMsg(wxString::Format("    Warning: Modification date earlier than creation date (extent=%d/%d)\n", extent, extent2), CpmGuiInterface::msgColGreen);
+                }
+            }
+
+            if ((s = sb->dir[extent2 = (extent & ~3) + 2].status) >= 0 && s <= (sb->type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for third */
+                bcdCheck(dir->pointers[7], 24, sb->cnotatime ? "creation date" : "access date", "hour", extent, extent2);
+                bcdCheck(dir->pointers[8], 60, sb->cnotatime ? "creation date" : "access date", "minute", extent, extent2);
+                bcdCheck(dir->pointers[11], 24, "modification date", "hour", extent, extent2);
+                bcdCheck(dir->pointers[12], 60, "modification date", "minute", extent, extent2);
+                created = (dir->pointers[5] + (dir->pointers[6] << 8)) * (0x60 * 0x60) + dir->pointers[7] * 0x60 + dir->pointers[8];
+                modified = (dir->pointers[9] + (dir->pointers[10] << 8)) * (0x60 * 0x60) + dir->pointers[11] * 0x60 + dir->pointers[12];
+
+                if (sb->cnotatime && modified < created) {
+                    guiintf->printMsg(wxString::Format("    Warning: Modification date earlier than creation date (extent=%d/%d)\n", extent, extent2), CpmGuiInterface::msgColGreen);
+                }
+            }
+        }
+        else if (sb->type == CPMFS_DR3 && *status == 32) { /* disc label */
+            unsigned long created, modified;
+            bcdCheck(dir->pointers[10], 24, sb->cnotatime ? "creation date" : "access date", "hour", extent, extent);
+            bcdCheck(dir->pointers[11], 60, sb->cnotatime ? "creation date" : "access date", "minute", extent, extent);
+            bcdCheck(dir->pointers[14], 24, "modification date", "hour", extent, extent);
+            bcdCheck(dir->pointers[15], 60, "modification date", "minute", extent, extent);
+            created = (dir->pointers[8] + (dir->pointers[9] << 8)) * (0x60 * 0x60) + dir->pointers[10] * 0x60 + dir->pointers[11];
+            modified = (dir->pointers[12] + (dir->pointers[13] << 8)) * (0x60 * 0x60) + dir->pointers[14] * 0x60 + dir->pointers[15];
+
+            if (sb->cnotatime && modified < created) {
+                guiintf->printMsg(wxString::Format("    Warning: Label modification date earlier than creation date (extent=%d)\n", extent), CpmGuiInterface::msgColGreen);
+            }
+
+            if (dir->extnol & 0x40 && dir->extnol & 0x10) {
+                guiintf->printMsg(wxString::Format("    Error: Bit 4 and 6 can only be exclusively be set (extent=%d, label byte=0x%02x)\n", extent, (unsigned char)dir->extnol), CpmGuiInterface::msgColGreen);
+
+                if (repair && ask("Time stamp on creation")) {
+                    dir->extnol &= ~0x40;
+                    ret |= MODIFIED;
+                }
+                else if (repair && ask("Time stamp on access")) {
+                    dir->extnol &= ~0x10;
+                    ret |= MODIFIED;
+                }
+                else {
+                    ret |= BROKEN;
+                }
+            }
+
+            if (dir->extnol & 0x80 && pwdCheck(extent, dir->pointers, dir->lrc)) {
+                char msg[80];
+                sprintf(msg, "Set password to %c%c%c%c%c%c%c%c", T0, T1, T2, T3, T4, T5, T6, T7);
+
+                if (repair && ask(msg)) {
+                    dir->pointers[0] = P0;
+                    dir->pointers[1] = P1;
+                    dir->pointers[2] = P2;
+                    dir->pointers[3] = P3;
+                    dir->pointers[4] = P4;
+                    dir->pointers[5] = P5;
+                    dir->pointers[6] = P6;
+                    dir->pointers[7] = P7;
+                    dir->lrc = PB;
+                    ret |= MODIFIED;
+                }
+                else {
+                    ret |= BROKEN;
+                }
+            }
+        }
+        else if (sb->type == CPMFS_DR3 && *status >= 16 && *status <= 31) { /* password */
+            /* check name and extension */
+            {
+                int i;
+                char *c;
+
+                for (i = 0; i < 8; ++i) {
+                    c = &(dir->name[i]);
+
+                    if (!ISFILECHAR(i, *c & 0x7f) || islower(*c & 0x7f)) {
+                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(sb, extent), i), CpmGuiInterface::msgColGreen);
+
+                        if (repair && ask("Clear password entry")) {
+                            *status = (char)0xE5;
+                            ret |= MODIFIED;
+                            break;
+                        }
+                        else {
+                            ret |= BROKEN;
+                        }
+                    }
+                }
+
+                if (*status == (char)0xe5) {
+                    continue;
+                }
+
+                for (i = 0; i < 3; ++i) {
+                    c = &(dir->ext[i]);
+
+                    if (!ISFILECHAR(1, *c & 0x7f) || islower(*c & 0x7f)) {
+                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(sb, extent), i), CpmGuiInterface::msgColGreen);
+
+                        if (repair && ask("Clear password entry")) {
+                            *status = (char)0xE5;
+                            ret |= MODIFIED;
+                            break;
+                        }
+                        else {
+                            ret |= BROKEN;
+                        }
+                    }
+                }
+
+                if (*status == (char)0xe5) {
+                    continue;
+                }
+            }
+
+            /* check password */
+            if (dir->extnol & (0x80 | 0x40 | 0x20) && pwdCheck(extent, dir->pointers, dir->lrc)) {
+                char msg[80];
+                sprintf(msg, "Set password to %c%c%c%c%c%c%c%c", T0, T1, T2, T3, T4, T5, T6, T7);
+
+                if (repair && ask(msg)) {
+                    dir->pointers[0] = P0;
+                    dir->pointers[1] = P1;
+                    dir->pointers[2] = P2;
+                    dir->pointers[3] = P3;
+                    dir->pointers[4] = P4;
+                    dir->pointers[5] = P5;
+                    dir->pointers[6] = P6;
+                    dir->pointers[7] = P7;
+                    dir->lrc = PB;
+                    ret |= MODIFIED;
+                }
+                else {
+                    ret |= BROKEN;
+                }
+            }
+        }
+        else if (*status != (char)0xe5) { /* bad status */
+            guiintf->printMsg(wxString::Format("    Error: Bad status (extent=%d, name=\"%s\", status=0x%02x)\n", extent, prfile(sb, extent), *status & 0xff), CpmGuiInterface::msgColGreen);
+
+            if (repair && ask("Clear entry")) {
+                *status = (char)0xE5;
+                ret |= MODIFIED;
+            }
+            else {
+                ret |= BROKEN;
+            }
+
+            continue;
+        }
+    }
+
+    /* Phase 2: check extent connectivity */
+    guiintf->printMsg("  Phase 2: check extent connectivity\n", CpmGuiInterface::msgColGreen);
+
+    /* check multiple allocated blocks */
+    for (extent = 0; extent < sb->maxdir; ++extent) if ((dir = sb->dir + extent)->status >= 0 && dir->status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) {
+            int i, j, block, block2;
+
+            for (i = 0; i < 16; ++i) {
+                block = dir->pointers[i] & 0xff;
+
+                if (sb->size >= 256) {
+                    block += (dir->pointers[++i] & 0xff) << 8;
+                }
+
+                for (extent2 = 0; extent2 < sb->maxdir; ++extent2) if ((dir2 = sb->dir + extent2)->status >= 0 && dir2->status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) {
+                        for (j = 0; j < 16; ++j) {
+                            block2 = dir2->pointers[j] & 0xff;
+
+                            if (sb->size >= 256) {
+                                block2 += (dir2->pointers[++j] & 0xff) << 8;
+                            }
+
+                            if (block != 0 && block2 != 0 && block == block2 && !(extent == extent2 && i == j)) {
+                                guiintf->printMsg(wxString::Format("    Error: Multiple allocated block (extent=%d,%d, name=\"%s\"", extent, extent2, prfile(sb, extent)), CpmGuiInterface::msgColGreen);
+                                guiintf->printMsg(wxString::Format(",\"%s\" block=%d)\n", prfile(sb, extent2), block), CpmGuiInterface::msgColGreen);
+                                ret |= BROKEN;
+                            }
+                        }
+                    }
+            }
+        }
+
+    /* check multiple extents */
+    for (extent = 0; extent < sb->maxdir; ++extent) if ((dir = sb->dir + extent)->status >= 0 && dir->status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) {
+            for (extent2 = 0; extent2 < sb->maxdir; ++extent2) if ((dir2 = sb->dir + extent2)->status >= 0 && dir2->status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) {
+                    if (extent != extent2 && EXTENT(dir->extnol, dir->extnoh) == EXTENT(dir2->extnol, dir2->extnoh) && dir->status == dir2->status) {
+                        int i;
+
+                        for (i = 0; i < 8 && (dir->name[i] & 0x7f) == (dir2->name[i] & 0x7f); ++i);
+
+                        if (i == 8) {
+                            for (i = 0; i < 3 && (dir->ext[i] & 0x7f) == (dir2->ext[i] & 0x7f); ++i);
+
+                            if (i == 3) {
+                                guiintf->printMsg(wxString::Format("    Error: Duplicate extent (extent=%d,%d)\n", extent, extent2), CpmGuiInterface::msgColGreen);
+                                ret |= BROKEN;
+                            }
+                        }
+                    }
+                }
+        }
+
+    if (ret == 0) { /* print statistics */
+        CpmStatFS_t statfsbuf;
+        int fragmented = 0, borders = 0;
+        cpmStatFS(root, &statfsbuf);
+
+        for (extent = 0; extent < sb->maxdir; ++extent) if ((dir = sb->dir + extent)->status >= 0 && dir->status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) {
+                int i, block, previous = -1;
+
+                for (i = 0; i < 16; ++i) {
+                    block = dir->pointers[i] & 0xff;
+
+                    if (sb->size >= 256) {
+                        block += (dir->pointers[++i] & 0xff) << 8;
+                    }
+
+                    if (previous != -1) {
+                        if (block != 0 && block != (previous + 1)) {
+                            ++fragmented;
+                        }
+
+                        ++borders;
+                    }
+
+                    previous = block;
+                }
+            }
+
+        fragmented = (borders ? (1000 * fragmented) / borders : 0);
+        guiintf->printMsg(wxString::Format("  %s: %ld/%ld files (%d.%d%% non-contigous), %ld/%ld blocks\n", image, statfsbuf.f_files - statfsbuf.f_ffree, statfsbuf.f_files, fragmented / 10, fragmented % 10, statfsbuf.f_blocks - statfsbuf.f_bfree, statfsbuf.f_blocks), CpmGuiInterface::msgColGreen);
+    }
+
+    guiintf->printMsg("====================================================================================================\n", CpmGuiInterface::msgColGreen);
+    return ret;
 }
 
 // --------------------------------------------------------------------------------
