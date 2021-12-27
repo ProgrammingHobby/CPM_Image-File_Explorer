@@ -1,3 +1,17 @@
+<<<<<<< HEAD
+=======
+==================== v0.0.4 ====================
+- es können nun neue leere Images erstellt, oder schon bestehende Images neu 'Formatiert' werden.
+- Images können nun geprüft werden 'cpm.fsck'
+- kleinere optische Korrekturen.
+
+==================== v0.0.3 ====================
+- Verzeichnisspalte 'Permissions' sowie Menüpunkt 'Permissions' entfernt.
+- neue Verzeichnisspalte 'Protections' angelegt.
+- es können nun für einzelne Dateien die Datei-Attribute gesetzt und der
+  Protection Modus eingestellt werden.
+
+>>>>>>> 82889c6... Projekt aktualisierung.
 ==================== v0.0.2 ====================
 - neue Icons
 - es können nun Dateien gelöscht und Umbennant werden
