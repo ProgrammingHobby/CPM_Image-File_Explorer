@@ -382,6 +382,7 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
     char *bootTracks;
     cmd = "cpm.mkfs";
     wxString bootImage = bootTrackFile.substr(bootTrackFile.find_last_of("/\\") + 1);
+    wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
     drive.dev.opened = 0;
     cpmReadSuper(&drive, &root, imageTypeName.c_str());
     bootTrackSize = drive.boottrk * drive.secLength * drive.sectrk;
@@ -423,6 +424,8 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
         guiintf->printMsg(wxString::Format("%s: can not make new file system: %s\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
+
+    guiintf->printMsg(wxString::Format("%s: new Image-File '%s' successful created.\n", cmd, image), CpmGuiInterface::msgColBlack);
 }
 
 // --------------------------------------------------------------------------------
