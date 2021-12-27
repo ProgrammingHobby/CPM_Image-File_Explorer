@@ -42,22 +42,22 @@ CpmGuiInterface::~CpmGuiInterface() {
 void CpmGuiInterface::printMsg(wxString msg, msgColor col) {
     switch (col) {
         case msgColBlack: {
-                textMessages->SetForegroundColour(*wxBLACK);
+                textMessages->SetDefaultStyle(wxTextAttr(*wxBLACK));
                 break;
             }
 
         case msgColRed: {
-                textMessages->SetForegroundColour(*wxRED);
+                textMessages->SetDefaultStyle(wxTextAttr(*wxRED));
                 break;
             }
 
         case msgColGreen: {
-                textMessages->SetForegroundColour(0x00B000);
+                textMessages->SetDefaultStyle(wxTextAttr(0x00B000));
                 break;
             }
 
         case msgColBlue: {
-                textMessages->SetForegroundColour(*wxBLUE);
+                textMessages->SetDefaultStyle(wxTextAttr(*wxBLUE));
                 break;
             }
     }
