@@ -347,7 +347,7 @@ void MainWindow::onListItemRightClick(wxListEvent &event) {
     }
 
     if (((index == firstIndex) && (nextIndex == lastIndex)) || ((index == lastIndex) && (nextIndex == -1) && (index == (firstIndex + 1)))) {
-        if (nextIndex == -1)  {
+        if (nextIndex == -1) {
             listImageContents->SetItemState(firstIndex, 0, wxLIST_STATE_SELECTED);
         }
         else {
@@ -423,7 +423,18 @@ void MainWindow::onCreateNew(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onCheckImage(wxCommandEvent &event) {
-    cpmtools->checkImage(false);
+#ifdef _WINDOWS_
+    wxMessageDialog deleteDialog(NULL, "Repair Filesystem Errors ?", "Check CP/M Image", wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+#else
+    wxMessageDialog deleteDialog(NULL, "\nRepair Filesystem Errors ?", "Check CP/M Image", wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+#endif
+
+    if (deleteDialog.ShowModal() == wxID_YES) {
+        cpmtools->checkImage(true);
+    }
+    else {
+        cpmtools->checkImage(false);
+    }
 }
 
 // --------------------------------------------------------------------------------

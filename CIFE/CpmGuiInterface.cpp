@@ -97,7 +97,11 @@ void CpmGuiInterface::printDirEntry(int col, int row, wxString data) {
 
 // --------------------------------------------------------------------------------
 bool CpmGuiInterface::askBox(const wxString Message, const wxString title) {
-    wxMessageDialog deleteDialog(NULL, "\n" + Message, title, wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
+#ifdef _WINDOWS_
+    wxMessageDialog deleteDialog(NULL, Message + " ?", title, wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
+#else
+    wxMessageDialog deleteDialog(NULL, "\n" + Message + " ?", title, wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
+#endif
 
     if (deleteDialog.ShowModal() == wxID_YES) {
         return (true);
