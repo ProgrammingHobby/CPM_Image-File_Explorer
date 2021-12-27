@@ -2946,7 +2946,7 @@ int CpmTools::mkfs(CpmSuperBlock_t *drive, const char *format, const char *label
 // --------------------------------------------------------------------------------
 int CpmTools::bcdCheck(int n, int max, const char *msg, const char *unit, int extent1, int extent2) {
     if (((n >> 4) & 0xf) > 10 || (n & 0xf) > 10 || (((n >> 4) & 0xf) * 10 + (n & 0xf)) >= max) {
-        guiintf->printMsg(wxString::Format("Bad %s %s (extent=%d/%d, %s=%02x)\n", msg, unit, extent1, extent2, unit, (n & 0xff)), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("    Bad %s %s (extent=%d/%d, %s=%02x)\n", msg, unit, extent1, extent2, unit, (n & 0xff)), CpmGuiInterface::msgColRed);
         return -1;
     }
     else {
@@ -2978,7 +2978,7 @@ int CpmTools::pwdCheck(int extent, const char *pwd, char decode) {
                 }
             }
 
-            guiintf->printMsg(wxString::Format("Non-printable character in password (extent=%d, password=%s)\n", extent, passwd), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("    Non-printable character in password (extent=%d, password=%s)\n", extent, passwd), CpmGuiInterface::msgColRed);
             return -1;
         }
 
