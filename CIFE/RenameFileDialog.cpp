@@ -61,6 +61,7 @@ void RenameFileDialog::setOldUser(int user) {
 // --------------------------------------------------------------------------------
 void RenameFileDialog::setOldName(wxString name) {
     editOldFileName->SetValue(name);
+    editNewFileName->SetValue(name);
 }
 
 // --------------------------------------------------------------------------------
