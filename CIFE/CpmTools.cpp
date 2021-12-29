@@ -859,11 +859,11 @@ void CpmTools::updateTimeStamps(const CpmInode_t *ino, int extent) {
         return;
     }
 
-    unix2cpm_time(ino->sb->cnotatime ? ino->ctime : ino->atime, &ca_days, &ca_hour, &ca_min);
+    unix2cpm_time(drive.cnotatime ? ino->ctime : ino->atime, &ca_days, &ca_hour, &ca_min);
     unix2cpm_time(ino->mtime, &u_days, &u_hour, &u_min);
 
-    if ((ino->sb->type & CPMFS_CPM3_DATES) && (date = ino->sb->dir + (extent | 3))->status == 0x21) {
-        ino->sb->dirtyDirectory = 1;
+    if ((drive.type & CPMFS_CPM3_DATES) && (date = drive.dir + (extent | 3))->status == 0x21) {
+        drive.dirtyDirectory = 1;
 
         switch (extent & 3) {
             case 0: { /* first entry */
@@ -915,16 +915,16 @@ void CpmTools::updateDsStamps(const CpmInode_t *ino, int extent) {
         return;
     }
 
-    if (!(ino->sb->type & CPMFS_DS_DATES)) {
+    if (!(drive.type & CPMFS_DS_DATES)) {
         return;
     }
 
     /* Get datestamp struct */
-    stamp = ino->sb->ds + extent;
+    stamp = drive.ds + extent;
     unix2ds_time(ino->mtime, &stamp->modify);
     unix2ds_time(ino->ctime, &stamp->create);
     unix2ds_time(ino->atime, &stamp->access);
-    ino->sb->dirtyDs = 1;
+    drive.dirtyDs = 1;
 }
 
 // --------------------------------------------------------------------------------
@@ -937,7 +937,7 @@ int CpmTools::readTimeStamps(CpmInode_t *i, int lowestExt) {
     int ca_days = 0, ca_hour = 0, ca_min = 0;
     int protectMode = 0;
 
-    if ((i->sb->type & CPMFS_CPM3_DATES) && (date = i->sb->dir + (lowestExt | 3))->status == 0x21) {
+    if ((drive.type & CPMFS_CPM3_DATES) && (date = drive.dir + (lowestExt | 3))->status == 0x21) {
         switch (lowestExt & 3) {
             case 0: { /* first entry of the four */
                     ca_days = ((unsigned char)date->name[0]) + (((unsigned char)date->name[1]) << 8);
@@ -973,7 +973,7 @@ int CpmTools::readTimeStamps(CpmInode_t *i, int lowestExt) {
                 }
         }
 
-        if (i->sb->cnotatime) {
+        if (drive.cnotatime) {
             i->ctime = cpm2unix_time(ca_days, ca_hour, ca_min);
             i->atime = 0;
         }
@@ -998,12 +998,12 @@ int CpmTools::readTimeStamps(CpmInode_t *i, int lowestExt) {
 void CpmTools::readDsStamps(CpmInode_t *i, int lowestExt) {
     DsDate_t *stamp;
 
-    if (!(i->sb->type & CPMFS_DS_DATES)) {
+    if (!(drive.type & CPMFS_DS_DATES)) {
         return;
     }
 
     /* Get datestamp */
-    stamp = i->sb->ds + lowestExt;
+    stamp = drive.ds + lowestExt;
     i->mtime = ds2unix_time(&stamp->modify);
     i->ctime = ds2unix_time(&stamp->create);
     i->atime = ds2unix_time(&stamp->access);
@@ -1676,10 +1676,8 @@ int CpmTools::cpmReadSuper(const char *format) {
         drive.labelLength = 0;
     }
 
-    drive.root = &root;
     drive.dirtyDirectory = 0;
     root.ino = drive.maxdir;
-    root.sb = &drive;
     root.mode = (s_ifdir | 0777);
     root.size = 0;
     root.atime = root.mtime = root.ctime = 0;
@@ -1798,26 +1796,24 @@ int CpmTools::cpmNamei(const char *filename, CpmInode_t *i) {
         *i = root;
         return (0);
     }
-    else if (strcmp(filename, "[passwd]") == 0 && root.sb->passwdLength) { /* access passwords */
+    else if (strcmp(filename, "[passwd]") == 0 && drive.passwdLength) { /* access passwords */
         i->attr = 0;
-        i->ino = root.sb->maxdir + 1;
+        i->ino = drive.maxdir + 1;
         i->mode = s_ifreg | 0444;
-        i->sb = root.sb;
         i->atime = i->mtime = i->ctime = 0;
-        i->size = i->sb->passwdLength;
+        i->size = drive.passwdLength;
         return (0);
     }
-    else if (strcmp(filename, "[label]") == 0 && root.sb->labelLength) { /* access label */
+    else if (strcmp(filename, "[label]") == 0 && drive.labelLength) { /* access label */
         i->attr = 0;
-        i->ino = root.sb->maxdir + 2;
+        i->ino = drive.maxdir + 2;
         i->mode = s_ifreg | 0444;
-        i->sb = root.sb;
         i->atime = i->mtime = i->ctime = 0;
-        i->size = i->sb->labelLength;
+        i->size = drive.labelLength;
         return (0);
     }
 
-    if (splitFilename(filename, root.sb->type, name, extension, &user) == -1) {
+    if (splitFilename(filename, drive.type, name, extension, &user) == -1) {
         return (-1);
     }
 
@@ -1830,7 +1826,7 @@ int CpmTools::cpmNamei(const char *filename, CpmInode_t *i) {
         lowestExtno = 2049;
 
         while ((extent = findFileExtent(user, name, extension, extent + 1, -1)) != -1) {
-            int extno = EXTENT(root.sb->dir[extent].extnol, root.sb->dir[extent].extnoh);
+            int extno = EXTENT(drive.dir[extent].extnol, drive.dir[extent].extnoh);
 
             if (extno > highestExtno) {
                 highestExtno = extno;
@@ -1853,61 +1849,60 @@ int CpmTools::cpmNamei(const char *filename, CpmInode_t *i) {
         int block;
         i->size = highestExtno * 16384;
 
-        if (root.sb->size < 256) for (block = 15; block >= 0; --block) {
-                if (root.sb->dir[highestExt].pointers[block]) {
+        if (drive.size < 256) for (block = 15; block >= 0; --block) {
+                if (drive.dir[highestExt].pointers[block]) {
                     break;
                 }
             }
         else for (block = 7; block >= 0; --block) {
-                if (root.sb->dir[highestExt].pointers[2 * block] || root.sb->dir[highestExt].pointers[2 * block + 1]) {
+                if (drive.dir[highestExt].pointers[2 * block] || drive.dir[highestExt].pointers[2 * block + 1]) {
                     break;
                 }
             }
 
-        if (root.sb->dir[highestExt].blkcnt) {
-            i->size += ((root.sb->dir[highestExt].blkcnt & 0xff) - 1) * 128;
+        if (drive.dir[highestExt].blkcnt) {
+            i->size += ((drive.dir[highestExt].blkcnt & 0xff) - 1) * 128;
 
-            if (root.sb->type & CPMFS_ISX) {
-                i->size += (128 - root.sb->dir[highestExt].lrc);
+            if (drive.type & CPMFS_ISX) {
+                i->size += (128 - drive.dir[highestExt].lrc);
             }
             else {
-                i->size += root.sb->dir[highestExt].lrc ? (root.sb->dir[highestExt].lrc & 0xff) : 128;
+                i->size += drive.dir[highestExt].lrc ? (drive.dir[highestExt].lrc & 0xff) : 128;
             }
         }
     }
     i->ino = lowestExt;
     i->mode = s_ifreg;
-    i->sb = root.sb;
     /* read timestamps */
     protectMode = readTimeStamps(i, lowestExt);
     /* Determine the inode attributes */
     i->attr = 0;
 
-    if (root.sb->dir[lowestExt].name[0] & 0x80) {
+    if (drive.dir[lowestExt].name[0] & 0x80) {
         i->attr |= CPM_ATTR_F1;
     }
 
-    if (root.sb->dir[lowestExt].name[1] & 0x80) {
+    if (drive.dir[lowestExt].name[1] & 0x80) {
         i->attr |= CPM_ATTR_F2;
     }
 
-    if (root.sb->dir[lowestExt].name[2] & 0x80) {
+    if (drive.dir[lowestExt].name[2] & 0x80) {
         i->attr |= CPM_ATTR_F3;
     }
 
-    if (root.sb->dir[lowestExt].name[3] & 0x80) {
+    if (drive.dir[lowestExt].name[3] & 0x80) {
         i->attr |= CPM_ATTR_F4;
     }
 
-    if (root.sb->dir[lowestExt].ext [0] & 0x80) {
+    if (drive.dir[lowestExt].ext [0] & 0x80) {
         i->attr |= CPM_ATTR_RO;
     }
 
-    if (root.sb->dir[lowestExt].ext [1] & 0x80) {
+    if (drive.dir[lowestExt].ext [1] & 0x80) {
         i->attr |= CPM_ATTR_SYS;
     }
 
-    if (root.sb->dir[lowestExt].ext [2] & 0x80) {
+    if (drive.dir[lowestExt].ext [2] & 0x80) {
         i->attr |= CPM_ATTR_ARCV;
     }
 
@@ -1923,13 +1918,13 @@ int CpmTools::cpmNamei(const char *filename, CpmInode_t *i) {
         i->attr |= CPM_ATTR_PWREAD;
     }
 
-    if (root.sb->dir[lowestExt].ext[1] & 0x80) {
+    if (drive.dir[lowestExt].ext[1] & 0x80) {
         i->mode |= 01000;
     }
 
     i->mode |= 0444;
 
-    if (!(root.sb->dir[lowestExt].ext[0] & 0x80)) {
+    if (!(drive.dir[lowestExt].ext[0] & 0x80)) {
         i->mode |= 0222;
     }
 
@@ -1946,19 +1941,17 @@ int CpmTools::cpmNamei(const char *filename, CpmInode_t *i) {
 // --------------------------------------------------------------------------------
 void CpmTools::cpmStatFS(CpmStatFS_t *buf) {
     int i;
-    CpmSuperBlock_t *d;
-    d = root.sb;
-    buf->f_bsize = d->blksiz;
-    buf->f_blocks = d->size;
+    buf->f_bsize = drive.blksiz;
+    buf->f_blocks = drive.size;
     buf->f_bfree = 0;
-    buf->f_bused = -(d->maxdir * 32 + d->blksiz - 1) / d->blksiz;
+    buf->f_bused = -(drive.maxdir * 32 + drive.blksiz - 1) / drive.blksiz;
 
-    for (i = 0; i < d->alvSize; ++i) {
+    for (i = 0; i < drive.alvSize; ++i) {
         int temp, j;
-        temp = *(d->alv + i);
+        temp = *(drive.alv + i);
 
         for (j = 0; j < INTBITS; ++j) {
-            if (i * INTBITS + j < d->size) {
+            if (i * INTBITS + j < drive.size) {
                 if (1 & temp) {
                     ++buf->f_bused;
                 }
@@ -1972,11 +1965,11 @@ void CpmTools::cpmStatFS(CpmStatFS_t *buf) {
     }
 
     buf->f_bavail = buf->f_bfree;
-    buf->f_files = d->maxdir;
+    buf->f_files = drive.maxdir;
     buf->f_ffree = 0;
 
-    for (i = 0; i < d->maxdir; ++i) {
-        if (d->dir[i].status == (char)0xe5) {
+    for (i = 0; i < drive.maxdir; ++i) {
+        if (drive.dir[i].status == (char)0xe5) {
             ++buf->f_ffree;
         }
     }
@@ -1997,7 +1990,7 @@ int CpmTools::cpmUnlink(const char *fname) {
         return (-1);
     }
 
-    if (splitFilename(fname, root.sb->type, name, extension, &user) == -1) {
+    if (splitFilename(fname, drive.type, name, extension, &user) == -1) {
         return (-1);
     }
 
@@ -2031,11 +2024,11 @@ int CpmTools::cpmRename(const char *oldn, const char *newn) {
         return (-1);
     }
 
-    if (splitFilename(oldn, root.sb->type, oldname, oldext, &olduser) == -1) {
+    if (splitFilename(oldn, drive.type, oldname, oldext, &olduser) == -1) {
         return (-1);
     }
 
-    if (splitFilename(newn, root.sb->type, newname, newext, &newuser) == -1) {
+    if (splitFilename(newn, drive.type, newname, newext, &newuser) == -1) {
         return (-1);
     }
 
@@ -2091,7 +2084,7 @@ int CpmTools::cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent) {
         int i;
 
         if (dir->pos == 0) { /* first entry is . */
-            ent->ino = dir->ino->sb->maxdir;
+            ent->ino = drive.maxdir;
             ent->reclen = 1;
             strcpy(ent->name, ".");
             ent->off = dir->pos;
@@ -2099,7 +2092,7 @@ int CpmTools::cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent) {
             return (1);
         }
         else if (dir->pos == 1) { /* next entry is .. */
-            ent->ino = dir->ino->sb->maxdir;
+            ent->ino = drive.maxdir;
             ent->reclen = 2;
             strcpy(ent->name, "..");
             ent->off = dir->pos;
@@ -2107,8 +2100,8 @@ int CpmTools::cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent) {
             return (1);
         }
         else if (dir->pos == 2) {
-            if (dir->ino->sb->passwdLength) { /* next entry is [passwd] */
-                ent->ino = dir->ino->sb->maxdir + 1;
+            if (drive.passwdLength) { /* next entry is [passwd] */
+                ent->ino = drive.maxdir + 1;
                 ent->reclen = 8;
                 strcpy(ent->name, "[passwd]");
                 ent->off = dir->pos;
@@ -2117,8 +2110,8 @@ int CpmTools::cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent) {
             }
         }
         else if (dir->pos == 3) {
-            if (dir->ino->sb->labelLength) { /* next entry is [label] */
-                ent->ino = dir->ino->sb->maxdir + 2;
+            if (drive.labelLength) { /* next entry is [label] */
+                ent->ino = drive.maxdir + 2;
                 ent->reclen = 7;
                 strcpy(ent->name, "[label]");
                 ent->off = dir->pos;
@@ -2126,13 +2119,13 @@ int CpmTools::cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent) {
                 return (1);
             }
         }
-        else if (dir->pos >= RESERVED_ENTRIES && dir->pos < (int)dir->ino->sb->maxdir + RESERVED_ENTRIES) {
+        else if (dir->pos >= RESERVED_ENTRIES && dir->pos < (int)drive.maxdir + RESERVED_ENTRIES) {
             int first = dir->pos - RESERVED_ENTRIES;
 
-            if ((cur = dir->ino->sb->dir + (dir->pos - RESERVED_ENTRIES))->status >= 0 && cur->status <= (dir->ino->sb->type & CPMFS_HI_USER ? 31 : 15)) {
+            if ((cur = drive.dir + (dir->pos - RESERVED_ENTRIES))->status >= 0 && cur->status <= (drive.type & CPMFS_HI_USER ? 31 : 15)) {
                 /* determine first extent for the current file */
-                for (i = 0; i < dir->ino->sb->maxdir; ++i) if (i != (dir->pos - RESERVED_ENTRIES)) {
-                        if (isMatching(cur->status, cur->name, cur->ext, dir->ino->sb->dir[i].status, dir->ino->sb->dir[i].name, dir->ino->sb->dir[i].ext) && EXTENT(cur->extnol, cur->extnoh) > EXTENT(dir->ino->sb->dir[i].extnol, dir->ino->sb->dir[i].extnoh)) {
+                for (i = 0; i < drive.maxdir; ++i) if (i != (dir->pos - RESERVED_ENTRIES)) {
+                        if (isMatching(cur->status, cur->name, cur->ext, drive.dir[i].status, drive.dir[i].name, drive.dir[i].ext) && EXTENT(cur->extnol, cur->extnoh) > EXTENT(drive.dir[i].extnol, drive.dir[i].extnoh)) {
                             first = i;
                         }
                     }
@@ -2211,33 +2204,33 @@ int CpmTools::cpmOpen(CpmInode_t *ino, CpmFile_t *file, mode_t mode) {
 // --------------------------------------------------------------------------------
 int CpmTools::cpmRead(CpmFile_t *file, char *buf, int count) {
     int findext = 1, findblock = 1, extent = -1, block = -1, extentno = -1, got = 0, nextblockpos = -1, nextextpos = -1;
-    int blocksize = file->ino->sb->blksiz;
+    int blocksize = drive.blksiz;
     int extcap;
-    extcap = (file->ino->sb->size < 256 ? 16 : 8) * blocksize;
+    extcap = (drive.size < 256 ? 16 : 8) * blocksize;
 
     if (extcap > 16384) {
-        extcap = 16384 * file->ino->sb->extents;
+        extcap = 16384 * drive.extents;
     }
 
-    if (file->ino->ino == (ino_t)file->ino->sb->maxdir + 1) {   /* [passwd] */
+    if (file->ino->ino == (ino_t)drive.maxdir + 1) {   /* [passwd] */
         if ((file->pos + count) > file->ino->size) {
             count = file->ino->size - file->pos;
         }
 
         if (count) {
-            memcpy(buf, file->ino->sb->passwd + file->pos, count);
+            memcpy(buf, drive.passwd + file->pos, count);
         }
 
         file->pos += count;
         return (count);
     }
-    else if (file->ino->ino == (ino_t)file->ino->sb->maxdir + 2) {  /* [label] */
+    else if (file->ino->ino == (ino_t)drive.maxdir + 2) {  /* [label] */
         if ((file->pos + count) > file->ino->size) {
             count = file->ino->size - file->pos;
         }
 
         if (count) {
-            memcpy(buf, file->ino->sb->label + file->pos, count);
+            memcpy(buf, drive.label + file->pos, count);
         }
 
         file->pos += count;
@@ -2248,7 +2241,7 @@ int CpmTools::cpmRead(CpmFile_t *file, char *buf, int count) {
 
             if (findext) {
                 extentno = file->pos / 16384;
-                extent = findFileExtent(file->ino->sb->dir[file->ino->ino].status, file->ino->sb->dir[file->ino->ino].name, file->ino->sb->dir[file->ino->ino].ext, 0, extentno);
+                extent = findFileExtent(drive.dir[file->ino->ino].status, drive.dir[file->ino->ino].name, drive.dir[file->ino->ino].ext, 0, extentno);
                 nextextpos = (file->pos / extcap) * extcap + extcap;
                 findext = 0;
                 findblock = 1;
@@ -2259,22 +2252,22 @@ int CpmTools::cpmRead(CpmFile_t *file, char *buf, int count) {
                     int start, end, ptr;
                     ptr = (file->pos % extcap) / blocksize;
 
-                    if (file->ino->sb->size >= 256) {
+                    if (drive.size >= 256) {
                         ptr *= 2;
                     }
 
-                    block = (unsigned char)file->ino->sb->dir[extent].pointers[ptr];
+                    block = (unsigned char)drive.dir[extent].pointers[ptr];
 
-                    if (file->ino->sb->size >= 256) {
-                        block += ((unsigned char)file->ino->sb->dir[extent].pointers[ptr + 1]) << 8;
+                    if (drive.size >= 256) {
+                        block += ((unsigned char)drive.dir[extent].pointers[ptr + 1]) << 8;
                     }
 
                     if (block == 0) {
                         memset(buffer, 0, blocksize);
                     }
                     else {
-                        start = (file->pos % blocksize) / file->ino->sb->secLength;
-                        end = ((file->pos % blocksize + count) > blocksize ? blocksize - 1 : (file->pos % blocksize + count - 1)) / file->ino->sb->secLength;
+                        start = (file->pos % blocksize) / drive.secLength;
+                        end = ((file->pos % blocksize + count) > blocksize ? blocksize - 1 : (file->pos % blocksize + count - 1)) / drive.secLength;
 
                         if (readBlock(block, buffer, start, end) == -1) {
                             if (got == 0) {
@@ -2318,15 +2311,15 @@ int CpmTools::cpmRead(CpmFile_t *file, char *buf, int count) {
 // --------------------------------------------------------------------------------
 int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
     int findext = 1, findblock = -1, extent = -1, extentno = -1, got = 0, nextblockpos = -1, nextextpos = -1;
-    int blocksize = file->ino->sb->blksiz;
-    int extcap = (file->ino->sb->size < 256 ? 16 : 8) * blocksize;
+    int blocksize = drive.blksiz;
+    int extcap = (drive.size < 256 ? 16 : 8) * blocksize;
     int block = -1, start = -1, end = -1, ptr = -1, last = -1;
     char buffer[16384];
 
     while (count > 0) {
         if (findext) {
             extentno = file->pos / 16384;
-            extent = findFileExtent(file->ino->sb->dir[file->ino->ino].status, file->ino->sb->dir[file->ino->ino].name, file->ino->sb->dir[file->ino->ino].ext, 0, extentno);
+            extent = findFileExtent(drive.dir[file->ino->ino].status, drive.dir[file->ino->ino].name, drive.dir[file->ino->ino].ext, 0, extentno);
             nextextpos = (file->pos / extcap) * extcap + extcap;
 
             if (extent == -1) {
@@ -2334,12 +2327,12 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
                     return (got == 0 ? -1 : got);
                 }
 
-                file->ino->sb->dir[extent] = file->ino->sb->dir[file->ino->ino];
-                memset(file->ino->sb->dir[extent].pointers, 0, 16);
-                file->ino->sb->dir[extent].extnol = EXTENTL(extentno);
-                file->ino->sb->dir[extent].extnoh = EXTENTH(extentno);
-                file->ino->sb->dir[extent].blkcnt = 0;
-                file->ino->sb->dir[extent].lrc = 0;
+                drive.dir[extent] = drive.dir[file->ino->ino];
+                memset(drive.dir[extent].pointers, 0, 16);
+                drive.dir[extent].extnol = EXTENTL(extentno);
+                drive.dir[extent].extnoh = EXTENTH(extentno);
+                drive.dir[extent].blkcnt = 0;
+                drive.dir[extent].lrc = 0;
                 time(&file->ino->ctime);
                 updateTimeStamps(file->ino, extent);
                 updateDsStamps(file->ino, extent);
@@ -2352,14 +2345,14 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
         if (findblock) {
             ptr = (file->pos % extcap) / blocksize;
 
-            if (file->ino->sb->size >= 256) {
+            if (drive.size >= 256) {
                 ptr *= 2;
             }
 
-            block = (unsigned char)file->ino->sb->dir[extent].pointers[ptr];
+            block = (unsigned char)drive.dir[extent].pointers[ptr];
 
-            if (file->ino->sb->size >= 256) {
-                block += ((unsigned char)file->ino->sb->dir[extent].pointers[ptr + 1]) << 8;
+            if (drive.size >= 256) {
+                block += ((unsigned char)drive.dir[extent].pointers[ptr + 1]) << 8;
             }
 
             if (block == 0) {   /* allocate new block, set start/end to cover it */
@@ -2367,10 +2360,10 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
                     return (got == 0 ? -1 : got);
                 }
 
-                file->ino->sb->dir[extent].pointers[ptr] = block & 0xff;
+                drive.dir[extent].pointers[ptr] = block & 0xff;
 
-                if (file->ino->sb->size >= 256) {
-                    file->ino->sb->dir[extent].pointers[ptr + 1] = (block >> 8) & 0xff;
+                if (drive.size >= 256) {
+                    drive.dir[extent].pointers[ptr + 1] = (block >> 8) & 0xff;
                 }
 
                 start = 0;
@@ -2379,17 +2372,17 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
                  * wiped from the disk, which is slow, but convenient in
                  * case of sparse files.
                  */
-                end = (blocksize - 1) / file->ino->sb->secLength;
+                end = (blocksize - 1) / drive.secLength;
                 memset(buffer, 0, blocksize);
                 time(&file->ino->ctime);
                 updateTimeStamps(file->ino, extent);
                 updateDsStamps(file->ino, extent);
             }
             else  { /* read existing block and set start/end to cover modified parts */
-                start = (file->pos % blocksize) / file->ino->sb->secLength;
-                end = ((file->pos % blocksize + count) >= blocksize ? blocksize - 1 : (file->pos % blocksize + count - 1)) / file->ino->sb->secLength;
+                start = (file->pos % blocksize) / drive.secLength;
+                end = ((file->pos % blocksize + count) >= blocksize ? blocksize - 1 : (file->pos % blocksize + count - 1)) / drive.secLength;
 
-                if (file->pos % file->ino->sb->secLength) {
+                if (file->pos % drive.secLength) {
                     if (readBlock(block, buffer, start, start) == -1) {
                         if (got == 0) {
                             got = -1;
@@ -2399,7 +2392,7 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
                     }
                 }
 
-                if (end != start && file->pos % blocksize + count < blocksize && (file->pos + count) % file->ino->sb->secLength) {
+                if (end != start && file->pos % blocksize + count < blocksize && (file->pos + count) % drive.secLength) {
                     if (readBlock(block, buffer, end, end) == -1) {
                         if (got == 0) {
                             got = -1;
@@ -2415,7 +2408,7 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
         }
 
         /* fill block and write it */
-        file->ino->sb->dirtyDirectory = 1;
+        drive.dirtyDirectory = 1;
 
         while (file->pos != nextblockpos && count) {
             buffer[file->pos % blocksize] = *buf++;
@@ -2436,13 +2429,13 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
         writeBlock(block, buffer, start, end);
         time(&file->ino->mtime);
 
-        if (file->ino->sb->size < 256) for (last = 15; last >= 0; --last) {
-                if (file->ino->sb->dir[extent].pointers[last]) {
+        if (drive.size < 256) for (last = 15; last >= 0; --last) {
+                if (drive.dir[extent].pointers[last]) {
                     break;
                 }
             }
         else for (last = 14; last > 0; last -= 2) {
-                if (file->ino->sb->dir[extent].pointers[last] || file->ino->sb->dir[extent].pointers[last + 1]) {
+                if (drive.dir[extent].pointers[last] || drive.dir[extent].pointers[last + 1]) {
                     last /= 2;
                     break;
                 }
@@ -2452,15 +2445,15 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
             extentno += (last * blocksize) / extcap;
         }
 
-        file->ino->sb->dir[extent].extnol = EXTENTL(extentno);
-        file->ino->sb->dir[extent].extnoh = EXTENTH(extentno);
-        file->ino->sb->dir[extent].blkcnt = ((file->pos - 1) % 16384) / 128 + 1;
+        drive.dir[extent].extnol = EXTENTL(extentno);
+        drive.dir[extent].extnoh = EXTENTH(extentno);
+        drive.dir[extent].blkcnt = ((file->pos - 1) % 16384) / 128 + 1;
 
-        if (file->ino->sb->type & CPMFS_EXACT_SIZE) {
-            file->ino->sb->dir[extent].lrc = (128 - (file->pos % 128)) & 0x7F;
+        if (drive.type & CPMFS_EXACT_SIZE) {
+            drive.dir[extent].lrc = (128 - (file->pos % 128)) & 0x7F;
         }
         else {
-            file->ino->sb->dir[extent].lrc = file->pos % 128;
+            drive.dir[extent].lrc = file->pos % 128;
         }
 
         updateTimeStamps(file->ino, extent);
@@ -2485,7 +2478,7 @@ int CpmTools::cpmClose(CpmFile_t *file) {
 }
 
 // --------------------------------------------------------------------------------
-//  -- creat
+//  -- creat new cpm file
 // --------------------------------------------------------------------------------
 int CpmTools::cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode_t mode) {
     int user;
@@ -2498,7 +2491,7 @@ int CpmTools::cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode
         return (-1);
     }
 
-    if (splitFilename(fname, dir->sb->type, name, extension, &user) == -1) {
+    if (splitFilename(fname, drive.type, name, extension, &user) == -1) {
         return (-1);
     }
 
@@ -2510,7 +2503,7 @@ int CpmTools::cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode
         return (-1);
     }
 
-    ent = dir->sb->dir + extent;
+    ent = drive.dir + extent;
     drive.dirtyDirectory = 1;
     memset(ent, 0, 32);
     ent->status = user;
@@ -2522,7 +2515,6 @@ int CpmTools::cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode
     time(&ino->atime);
     time(&ino->mtime);
     time(&ino->ctime);
-    ino->sb = dir->sb;
     updateTimeStamps(ino, extent);
     updateDsStamps(ino, extent);
     return (0);
@@ -2619,8 +2611,8 @@ int CpmTools::cpmProtSet(CpmInode_t *ino, mode_t pmode) {
         protectMode |= 0x80;
     }
 
-    if ((ino->sb->type & CPMFS_CPM3_DATES) && (date = ino->sb->dir + (lowestExt | 3))->status == 0x21) {
-        ino->sb->dirtyDirectory = 1;
+    if ((drive.type & CPMFS_CPM3_DATES) && (date = drive.dir + (lowestExt | 3))->status == 0x21) {
+        drive.dirtyDirectory = 1;
 
         switch (lowestExt & 3) {
             case 0: {
@@ -2822,7 +2814,7 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
         }
 
         cpmReadSuper(format);
-        records = root.sb->maxdir / 8;
+        records = drive.maxdir / 8;
 
         if (!(ds = (DsDate_t *)malloc(records * 128))) {
             cpmUmount();
@@ -2847,8 +2839,7 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
             return -1;
         }
 
-        root.sb->ds = ds;
-        root.sb->dirtyDs = 1;
+        drive.dirtyDs = 1;
         cpmUmount();
     }
 
@@ -2965,18 +2956,17 @@ int CpmTools::fsck(const char *image, bool repair) {
     int ret = OK;
     int extent, extent2;
     PhysDirectoryEntry_t *dir, *dir2;
-    CpmSuperBlock_t *sb = root.sb;
     /* Phase 1: check extent fields */
     guiintf->printMsg("====================================================================================================\n", CpmGuiInterface::msgColGreen);
     guiintf->printMsg("  Phase 1: check extent fields\n", CpmGuiInterface::msgColGreen);
 
-    for (extent = 0; extent < sb->maxdir; ++extent) {
+    for (extent = 0; extent < drive.maxdir; ++extent) {
         char *status;
         int usedBlocks = 0;
-        dir = sb->dir + extent;
+        dir = drive.dir + extent;
         status = &dir->status;
 
-        if (*status >= 0 && *status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) { /* directory entry */
+        if (*status >= 0 && *status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) { /* directory entry */
             /* check name and extension */
             {
                 int i;
@@ -3078,13 +3068,13 @@ int CpmTools::fsck(const char *image, bool repair) {
             /* check block number range */
             {
                 int block, min, max, i;
-                min = (sb->maxdir * 32 + sb->blksiz - 1) / sb->blksiz;
-                max = sb->size;
+                min = (drive.maxdir * 32 + drive.blksiz - 1) / drive.blksiz;
+                max = drive.size;
 
                 for (i = 0; i < 16; ++i) {
                     block = dir->pointers[i] & 0xff;
 
-                    if (sb->size >= 256) {
+                    if (drive.size >= 256) {
                         block += (dir->pointers[++i] & 0xff) << 8;
                     }
 
@@ -3114,23 +3104,23 @@ int CpmTools::fsck(const char *image, bool repair) {
             /* check record count */
             {
                 int i, min, max, recordsInBlocks, used = 0;
-                min = (dir->extnol % sb->extents) * 16 / sb->extents;
-                max = ((dir->extnol % sb->extents) + 1) * 16 / sb->extents;
+                min = (dir->extnol % drive.extents) * 16 / drive.extents;
+                max = ((dir->extnol % drive.extents) + 1) * 16 / drive.extents;
                 assert(min < max);
 
                 for (i = min; i < max; ++i) {
                     /* [JCE] Rewritten because the previous implementation didn't work
                      *       properly with Visual C++ */
-                    if (dir->pointers[i] || (sb->size >= 256 && dir->pointers[i + 1])) {
+                    if (dir->pointers[i] || (drive.size >= 256 && dir->pointers[i + 1])) {
                         ++used;
                     }
 
-                    if (sb->size >= 256) {
+                    if (drive.size >= 256) {
                         ++i;
                     }
                 }
 
-                recordsInBlocks = (((unsigned char)dir->blkcnt) * 128 + sb->blksiz - 1) / sb->blksiz;
+                recordsInBlocks = (((unsigned char)dir->blkcnt) * 128 + drive.blksiz - 1) / drive.blksiz;
 
                 if (recordsInBlocks != used) {
                     guiintf->printMsg(wxString::Format("    Error: Bad record count (extent=%d, name=\"%s\", record count=%d)\n", extent, prfile(extent), dir->blkcnt & 0xff), CpmGuiInterface::msgColGreen);
@@ -3154,59 +3144,59 @@ int CpmTools::fsck(const char *image, bool repair) {
                 guiintf->printMsg(wxString::Format("    Warning: Oversized .COM file (extent=%d, name=\"%s\")\n", extent, prfile(extent)), CpmGuiInterface::msgColGreen);
             }
         }
-        else if ((sb->type == CPMFS_P2DOS || sb->type == CPMFS_DR3) && *status == 33) { /* check time stamps ? */
+        else if ((drive.type == CPMFS_P2DOS || drive.type == CPMFS_DR3) && *status == 33) { /* check time stamps ? */
             unsigned long created, modified;
             char s;
 
-            if ((s = sb->dir[extent2 = (extent & ~3)].status) >= 0 && s <= (sb->type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for first of the three extents */
-                bcdCheck(dir->name[2], 24, sb->cnotatime ? "creation date" : "access date", "hour", extent, extent2);
-                bcdCheck(dir->name[3], 60, sb->cnotatime ? "creation date" : "access date", "minute", extent, extent2);
+            if ((s = drive.dir[extent2 = (extent & ~3)].status) >= 0 && s <= (drive.type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for first of the three extents */
+                bcdCheck(dir->name[2], 24, drive.cnotatime ? "creation date" : "access date", "hour", extent, extent2);
+                bcdCheck(dir->name[3], 60, drive.cnotatime ? "creation date" : "access date", "minute", extent, extent2);
                 bcdCheck(dir->name[6], 24, "modification date", "hour", extent, extent2);
                 bcdCheck(dir->name[7], 60, "modification date", "minute", extent, extent2);
                 created = (dir->name[4] + (dir->name[1] << 8)) * (0x60 * 0x60) + dir->name[2] * 0x60 + dir->name[3];
                 modified = (dir->name[0] + (dir->name[5] << 8)) * (0x60 * 0x60) + dir->name[6] * 0x60 + dir->name[7];
 
-                if (sb->cnotatime && modified < created) {
+                if (drive.cnotatime && modified < created) {
                     guiintf->printMsg(wxString::Format("    Warning: Modification date earlier than creation date (extent=%d/%d)\n", extent, extent2), CpmGuiInterface::msgColGreen);
                 }
             }
 
-            if ((s = sb->dir[extent2 = (extent & ~3) + 1].status) >= 0 && s <= (sb->type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for second */
-                bcdCheck(dir->lrc, 24, sb->cnotatime ? "creation date" : "access date", "hour", extent, extent2);
-                bcdCheck(dir->extnoh, 60, sb->cnotatime ? "creation date" : "access date", "minute", extent, extent2);
+            if ((s = drive.dir[extent2 = (extent & ~3) + 1].status) >= 0 && s <= (drive.type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for second */
+                bcdCheck(dir->lrc, 24, drive.cnotatime ? "creation date" : "access date", "hour", extent, extent2);
+                bcdCheck(dir->extnoh, 60, drive.cnotatime ? "creation date" : "access date", "minute", extent, extent2);
                 bcdCheck(dir->pointers[1], 24, "modification date", "hour", extent, extent2);
                 bcdCheck(dir->pointers[2], 60, "modification date", "minute", extent, extent2);
                 created = (dir->ext[2] + (dir->extnol << 8)) * (0x60 * 0x60) + dir->lrc * 0x60 + dir->extnoh;
                 modified = (dir->blkcnt + (dir->pointers[0] << 8)) * (0x60 * 0x60) + dir->pointers[1] * 0x60 + dir->pointers[2];
 
-                if (sb->cnotatime && modified < created) {
+                if (drive.cnotatime && modified < created) {
                     guiintf->printMsg(wxString::Format("    Warning: Modification date earlier than creation date (extent=%d/%d)\n", extent, extent2), CpmGuiInterface::msgColGreen);
                 }
             }
 
-            if ((s = sb->dir[extent2 = (extent & ~3) + 2].status) >= 0 && s <= (sb->type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for third */
-                bcdCheck(dir->pointers[7], 24, sb->cnotatime ? "creation date" : "access date", "hour", extent, extent2);
-                bcdCheck(dir->pointers[8], 60, sb->cnotatime ? "creation date" : "access date", "minute", extent, extent2);
+            if ((s = drive.dir[extent2 = (extent & ~3) + 2].status) >= 0 && s <= (drive.type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for third */
+                bcdCheck(dir->pointers[7], 24, drive.cnotatime ? "creation date" : "access date", "hour", extent, extent2);
+                bcdCheck(dir->pointers[8], 60, drive.cnotatime ? "creation date" : "access date", "minute", extent, extent2);
                 bcdCheck(dir->pointers[11], 24, "modification date", "hour", extent, extent2);
                 bcdCheck(dir->pointers[12], 60, "modification date", "minute", extent, extent2);
                 created = (dir->pointers[5] + (dir->pointers[6] << 8)) * (0x60 * 0x60) + dir->pointers[7] * 0x60 + dir->pointers[8];
                 modified = (dir->pointers[9] + (dir->pointers[10] << 8)) * (0x60 * 0x60) + dir->pointers[11] * 0x60 + dir->pointers[12];
 
-                if (sb->cnotatime && modified < created) {
+                if (drive.cnotatime && modified < created) {
                     guiintf->printMsg(wxString::Format("    Warning: Modification date earlier than creation date (extent=%d/%d)\n", extent, extent2), CpmGuiInterface::msgColGreen);
                 }
             }
         }
-        else if (sb->type == CPMFS_DR3 && *status == 32) { /* disc label */
+        else if (drive.type == CPMFS_DR3 && *status == 32) { /* disc label */
             unsigned long created, modified;
-            bcdCheck(dir->pointers[10], 24, sb->cnotatime ? "creation date" : "access date", "hour", extent, extent);
-            bcdCheck(dir->pointers[11], 60, sb->cnotatime ? "creation date" : "access date", "minute", extent, extent);
+            bcdCheck(dir->pointers[10], 24, drive.cnotatime ? "creation date" : "access date", "hour", extent, extent);
+            bcdCheck(dir->pointers[11], 60, drive.cnotatime ? "creation date" : "access date", "minute", extent, extent);
             bcdCheck(dir->pointers[14], 24, "modification date", "hour", extent, extent);
             bcdCheck(dir->pointers[15], 60, "modification date", "minute", extent, extent);
             created = (dir->pointers[8] + (dir->pointers[9] << 8)) * (0x60 * 0x60) + dir->pointers[10] * 0x60 + dir->pointers[11];
             modified = (dir->pointers[12] + (dir->pointers[13] << 8)) * (0x60 * 0x60) + dir->pointers[14] * 0x60 + dir->pointers[15];
 
-            if (sb->cnotatime && modified < created) {
+            if (drive.cnotatime && modified < created) {
                 guiintf->printMsg(wxString::Format("    Warning: Label modification date earlier than creation date (extent=%d)\n", extent), CpmGuiInterface::msgColGreen);
             }
 
@@ -3247,7 +3237,7 @@ int CpmTools::fsck(const char *image, bool repair) {
                 }
             }
         }
-        else if (sb->type == CPMFS_DR3 && *status >= 16 && *status <= 31) { /* password */
+        else if (drive.type == CPMFS_DR3 && *status >= 16 && *status <= 31) { /* password */
             /* check name and extension */
             {
                 int i;
@@ -3337,21 +3327,21 @@ int CpmTools::fsck(const char *image, bool repair) {
     guiintf->printMsg("  Phase 2: check extent connectivity\n", CpmGuiInterface::msgColGreen);
 
     /* check multiple allocated blocks */
-    for (extent = 0; extent < sb->maxdir; ++extent) if ((dir = sb->dir + extent)->status >= 0 && dir->status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) {
+    for (extent = 0; extent < drive.maxdir; ++extent) if ((dir = drive.dir + extent)->status >= 0 && dir->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
             int i, j, block, block2;
 
             for (i = 0; i < 16; ++i) {
                 block = dir->pointers[i] & 0xff;
 
-                if (sb->size >= 256) {
+                if (drive.size >= 256) {
                     block += (dir->pointers[++i] & 0xff) << 8;
                 }
 
-                for (extent2 = 0; extent2 < sb->maxdir; ++extent2) if ((dir2 = sb->dir + extent2)->status >= 0 && dir2->status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) {
+                for (extent2 = 0; extent2 < drive.maxdir; ++extent2) if ((dir2 = drive.dir + extent2)->status >= 0 && dir2->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
                         for (j = 0; j < 16; ++j) {
                             block2 = dir2->pointers[j] & 0xff;
 
-                            if (sb->size >= 256) {
+                            if (drive.size >= 256) {
                                 block2 += (dir2->pointers[++j] & 0xff) << 8;
                             }
 
@@ -3366,8 +3356,8 @@ int CpmTools::fsck(const char *image, bool repair) {
         }
 
     /* check multiple extents */
-    for (extent = 0; extent < sb->maxdir; ++extent) if ((dir = sb->dir + extent)->status >= 0 && dir->status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) {
-            for (extent2 = 0; extent2 < sb->maxdir; ++extent2) if ((dir2 = sb->dir + extent2)->status >= 0 && dir2->status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) {
+    for (extent = 0; extent < drive.maxdir; ++extent) if ((dir = drive.dir + extent)->status >= 0 && dir->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
+            for (extent2 = 0; extent2 < drive.maxdir; ++extent2) if ((dir2 = drive.dir + extent2)->status >= 0 && dir2->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
                     if (extent != extent2 && EXTENT(dir->extnol, dir->extnoh) == EXTENT(dir2->extnol, dir2->extnoh) && dir->status == dir2->status) {
                         int i;
 
@@ -3390,13 +3380,13 @@ int CpmTools::fsck(const char *image, bool repair) {
         int fragmented = 0, borders = 0;
         cpmStatFS(&statfsbuf);
 
-        for (extent = 0; extent < sb->maxdir; ++extent) if ((dir = sb->dir + extent)->status >= 0 && dir->status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) {
+        for (extent = 0; extent < drive.maxdir; ++extent) if ((dir = drive.dir + extent)->status >= 0 && dir->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
                 int i, block, previous = -1;
 
                 for (i = 0; i < 16; ++i) {
                     block = dir->pointers[i] & 0xff;
 
-                    if (sb->size >= 256) {
+                    if (drive.size >= 256) {
                         block += (dir->pointers[++i] & 0xff) << 8;
                     }
 

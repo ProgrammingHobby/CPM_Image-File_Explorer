@@ -64,7 +64,6 @@ class CpmTools {
             FILE *file;
         } Device_t;
 
-        struct CpmSuperBlock;
         typedef struct {
             ino_t ino;
             mode_t mode;
@@ -73,7 +72,6 @@ class CpmTools {
             time_t atime;
             time_t mtime;
             time_t ctime;
-            CpmSuperBlock *sb;
         } CpmInode_t;
 
         typedef struct {
@@ -102,7 +100,7 @@ class CpmTools {
             char checksum;
         } DsDate_t;
 
-        typedef struct CpmSuperBlock {
+        typedef struct {
             int secLength;
             int tracks;
             int sectrk;
@@ -123,7 +121,6 @@ class CpmTools {
             size_t labelLength;
             char *passwd;
             size_t passwdLength;
-            CpmInode_t *root;
             int dirtyDirectory;
             DsDate_t *ds;
             int dirtyDs;
