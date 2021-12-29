@@ -1760,7 +1760,7 @@ int CpmTools::cpmSync() {
 }
 
 // --------------------------------------------------------------------------------
-//  -- free super block
+//  -- free actual drive
 // --------------------------------------------------------------------------------
 void CpmTools::cpmUmount() {
     cpmSync();
@@ -1775,6 +1775,10 @@ void CpmTools::cpmUmount() {
 
     if (drive.passwdLength) {
         free(drive.passwd);
+    }
+
+    if (drive.labelLength) {
+        free(drive.label);
     }
 }
 
