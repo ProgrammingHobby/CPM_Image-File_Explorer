@@ -19,8 +19,8 @@
 **
 ***********************************************************************************/
 
-#ifndef IMAGEFILETOOLS_H
-#define IMAGEFILETOOLS_H
+#ifndef CPMTOOLS_H
+#define CPMTOOLS_H
 // --------------------------------------------------------------------------------
 #include <string>
 #include <utime.h>
@@ -247,4 +247,4 @@ class CpmTools {
 };
 
 // --------------------------------------------------------------------------------
-#endif // IMAGEFILETOOLS_H
+#endif // CPMTOOLS_H
