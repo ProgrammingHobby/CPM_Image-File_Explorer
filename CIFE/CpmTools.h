@@ -169,7 +169,6 @@ class CpmTools {
         std::string cmd;
         mode_t s_ifdir = 1;
         mode_t s_ifreg = 1;
-        bool boottracksused;
         int norepair;
 
         const char *month[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };

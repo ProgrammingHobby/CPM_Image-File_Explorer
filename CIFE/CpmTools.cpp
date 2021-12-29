@@ -46,6 +46,10 @@ void CpmTools::setImageFile(wxString fileName) {
     imageFileName = fileName;
 }
 
+// --------------------------------------------------------------------------------
+bool CpmTools::getBootTracksEnabled() {
+    return ((drive.boottrk > 0) ? true : false);
+}
 
 // --------------------------------------------------------------------------------
 void CpmTools::showDirectory() {
@@ -297,11 +301,6 @@ void CpmTools::setFileProtections(wxString name, int protections) {
     if ((err = deviceClose())) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
     }
-}
-
-// --------------------------------------------------------------------------------
-bool CpmTools::getBootTracksEnabled() {
-    return (boottracksused);
 }
 
 // --------------------------------------------------------------------------------
@@ -1523,7 +1522,6 @@ int CpmTools::cpmReadSuper(const char *format) {
         diskdefReadSuper(format);
     }
 
-    boottracksused = (drive.boottrk > 0) ? true : false;
     boo = deviceSetGeometry(drive.secLength, drive.sectrk, drive.tracks, drive.offset);
 
     if (boo) {
