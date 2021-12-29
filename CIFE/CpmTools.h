@@ -177,7 +177,7 @@ class CpmTools {
         // Basic File Input/Output
         // --------------------------------------------------------------------------------
         const char *deviceOpen(const char *filename, const char *mode);
-        const char *deviceSetGeometry(int secLength, int sectrk, int tracks, long offset);
+        void deviceSetGeometry(int secLength, int sectrk, int tracks, long offset);
         const char *deviceClose();
         const char *deviceReadSector(int track, int sector, char *buffer);
         const char *deviceWriteSector(int track, int sector, const char *buffer);

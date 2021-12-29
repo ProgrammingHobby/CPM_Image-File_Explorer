@@ -409,12 +409,11 @@ const char *CpmTools::deviceOpen(const char *filename, const char *mode) {
 }
 
 // --------------------------------------------------------------------------------
-const char *CpmTools::deviceSetGeometry(int secLength, int sectrk, int tracks, long offset) {
+void CpmTools::deviceSetGeometry(int secLength, int sectrk, int tracks, long offset) {
     device.secLength = secLength;
     device.sectrk = sectrk;
     device.tracks = tracks;
     device.offset = offset;
-    return ((const char *)0);
 }
 
 //--------------------------------------------------------------------------------
@@ -1522,11 +1521,7 @@ int CpmTools::cpmReadSuper(const char *format) {
         diskdefReadSuper(format);
     }
 
-    boo = deviceSetGeometry(drive.secLength, drive.sectrk, drive.tracks, drive.offset);
-
-    if (boo) {
-        return (-1);
-    }
+    deviceSetGeometry(drive.secLength, drive.sectrk, drive.tracks, drive.offset);
 
     if (drive.skewtab == (int *)0) { /* generate skew table */
         int	i, j, k;
