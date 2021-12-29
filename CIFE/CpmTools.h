@@ -180,11 +180,11 @@ class CpmTools {
         // --------------------------------------------------------------------------------
         // Basic File Input/Output
         // --------------------------------------------------------------------------------
-        const char *Device_Open(Device_t *device, const char *filename, const char *mode);
-        const char *Device_SetGeometry(Device_t *device, int secLength, int sectrk, int tracks, long offset);
-        const char *Device_Close(Device_t *device);
-        const char *Device_ReadSector(const Device_t *device, int track, int sector, char *buffer);
-        const char *Device_WriteSector(const Device_t *device, int track, int sector, const char *buffer);
+        const char *deviceOpen(Device_t *device, const char *filename, const char *mode);
+        const char *deviceSetGeometry(Device_t *device, int secLength, int sectrk, int tracks, long offset);
+        const char *deviceClose(Device_t *device);
+        const char *deviceReadSector(const Device_t *device, int track, int sector, char *buffer);
+        const char *deviceWriteSector(const Device_t *device, int track, int sector, const char *buffer);
         // --------------------------------------------------------------------------------
         // CP/M File-System
         // --------------------------------------------------------------------------------
