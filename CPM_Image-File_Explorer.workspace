@@ -10,7 +10,7 @@
       <Environment/>
       <Project Name="CIFE" ConfigName="Release - GTK wx3.0 dynamic"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release-MSW_static" Selected="yes">
+    <WorkspaceConfiguration Name="Release-MSW_static" Selected="no">
       <Environment/>
       <Project Name="CIFE" ConfigName="Release - MSW static"/>
     </WorkspaceConfiguration>
@@ -18,7 +18,7 @@
       <Environment/>
       <Project Name="CIFE" ConfigName="Debug - MSW static"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Debug-GTK_wx3.1_static" Selected="no">
+    <WorkspaceConfiguration Name="Debug-GTK_wx3.1_static" Selected="yes">
       <Environment/>
       <Project Name="CIFE" ConfigName="Debug - GTK wx3.1 static"/>
     </WorkspaceConfiguration>
