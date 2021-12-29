@@ -165,6 +165,7 @@ class CpmTools {
 
         CpmGuiInterface *guiintf;
         Device_t device;
+        CpmSuperBlock_t drive;
         std::string imageTypeName;
         std::string imageFileName;
         const char *boo;
@@ -195,12 +196,12 @@ class CpmTools {
         void unix2cpm_time(time_t now, int *days, int *hour, int *min);
         time_t ds2unix_time(const DsEntry_t *entry);
         void unix2ds_time(time_t now, DsEntry_t *entry);
-        void alvInit(const CpmSuperBlock_t *d);
-        int allocBlock(const CpmSuperBlock_t *drive);
-        int readBlock(const CpmSuperBlock_t *d, int blockno, char *buffer, int start, int end);
-        int writeBlock(const CpmSuperBlock_t *d, int blockno, const char *buffer, int start, int end);
-        int findFileExtent(const CpmSuperBlock_t *sb, int user, const char *name, const char *ext, int start, int extno);
-        int findFreeExtent(const CpmSuperBlock_t *drive);
+        void alvInit();
+        int allocBlock();
+        int readBlock(int blockno, char *buffer, int start, int end);
+        int writeBlock(int blockno, const char *buffer, int start, int end);
+        int findFileExtent(int user, const char *name, const char *ext, int start, int extno);
+        int findFreeExtent();
         void updateTimeStamps(const CpmInode_t *ino, int extent);
         void updateDsStamps(const CpmInode_t *ino, int extent);
         int readTimeStamps(CpmInode_t *i, int lowestExt);
@@ -208,13 +209,13 @@ class CpmTools {
         int recmatch(const char *a, const char *pattern);
         int match(const char *a, const char *pattern);
         void cpmglob(const char *argv, CpmInode_t *root, int *gargc, char ***gargv);
-        int diskdefReadSuper(CpmSuperBlock_t *d, const char *format);
-        int amsReadSuper(CpmSuperBlock_t *d, const char *format);
-        int cpmCheckDs(CpmSuperBlock_t *sb);
-        int cpmReadSuper(CpmSuperBlock_t *d, CpmInode_t *root, const char *format);
-        int syncDs(const CpmSuperBlock_t *sb);
-        int cpmSync(CpmSuperBlock_t *sb);
-        void cpmUmount(CpmSuperBlock_t *sb);
+        int diskdefReadSuper(const char *format);
+        int amsReadSuper(const char *format);
+        int cpmCheckDs();
+        int cpmReadSuper(CpmInode_t *root, const char *format);
+        int syncDs();
+        int cpmSync();
+        void cpmUmount();
         int cpmNamei(const CpmInode_t *dir, const char *filename, CpmInode_t *i);
         void cpmStatFS(const CpmInode_t *ino, CpmStatFS_t *buf);
         int cpmUnlink(const CpmInode_t *dir, const char *fname);
@@ -241,7 +242,7 @@ class CpmTools {
         int pwdCheck(int extent, const char *pwd, char decode);
         int ask(const char *msg);
         char *prfile(CpmSuperBlock_t *sb, int extent);
-        int mkfs(CpmSuperBlock_t *drive, const char *format, const char *label, char *bootTracks, int timeStamps);
+        int mkfs(const char *format, const char *label, char *bootTracks, int timeStamps);
         int fsck(CpmInode_t *root, const char *image, bool repair);
 
 };

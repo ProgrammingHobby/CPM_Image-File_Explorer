@@ -49,7 +49,6 @@ void CpmTools::setImageFile(wxString fileName) {
 
 // --------------------------------------------------------------------------------
 void CpmTools::showDirectory() {
-    CpmSuperBlock_t drive;
     CpmInode_t root, file;
     CpmStatFS_t buf;
     CpmStat_t statbuf;
@@ -65,7 +64,7 @@ void CpmTools::showDirectory() {
         return;
     }
 
-    if (cpmReadSuper(&drive, &root, imageTypeName.c_str()) == -1) {
+    if (cpmReadSuper(&root, imageTypeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo));
         return;
     }
@@ -164,7 +163,6 @@ void CpmTools::showDirectory() {
 
 // --------------------------------------------------------------------------------
 void CpmTools::deleteFile(wxArrayString files) {
-    CpmSuperBlock_t drive;
     CpmInode_t root;
     const char *err;
     char **gargv;
@@ -177,7 +175,7 @@ void CpmTools::deleteFile(wxArrayString files) {
         return;
     }
 
-    if (cpmReadSuper(&drive, &root, imageTypeName.c_str()) == -1) {
+    if (cpmReadSuper(&root, imageTypeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
@@ -191,7 +189,7 @@ void CpmTools::deleteFile(wxArrayString files) {
         }
     }
 
-    cpmUmount(&drive);
+    cpmUmount();
 
     if ((err = deviceClose())) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
@@ -200,7 +198,6 @@ void CpmTools::deleteFile(wxArrayString files) {
 
 // --------------------------------------------------------------------------------
 void CpmTools::renameFile(wxString oldName, wxString newName) {
-    CpmSuperBlock_t drive;
     CpmInode_t root;
     const char *err;
     char nName[15];
@@ -214,7 +211,7 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
         return;
     }
 
-    if (cpmReadSuper(&drive, &root, imageTypeName.c_str()) == -1) {
+    if (cpmReadSuper(&root, imageTypeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
@@ -226,7 +223,7 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
         guiintf->printMsg(wxString::Format("%s: can not rename %s in %s:  %s\n", cmd, oldName, newName, boo), CpmGuiInterface::msgColRed);
     }
 
-    cpmUmount(&drive);
+    cpmUmount();
 
     if ((err = deviceClose())) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
@@ -236,7 +233,6 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
 
 // --------------------------------------------------------------------------------
 void CpmTools::setFileAttributes(wxString name, int attributes) {
-    CpmSuperBlock_t drive;
     CpmInode_t root;
     const char *err;
     char **gargv;
@@ -249,7 +245,7 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
         return;
     }
 
-    if (cpmReadSuper(&drive, &root, imageTypeName.c_str()) == -1) {
+    if (cpmReadSuper(&root, imageTypeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
@@ -264,7 +260,7 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
         guiintf->printMsg(wxString::Format("%s: can not set attributes %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
     }
 
-    cpmUmount(&drive);
+    cpmUmount();
 
     if ((err = deviceClose())) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
@@ -273,7 +269,6 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
 
 // --------------------------------------------------------------------------------
 void CpmTools::setFileProtections(wxString name, int protections) {
-    CpmSuperBlock_t drive;
     CpmInode_t root;
     const char *err;
     char **gargv;
@@ -286,7 +281,7 @@ void CpmTools::setFileProtections(wxString name, int protections) {
         return;
     }
 
-    if (cpmReadSuper(&drive, &root, imageTypeName.c_str()) == -1) {
+    if (cpmReadSuper(&root, imageTypeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
@@ -301,7 +296,7 @@ void CpmTools::setFileProtections(wxString name, int protections) {
         guiintf->printMsg(wxString::Format("%s: can not set protections %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
     }
 
-    cpmUmount(&drive);
+    cpmUmount();
 
     if ((err = deviceClose())) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
@@ -315,7 +310,6 @@ bool CpmTools::getBootTracksEnabled() {
 
 // --------------------------------------------------------------------------------
 void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootTrackFile) {
-    CpmSuperBlock_t drive;
     CpmInode_t root;
     size_t bootTrackSize;
     char *bootTracks;
@@ -323,7 +317,7 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
     wxString bootImage = bootTrackFile.substr(bootTrackFile.find_last_of("/\\") + 1);
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
     device.opened = 0;
-    cpmReadSuper(&drive, &root, imageTypeName.c_str());
+    cpmReadSuper(&root, imageTypeName.c_str());
     bootTrackSize = drive.boottrk * drive.secLength * drive.sectrk;
 
     if ((bootTracks = (char *)malloc(bootTrackSize)) == (char *)0) {
@@ -359,7 +353,7 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
         }
     }
 
-    if (mkfs(&drive, imageTypeName.c_str(), label.c_str(), bootTracks, (useTimeStamps ? 1 : 0)) == -1) {
+    if (mkfs(imageTypeName.c_str(), label.c_str(), bootTracks, (useTimeStamps ? 1 : 0)) == -1) {
         guiintf->printMsg(wxString::Format("%s: can not make new file system: %s\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
@@ -369,7 +363,6 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
 
 // --------------------------------------------------------------------------------
 void CpmTools::checkImage(bool doRepair) {
-    CpmSuperBlock_t sb;
     CpmInode_t root;
     const char *err;
     int ret;
@@ -386,7 +379,7 @@ void CpmTools::checkImage(bool doRepair) {
         }
     }
 
-    if (cpmReadSuper(&sb, &root, imageTypeName.c_str()) == -1) {
+    if (cpmReadSuper(&root, imageTypeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
@@ -394,7 +387,7 @@ void CpmTools::checkImage(bool doRepair) {
     ret = fsck(&root, image.c_str(), doRepair);
 
     if (ret & MODIFIED) {
-        if (cpmSync(&sb) == -1) {
+        if (cpmSync() == -1) {
             guiintf->printMsg(wxString::Format("%s: write error on %s: %s\n", cmd, image.c_str(), strerror(errno)), CpmGuiInterface::msgColRed);
             ret |= BROKEN;
         }
@@ -408,7 +401,7 @@ void CpmTools::checkImage(bool doRepair) {
         guiintf->printMsg(wxString::Format("\n"), CpmGuiInterface::msgColBlue);
     }
 
-    cpmUmount(&sb);
+    cpmUmount();
 }
 
 // --------------------------------------------------------------------------------
@@ -699,31 +692,31 @@ void CpmTools::unix2ds_time(time_t now, DsEntry_t *entry) {
 // --------------------------------------------------------------------------------
 //  -- init allocation vector
 // --------------------------------------------------------------------------------
-void CpmTools::alvInit(const CpmSuperBlock_t *d) {
+void CpmTools::alvInit() {
     int i, j, offset, block;
     /* clean bitmap */
-    memset(d->alv, 0, d->alvSize * sizeof(int));
+    memset(drive.alv, 0, drive.alvSize * sizeof(int));
 
     /* mark directory blocks as used */
     /* A directory may cover more blocks than an int may hold bits, */
     /* so a loop is needed. */
-    for (block = 0; block < (d->maxdir * 32 + d->blksiz - 1) / d->blksiz; ++block) {
+    for (block = 0; block < (drive.maxdir * 32 + drive.blksiz - 1) / drive.blksiz; ++block) {
         offset = block / INTBITS;
-        d->alv[offset] |= (1 << (block % INTBITS));
+        drive.alv[offset] |= (1 << (block % INTBITS));
     }
 
-    for (i = 0; i < d->maxdir; ++i) { /* mark file blocks as used */
-        if (d->dir[i].status >= 0 && d->dir[i].status <= (d->type & CPMFS_HI_USER ? 31 : 15)) {
+    for (i = 0; i < drive.maxdir; ++i) { /* mark file blocks as used */
+        if (drive.dir[i].status >= 0 && drive.dir[i].status <= (drive.type & CPMFS_HI_USER ? 31 : 15)) {
             for (j = 0; j < 16; ++j) {
-                block = (unsigned char)d->dir[i].pointers[j];
+                block = (unsigned char)drive.dir[i].pointers[j];
 
-                if (d->size >= 256) {
-                    block += (((unsigned char)d->dir[i].pointers[++j]) << 8);
+                if (drive.size >= 256) {
+                    block += (((unsigned char)drive.dir[i].pointers[++j]) << 8);
                 }
 
-                if (block && block < d->size) {
+                if (block && block < drive.size) {
                     offset = block / INTBITS;
-                    d->alv[offset] |= (1 << block % INTBITS);
+                    drive.alv[offset] |= (1 << block % INTBITS);
                 }
             }
         }
@@ -733,20 +726,20 @@ void CpmTools::alvInit(const CpmSuperBlock_t *d) {
 // --------------------------------------------------------------------------------
 //  -- allocate a new disk block
 // --------------------------------------------------------------------------------
-int CpmTools::allocBlock(const CpmSuperBlock_t *drive) {
+int CpmTools::allocBlock() {
     int i, j, bits, block;
 
-    for (i = 0; i < drive->alvSize; ++i) {
-        for (j = 0, bits = drive->alv[i]; j < INTBITS; ++j) {
+    for (i = 0; i < drive.alvSize; ++i) {
+        for (j = 0, bits = drive.alv[i]; j < INTBITS; ++j) {
             if ((bits & 1) == 0) {
                 block = i * INTBITS + j;
 
-                if (block >= drive->size) {
+                if (block >= drive.size) {
                     boo = "device full";
                     return (-1);
                 }
 
-                drive->alv[i] |= (1 << j);
+                drive.alv[i] |= (1 << j);
                 return (block);
             }
 
@@ -761,26 +754,26 @@ int CpmTools::allocBlock(const CpmSuperBlock_t *drive) {
 // --------------------------------------------------------------------------------
 //  -- read a (partial) block
 // --------------------------------------------------------------------------------
-int CpmTools::readBlock(const CpmSuperBlock_t *d, int blockno, char *buffer, int start, int end) {
+int CpmTools::readBlock(int blockno, char *buffer, int start, int end) {
     int sect, track, counter;
 
-    if (blockno >= d->size) {
+    if (blockno >= drive.size) {
         boo = "Attempting to access block beyond end of disk";
         return (-1);
     }
 
     if (end < 0) {
-        end = d->blksiz / d->secLength - 1;
+        end = drive.blksiz / drive.secLength - 1;
     }
 
-    sect = (blockno * (d->blksiz / d->secLength) + d->sectrk * d->boottrk) % d->sectrk;
-    track = (blockno * (d->blksiz / d->secLength) + d->sectrk * d->boottrk) / d->sectrk;
+    sect = (blockno * (drive.blksiz / drive.secLength) + drive.sectrk * drive.boottrk) % drive.sectrk;
+    track = (blockno * (drive.blksiz / drive.secLength) + drive.sectrk * drive.boottrk) / drive.sectrk;
 
     for (counter = 0; counter <= end; ++counter) {
         const char *err;
 
         if (counter >= start) {
-            if ((err = deviceReadSector(track, d->skewtab[sect], buffer + (d->secLength * counter)))) {
+            if ((err = deviceReadSector(track, drive.skewtab[sect], buffer + (drive.secLength * counter)))) {
                 boo = err;
                 return (-1);
             }
@@ -788,7 +781,7 @@ int CpmTools::readBlock(const CpmSuperBlock_t *d, int blockno, char *buffer, int
 
         ++sect;
 
-        if (sect >= d->sectrk) {
+        if (sect >= drive.sectrk) {
             sect = 0;
             ++track;
         }
@@ -800,27 +793,27 @@ int CpmTools::readBlock(const CpmSuperBlock_t *d, int blockno, char *buffer, int
 // --------------------------------------------------------------------------------
 //  -- write a (partial) block
 // --------------------------------------------------------------------------------
-int CpmTools::writeBlock(const CpmSuperBlock_t *d, int blockno, const char *buffer, int start, int end) {
+int CpmTools::writeBlock(int blockno, const char *buffer, int start, int end) {
     int sect, track, counter;
 
     if (end < 0) {
-        end = d->blksiz / d->secLength - 1;
+        end = drive.blksiz / drive.secLength - 1;
     }
 
-    sect = (blockno * (d->blksiz / d->secLength)) % d->sectrk;
-    track = (blockno * (d->blksiz / d->secLength)) / d->sectrk + d->boottrk;
+    sect = (blockno * (drive.blksiz / drive.secLength)) % drive.sectrk;
+    track = (blockno * (drive.blksiz / drive.secLength)) / drive.sectrk + drive.boottrk;
 
     for (counter = 0; counter <= end; ++counter) {
         const char *err;
 
-        if (counter >= start && (err = deviceWriteSector(track, d->skewtab[sect], buffer + (d->secLength * counter)))) {
+        if (counter >= start && (err = deviceWriteSector(track, drive.skewtab[sect], buffer + (drive.secLength * counter)))) {
             boo = err;
             return (-1);
         }
 
         ++sect;
 
-        if (sect >= d->sectrk) {
+        if (sect >= drive.sectrk) {
             sect = 0;
             ++track;
         }
@@ -832,13 +825,13 @@ int CpmTools::writeBlock(const CpmSuperBlock_t *d, int blockno, const char *buff
 // --------------------------------------------------------------------------------
 //  -- find first/next extent for a file
 // --------------------------------------------------------------------------------
-int CpmTools::findFileExtent(const CpmSuperBlock_t *sb, int user, const char *name, const char *ext, int start, int extno) {
+int CpmTools::findFileExtent(int user, const char *name, const char *ext, int start, int extno) {
     boo = "file already exists";
 
-    for (; start < sb->maxdir; ++start) {
-        if (((unsigned char)sb->dir[start].status) <= (sb->type & CPMFS_HI_USER ? 31 : 15)
-                && (extno == -1 || (EXTENT(sb->dir[start].extnol, sb->dir[start].extnoh) / sb->extents) == (extno / sb->extents))
-                && isMatching(user, name, ext, sb->dir[start].status, sb->dir[start].name, sb->dir[start].ext)) {
+    for (; start < drive.maxdir; ++start) {
+        if (((unsigned char)drive.dir[start].status) <= (drive.type & CPMFS_HI_USER ? 31 : 15)
+                && (extno == -1 || (EXTENT(drive.dir[start].extnol, drive.dir[start].extnoh) / drive.extents) == (extno / drive.extents))
+                && isMatching(user, name, ext, drive.dir[start].status, drive.dir[start].name, drive.dir[start].ext)) {
             return (start);
         }
     }
@@ -850,10 +843,10 @@ int CpmTools::findFileExtent(const CpmSuperBlock_t *sb, int user, const char *na
 // --------------------------------------------------------------------------------
 //  -- find first free extent
 // --------------------------------------------------------------------------------
-int CpmTools::findFreeExtent(const CpmSuperBlock_t *drive) {
+int CpmTools::findFreeExtent() {
     int i;
 
-    for (i = 0; i < drive->maxdir; ++i) if (drive->dir[i].status == (char)0xe5) {
+    for (i = 0; i < drive.maxdir; ++i) if (drive.dir[i].status == (char)0xe5) {
             return (i);
         }
 
@@ -1147,12 +1140,12 @@ void CpmTools::cpmglob(const char *argv, CpmInode_t *root, int *gargc, char ***g
 // --------------------------------------------------------------------------------
 //  -- read super block from diskdefs file
 // --------------------------------------------------------------------------------
-int CpmTools::diskdefReadSuper(CpmSuperBlock_t *d, const char *format) {
+int CpmTools::diskdefReadSuper(const char *format) {
     char line[256];
     int ln;
     FILE *fp;
     int insideDef = 0, found = 0;
-    d->type = 0;
+    drive.type = 0;
 
     if ((fp = fopen("diskdefs", "r")) == (FILE *)0) {
         guiintf->printMsg(wxString::Format("%s: `diskdefs' couldn't be opened.\n", cmd));
@@ -1187,14 +1180,14 @@ int CpmTools::diskdefReadSuper(CpmSuperBlock_t *d, const char *format) {
         if (insideDef) {
             if (argc == 1 && strcmp(argv[0], "end") == 0) {
                 insideDef = 0;
-                d->size = (d->secLength * d->sectrk * (d->tracks - d->boottrk)) / d->blksiz;
+                drive.size = (drive.secLength * drive.sectrk * (drive.tracks - drive.boottrk)) / drive.blksiz;
 
-                if (d->extents == 0) {
-                    d->extents = ((d->size >= 256 ? 8 : 16) * d->blksiz) / 16384;
+                if (drive.extents == 0) {
+                    drive.extents = ((drive.size >= 256 ? 8 : 16) * drive.blksiz) / 16384;
                 }
 
-                if (d->extents == 0) {
-                    d->extents = 1;
+                if (drive.extents == 0) {
+                    drive.extents = 1;
                 }
 
                 if (found) {
@@ -1203,27 +1196,27 @@ int CpmTools::diskdefReadSuper(CpmSuperBlock_t *d, const char *format) {
             }
             else if (argc == 2) {
                 if (strcmp(argv[0], "seclen") == 0) {
-                    d->secLength = strtol(argv[1], (char **)0, 0);
+                    drive.secLength = strtol(argv[1], (char **)0, 0);
                 }
                 else if (strcmp(argv[0], "tracks") == 0) {
-                    d->tracks = strtol(argv[1], (char **)0, 0);
+                    drive.tracks = strtol(argv[1], (char **)0, 0);
                 }
                 else if (strcmp(argv[0], "sectrk") == 0) {
-                    d->sectrk = strtol(argv[1], (char **)0, 0);
+                    drive.sectrk = strtol(argv[1], (char **)0, 0);
                 }
                 else if (strcmp(argv[0], "blocksize") == 0) {
-                    d->blksiz = strtol(argv[1], (char **)0, 0);
+                    drive.blksiz = strtol(argv[1], (char **)0, 0);
 
-                    if (d->blksiz <= 0) {
+                    if (drive.blksiz <= 0) {
                         guiintf->printMsg(wxString::Format("%s: invalid blocksize `%s' in line %d\n", cmd, argv[1], ln));
                         return (1);
                     }
                 }
                 else if (strcmp(argv[0], "maxdir") == 0) {
-                    d->maxdir = strtol(argv[1], (char **)0, 0);
+                    drive.maxdir = strtol(argv[1], (char **)0, 0);
                 }
                 else if (strcmp(argv[0], "skew") == 0) {
-                    d->skew = strtol(argv[1], (char **)0, 0);
+                    drive.skew = strtol(argv[1], (char **)0, 0);
                 }
                 else if (strcmp(argv[0], "skewtab") == 0) {
                     int pass, sectors;
@@ -1237,7 +1230,7 @@ int CpmTools::diskdefReadSuper(CpmSuperBlock_t *d, const char *format) {
                             phys = strtol(s, &end, 10);
 
                             if (pass == 1) {
-                                d->skewtab[sectors] = phys;
+                                drive.skewtab[sectors] = phys;
                             }
 
                             if (end == s) {
@@ -1254,12 +1247,12 @@ int CpmTools::diskdefReadSuper(CpmSuperBlock_t *d, const char *format) {
                         }
 
                         if (pass == 0) {
-                            d->skewtab = (int *)malloc(sizeof(int) * sectors);
+                            drive.skewtab = (int *)malloc(sizeof(int) * sectors);
                         }
                     }
                 }
                 else if (strcmp(argv[0], "boottrk") == 0) {
-                    d->boottrk = strtol(argv[1], (char **)0, 0);
+                    drive.boottrk = strtol(argv[1], (char **)0, 0);
                 }
                 else if (strcmp(argv[0], "offset") == 0) {
                     off_t val;
@@ -1291,21 +1284,21 @@ int CpmTools::diskdefReadSuper(CpmSuperBlock_t *d, const char *format) {
                                 break;
 
                             case 'T':
-                                if (d->sectrk < 0 || d->tracks < 0 || d->secLength < 0) {
+                                if (drive.sectrk < 0 || drive.tracks < 0 || drive.secLength < 0) {
                                     guiintf->printMsg(wxString::Format("%s: offset must be specified after sectrk, tracks and secLength in line %d\n", cmd, ln));
                                     return (1);
                                 }
 
-                                multiplier = d->sectrk * d->secLength;
+                                multiplier = drive.sectrk * drive.secLength;
                                 break;
 
                             case 'S':
-                                if (d->sectrk < 0 || d->tracks < 0 || d->secLength < 0) {
+                                if (drive.sectrk < 0 || drive.tracks < 0 || drive.secLength < 0) {
                                     guiintf->printMsg(wxString::Format("%s: offset must be specified after sectrk, tracks and secLength in line %d\n", cmd, ln));
                                     return (1);
                                 }
 
-                                multiplier = d->secLength;
+                                multiplier = drive.secLength;
                                 break;
 
                             default:
@@ -1319,26 +1312,26 @@ int CpmTools::diskdefReadSuper(CpmSuperBlock_t *d, const char *format) {
                         return (1);
                     }
 
-                    d->offset = val * multiplier;
+                    drive.offset = val * multiplier;
                 }
                 else if (strcmp(argv[0], "logicalextents") == 0) {
-                    d->extents = strtol(argv[1], (char **)0, 0);
+                    drive.extents = strtol(argv[1], (char **)0, 0);
                 }
                 else if (strcmp(argv[0], "os") == 0) {
                     if (strcmp(argv[1], "2.2") == 0) {
-                        d->type |= CPMFS_DR22;
+                        drive.type |= CPMFS_DR22;
                     }
                     else if (strcmp(argv[1], "3") == 0) {
-                        d->type |= CPMFS_DR3;
+                        drive.type |= CPMFS_DR3;
                     }
                     else if (strcmp(argv[1], "isx") == 0) {
-                        d->type |= CPMFS_ISX;
+                        drive.type |= CPMFS_ISX;
                     }
                     else if (strcmp(argv[1], "p2dos") == 0) {
-                        d->type |= CPMFS_P2DOS;
+                        drive.type |= CPMFS_P2DOS;
                     }
                     else if (strcmp(argv[1], "zsys") == 0) {
-                        d->type |= CPMFS_ZSYS;
+                        drive.type |= CPMFS_ZSYS;
                     }
                     else {
                         guiintf->printMsg(wxString::Format("%s: invalid OS type `%s' in line %d\n", cmd, argv[1], ln));
@@ -1353,12 +1346,12 @@ int CpmTools::diskdefReadSuper(CpmSuperBlock_t *d, const char *format) {
         }
         else if (argc == 2 && strcmp(argv[0], "diskdef") == 0) {
             insideDef = 1;
-            d->skew = 1;
-            d->extents = 0;
-            d->type = CPMFS_DR22;
-            d->skewtab = (int *)0;
-            d->offset = 0;
-            d->blksiz = d->boottrk = d->secLength = d->sectrk = d->tracks = -1;
+            drive.skew = 1;
+            drive.extents = 0;
+            drive.type = CPMFS_DR22;
+            drive.skewtab = (int *)0;
+            drive.offset = 0;
+            drive.blksiz = drive.boottrk = drive.secLength = drive.sectrk = drive.tracks = -1;
 
             if (strcmp(argv[1], format) == 0) {
                 found = 1;
@@ -1375,27 +1368,27 @@ int CpmTools::diskdefReadSuper(CpmSuperBlock_t *d, const char *format) {
         return (1);
     }
 
-    if (d->boottrk < 0) {
+    if (drive.boottrk < 0) {
         guiintf->printMsg(wxString::Format("%s: boottrk parameter invalid or missing from diskdef\n", cmd));
         return (1);
     }
 
-    if (d->secLength < 0) {
+    if (drive.secLength < 0) {
         guiintf->printMsg(wxString::Format("%s: secLength parameter invalid or missing from diskdef\n", cmd));
         return (1);
     }
 
-    if (d->sectrk < 0) {
+    if (drive.sectrk < 0) {
         guiintf->printMsg(wxString::Format("%s: sectrk parameter invalid or missing from diskdef\n", cmd));
         return (1);
     }
 
-    if (d->tracks < 0) {
+    if (drive.tracks < 0) {
         guiintf->printMsg(wxString::Format("%s: tracks parameter invalid or missing from diskdef\n", cmd));
         return (1);
     }
 
-    if (d->blksiz < 0) {
+    if (drive.blksiz < 0) {
         guiintf->printMsg(wxString::Format("%s: blocksize parameter invalid or missing from diskdef\n", cmd));
         return (1);
     }
@@ -1406,7 +1399,7 @@ int CpmTools::diskdefReadSuper(CpmSuperBlock_t *d, const char *format) {
 // --------------------------------------------------------------------------------
 //  -- read super block from amstrad disk
 // --------------------------------------------------------------------------------
-int CpmTools::amsReadSuper(CpmSuperBlock_t *d, const char *format) {
+int CpmTools::amsReadSuper(const char *format) {
     unsigned char boot_sector[512], *boot_spec;
     const char *err;
     deviceSetGeometry(512, 9, 40, 0);
@@ -1445,57 +1438,57 @@ int CpmTools::amsReadSuper(CpmSuperBlock_t *d, const char *format) {
                 [6] = Block shift
                 [7] = No. of directory blocks
      */
-    d->type = 0;
-    d->type |= CPMFS_DR3;	/* Amstrads are CP/M 3 systems */
-    d->secLength = 128 << boot_spec[4];
-    d->tracks    = boot_spec[2];
+    drive.type = 0;
+    drive.type |= CPMFS_DR3;	/* Amstrads are CP/M 3 systems */
+    drive.secLength = 128 << boot_spec[4];
+    drive.tracks = boot_spec[2];
 
     if (boot_spec[1] & 3) {
-        d->tracks *= 2;
+        drive.tracks *= 2;
     }
 
-    d->sectrk    = boot_spec[3];
-    d->blksiz    = 128 << boot_spec[6];
-    d->maxdir    = (d->blksiz / 32) * boot_spec[7];
-    d->skew      = 1; /* Amstrads skew at the controller level */
-    d->skewtab   = (int *)0;
-    d->boottrk   = boot_spec[5];
-    d->offset    = 0;
-    d->size      = (d->secLength * d->sectrk * (d->tracks - d->boottrk)) / d->blksiz;
-    d->extents   = ((d->size >= 256 ? 8 : 16) * d->blksiz) / 16384;
+    drive.sectrk = boot_spec[3];
+    drive.blksiz = 128 << boot_spec[6];
+    drive.maxdir = (drive.blksiz / 32) * boot_spec[7];
+    drive.skew = 1; /* Amstrads skew at the controller level */
+    drive.skewtab = (int *)0;
+    drive.boottrk = boot_spec[5];
+    drive.offset = 0;
+    drive.size = (drive.secLength * drive.sectrk * (drive.tracks - drive.boottrk)) / drive.blksiz;
+    drive.extents = ((drive.size >= 256 ? 8 : 16) * drive.blksiz) / 16384;
     return (0);
 }
 
 // --------------------------------------------------------------------------------
 //  -- read all datestamper timestamps
 // --------------------------------------------------------------------------------
-int CpmTools::cpmCheckDs(CpmSuperBlock_t *sb) {
+int CpmTools::cpmCheckDs() {
     int dsoffset, dsblks, dsrecs, off, i;
     unsigned char *buf;
 
-    if (!isMatching(0, "!!!TIME&", "DAT", sb->dir->status, sb->dir->name, sb->dir->ext)) {
+    if (!isMatching(0, "!!!TIME&", "DAT", drive.dir->status, drive.dir->name, drive.dir->ext)) {
         return (-1);
     }
 
     /* Offset to ds file in alloc blocks */
-    dsoffset = (sb->maxdir * 32 + (sb->blksiz - 1)) / sb->blksiz;
-    dsrecs = (sb->maxdir + 7) / 8;
-    dsblks = (dsrecs * 128 + (sb->blksiz - 1)) / sb->blksiz;
+    dsoffset = (drive.maxdir * 32 + (drive.blksiz - 1)) / drive.blksiz;
+    dsrecs = (drive.maxdir + 7) / 8;
+    dsblks = (dsrecs * 128 + (drive.blksiz - 1)) / drive.blksiz;
     /* Allocate buffer */
-    sb->ds = (DsDate_t *)malloc(dsblks * sb->blksiz);
+    drive.ds = (DsDate_t *)malloc(dsblks * drive.blksiz);
     /* Read ds file in its entirety */
     off = 0;
 
     for (i = dsoffset; i < dsoffset + dsblks; i++) {
-        if (readBlock(sb, i, ((char *)sb->ds) + off, 0, -1) == -1) {
+        if (readBlock(i, ((char *)drive.ds) + off, 0, -1) == -1) {
             return (-1);
         }
 
-        off += sb->blksiz;
+        off += drive.blksiz;
     }
 
     /* Verify checksums */
-    buf = (unsigned char *)sb->ds;
+    buf = (unsigned char *)drive.ds;
 
     for (i = 0; i < dsrecs; i++) {
         unsigned cksum, j;
@@ -1506,8 +1499,8 @@ int CpmTools::cpmCheckDs(CpmSuperBlock_t *sb) {
         }
 
         if (buf[j] != (cksum & 0xff)) {
-            free(sb->ds);
-            sb->ds = (DsDate_t *)0;
+            free(drive.ds);
+            drive.ds = (DsDate_t *)0;
             return (-1);
         }
 
@@ -1520,7 +1513,7 @@ int CpmTools::cpmCheckDs(CpmSuperBlock_t *sb) {
 // --------------------------------------------------------------------------------
 //  -- get DPB and init in-core data for drive
 // --------------------------------------------------------------------------------
-int CpmTools::cpmReadSuper(CpmSuperBlock_t *d, CpmInode_t *root, const char *format) {
+int CpmTools::cpmReadSuper(CpmInode_t *root, const char *format) {
     while (s_ifdir && !S_ISDIR(s_ifdir)) {
         s_ifdir <<= 1;
     }
@@ -1530,117 +1523,117 @@ int CpmTools::cpmReadSuper(CpmSuperBlock_t *d, CpmInode_t *root, const char *for
     }
 
     if (strcmp(format, "amstrad") == 0) {
-        amsReadSuper(d, format);
+        amsReadSuper(format);
     }
     else {
-        diskdefReadSuper(d, format);
+        diskdefReadSuper(format);
     }
 
-    boottracksused = (d->boottrk > 0) ? true : false;
-    boo = deviceSetGeometry(d->secLength, d->sectrk, d->tracks, d->offset);
+    boottracksused = (drive.boottrk > 0) ? true : false;
+    boo = deviceSetGeometry(drive.secLength, drive.sectrk, drive.tracks, drive.offset);
 
     if (boo) {
         return (-1);
     }
 
-    if (d->skewtab == (int *)0) { /* generate skew table */
+    if (drive.skewtab == (int *)0) { /* generate skew table */
         int	i, j, k;
 
-        if ((d->skewtab = (int *)malloc(d->sectrk * sizeof(int))) == (int *)0) {
+        if ((drive.skewtab = (int *)malloc(drive.sectrk * sizeof(int))) == (int *)0) {
             boo = strerror(errno);
             return (-1);
         }
 
-        memset(d->skewtab, 0, d->sectrk * sizeof(int));
+        memset(drive.skewtab, 0, drive.sectrk * sizeof(int));
 
-        for (i = j = 0; i < d->sectrk; ++i, j = (j + d->skew) % d->sectrk) {
+        for (i = j = 0; i < drive.sectrk; ++i, j = (j + drive.skew) % drive.sectrk) {
             while (1) {
-                for (k = 0; k < i && d->skewtab[k] != j; ++k);
+                for (k = 0; k < i && drive.skewtab[k] != j; ++k);
 
                 if (k < i) {
-                    j = (j + 1) % d->sectrk;
+                    j = (j + 1) % drive.sectrk;
                 }
                 else {
                     break;
                 }
             }
 
-            d->skewtab[i] = j;
+            drive.skewtab[i] = j;
         }
     }
 
     /* initialise allocation vector bitmap */
     {
-        d->alvSize = ((d->secLength * d->sectrk * (d->tracks - d->boottrk)) / d->blksiz + INTBITS - 1) / INTBITS;
+        drive.alvSize = ((drive.secLength * drive.sectrk * (drive.tracks - drive.boottrk)) / drive.blksiz + INTBITS - 1) / INTBITS;
 
-        if ((d->alv = (int *)malloc(d->alvSize * sizeof(int))) == (int *)0) {
+        if ((drive.alv = (int *)malloc(drive.alvSize * sizeof(int))) == (int *)0) {
             boo = strerror(errno);
             return (-1);
         }
     }
 
     /* allocate directory buffer */
-    if ((d->dir = (PhysDirectoryEntry_t *) malloc(((d->maxdir * 32 + d->blksiz - 1) / d->blksiz) * d->blksiz)) == (PhysDirectoryEntry_t *)0) {
+    if ((drive.dir = (PhysDirectoryEntry_t *) malloc(((drive.maxdir * 32 + drive.blksiz - 1) / drive.blksiz) * drive.blksiz)) == (PhysDirectoryEntry_t *)0) {
         boo = strerror(errno);
         return (-1);
     }
 
     if (device.opened == false) { /* create empty directory in core */
-        memset(d->dir, 0xe5, d->maxdir * 32);
+        memset(drive.dir, 0xe5, drive.maxdir * 32);
     }
     else { /* read directory in core */
         int i, blocks, entry;
-        blocks = (d->maxdir * 32 + d->blksiz - 1) / d->blksiz;
+        blocks = (drive.maxdir * 32 + drive.blksiz - 1) / drive.blksiz;
         entry = 0;
 
         for (i = 0; i < blocks; ++i) {
-            if (readBlock(d, i, (char *)(d->dir + entry), 0, -1) == -1) {
+            if (readBlock(i, (char *)(drive.dir + entry), 0, -1) == -1) {
                 return (-1);
             }
 
-            entry += (d->blksiz / 32);
+            entry += (drive.blksiz / 32);
         }
     }
 
-    alvInit(d);
+    alvInit();
 
-    if (d->type & CPMFS_CPM3_OTHER) { /* read additional superblock information */
+    if (drive.type & CPMFS_CPM3_OTHER) { /* read additional superblock information */
         int i;
         /* passwords */
         {
             int passwords = 0;
 
-            for (i = 0; i < d->maxdir; ++i) if (d->dir[i].status >= 16 && d->dir[i].status <= 31) {
+            for (i = 0; i < drive.maxdir; ++i) if (drive.dir[i].status >= 16 && drive.dir[i].status <= 31) {
                     ++passwords;
                 }
 
-            if ((d->passwdLength = passwords * PASSWD_RECLEN)) {
-                if ((d->passwd = (char *)malloc(d->passwdLength)) == (char *)0) {
+            if ((drive.passwdLength = passwords * PASSWD_RECLEN)) {
+                if ((drive.passwd = (char *)malloc(drive.passwdLength)) == (char *)0) {
                     boo = "out of memory";
                     return (-1);
                 }
 
-                for (i = 0, passwords = 0; i < d->maxdir; ++i) if (d->dir[i].status >= 16 && d->dir[i].status <= 31) {
+                for (i = 0, passwords = 0; i < drive.maxdir; ++i) if (drive.dir[i].status >= 16 && drive.dir[i].status <= 31) {
                         int j, pb;
-                        char *p = d->passwd + (passwords++*PASSWD_RECLEN);
-                        p[0] = '0' + (d->dir[i].status - 16) / 10;
-                        p[1] = '0' + (d->dir[i].status - 16) % 10;
+                        char *p = drive.passwd + (passwords++*PASSWD_RECLEN);
+                        p[0] = '0' + (drive.dir[i].status - 16) / 10;
+                        p[1] = '0' + (drive.dir[i].status - 16) % 10;
 
                         for (j = 0; j < 8; ++j) {
-                            p[2 + j] = d->dir[i].name[j] & 0x7f;
+                            p[2 + j] = drive.dir[i].name[j] & 0x7f;
                         }
 
-                        p[10] = (d->dir[i].ext[0] & 0x7f) == ' ' ? ' ' : '.';
+                        p[10] = (drive.dir[i].ext[0] & 0x7f) == ' ' ? ' ' : '.';
 
                         for (j = 0; j < 3; ++j) {
-                            p[11 + j] = d->dir[i].ext[j] & 0x7f;
+                            p[11 + j] = drive.dir[i].ext[j] & 0x7f;
                         }
 
                         p[14] = ' ';
-                        pb = (unsigned char)d->dir[i].lrc;
+                        pb = (unsigned char)drive.dir[i].lrc;
 
                         for (j = 0; j < 8; ++j) {
-                            p[15 + j] = ((unsigned char)d->dir[i].pointers[7 - j])^pb;
+                            p[15 + j] = ((unsigned char)drive.dir[i].pointers[7 - j])^pb;
                         }
 
                         p[23] = '\n';
@@ -1649,60 +1642,60 @@ int CpmTools::cpmReadSuper(CpmSuperBlock_t *d, CpmInode_t *root, const char *for
         }
 
         /* disc label */
-        for (i = 0; i < d->maxdir; ++i) if (d->dir[i].status == (char)0x20) {
+        for (i = 0; i < drive.maxdir; ++i) if (drive.dir[i].status == (char)0x20) {
                 int j;
-                d->cnotatime = d->dir[i].extnol & 0x10;
+                drive.cnotatime = drive.dir[i].extnol & 0x10;
 
-                if (d->dir[i].extnol & 0x1) {
-                    d->labelLength = 12;
+                if (drive.dir[i].extnol & 0x1) {
+                    drive.labelLength = 12;
 
-                    if ((d->label = (char *)malloc(d->labelLength)) == (char *)0) {
+                    if ((drive.label = (char *)malloc(drive.labelLength)) == (char *)0) {
                         boo = "out of memory";
                         return -1;
                     }
 
                     for (j = 0; j < 8; ++j) {
-                        d->label[j] = d->dir[i].name[j] & 0x7f;
+                        drive.label[j] = drive.dir[i].name[j] & 0x7f;
                     }
 
                     for (j = 0; j < 3; ++j) {
-                        d->label[8 + j] = d->dir[i].ext[j] & 0x7f;
+                        drive.label[8 + j] = drive.dir[i].ext[j] & 0x7f;
                     }
 
-                    d->label[11] = '\n';
+                    drive.label[11] = '\n';
                 }
                 else {
-                    d->labelLength = 0;
+                    drive.labelLength = 0;
                 }
 
                 break;
             }
 
-        if (i == d->maxdir) {
-            d->cnotatime = 1;
-            d->labelLength = 0;
+        if (i == drive.maxdir) {
+            drive.cnotatime = 1;
+            drive.labelLength = 0;
         }
     }
     else {
-        d->passwdLength = 0;
-        d->cnotatime = 1;
-        d->labelLength = 0;
+        drive.passwdLength = 0;
+        drive.cnotatime = 1;
+        drive.labelLength = 0;
     }
 
-    d->root = root;
-    d->dirtyDirectory = 0;
-    root->ino = d->maxdir;
-    root->sb = d;
+    drive.root = root;
+    drive.dirtyDirectory = 0;
+    root->ino = drive.maxdir;
+    root->sb = &drive;
     root->mode = (s_ifdir | 0777);
     root->size = 0;
     root->atime = root->mtime = root->ctime = 0;
-    d->dirtyDs = 0;
+    drive.dirtyDs = 0;
 
-    if (cpmCheckDs(d) == 0) {
-        d->type |= CPMFS_DS_DATES;
+    if (cpmCheckDs() == 0) {
+        drive.type |= CPMFS_DS_DATES;
     }
     else {
-        d->ds = (DsDate_t *)0;
+        drive.ds = (DsDate_t *)0;
     }
 
     return (0);
@@ -1711,13 +1704,13 @@ int CpmTools::cpmReadSuper(CpmSuperBlock_t *d, CpmInode_t *root, const char *for
 // --------------------------------------------------------------------------------
 //  -- write all datestamper timestamps
 // --------------------------------------------------------------------------------
-int CpmTools::syncDs(const CpmSuperBlock_t *sb) {
-    if (sb->dirtyDs) {
+int CpmTools::syncDs() {
+    if (drive.dirtyDs) {
         int dsoffset, dsblks, dsrecs, off, i;
         unsigned char *buf;
-        dsrecs = (sb->maxdir + 7) / 8;
+        dsrecs = (drive.maxdir + 7) / 8;
         /* Re-calculate checksums */
-        buf = (unsigned char *)sb->ds;
+        buf = (unsigned char *)drive.ds;
 
         for (i = 0; i < dsrecs; i++) {
             unsigned cksum, j;
@@ -1731,16 +1724,16 @@ int CpmTools::syncDs(const CpmSuperBlock_t *sb) {
             buf += 128;
         }
 
-        dsoffset = (sb->maxdir * 32 + (sb->blksiz - 1)) / sb->blksiz;
-        dsblks = (dsrecs * 128 + (sb->blksiz - 1)) / sb->blksiz;
+        dsoffset = (drive.maxdir * 32 + (drive.blksiz - 1)) / drive.blksiz;
+        dsblks = (dsrecs * 128 + (drive.blksiz - 1)) / drive.blksiz;
         off = 0;
 
         for (i = dsoffset; i < dsoffset + dsblks; i++) {
-            if (writeBlock(sb, i, ((char *)(sb->ds)) + off, 0, -1) == -1) {
+            if (writeBlock(i, ((char *)(drive.ds)) + off, 0, -1) == -1) {
                 return (-1);
             }
 
-            off += sb->blksiz;
+            off += drive.blksiz;
         }
     }
 
@@ -1750,25 +1743,25 @@ int CpmTools::syncDs(const CpmSuperBlock_t *sb) {
 // --------------------------------------------------------------------------------
 //  -- write directory back
 // --------------------------------------------------------------------------------
-int CpmTools::cpmSync(CpmSuperBlock_t *sb) {
-    if (sb->dirtyDirectory) {
+int CpmTools::cpmSync() {
+    if (drive.dirtyDirectory) {
         int i, blocks, entry;
-        blocks = (sb->maxdir * 32 + sb->blksiz - 1) / sb->blksiz;
+        blocks = (drive.maxdir * 32 + drive.blksiz - 1) / drive.blksiz;
         entry = 0;
 
         for (i = 0; i < blocks; ++i) {
-            if (writeBlock(sb, i, (char *)(sb->dir + entry), 0, -1) == -1) {
+            if (writeBlock(i, (char *)(drive.dir + entry), 0, -1) == -1) {
                 return (-1);
             }
 
-            entry += (sb->blksiz / 32);
+            entry += (drive.blksiz / 32);
         }
 
-        sb->dirtyDirectory = 0;
+        drive.dirtyDirectory = 0;
     }
 
-    if (sb->type & CPMFS_DS_DATES) {
-        syncDs(sb);
+    if (drive.type & CPMFS_DS_DATES) {
+        syncDs();
     }
 
     return (0);
@@ -1777,19 +1770,19 @@ int CpmTools::cpmSync(CpmSuperBlock_t *sb) {
 // --------------------------------------------------------------------------------
 //  -- free super block
 // --------------------------------------------------------------------------------
-void CpmTools::cpmUmount(CpmSuperBlock_t *sb) {
-    cpmSync(sb);
+void CpmTools::cpmUmount() {
+    cpmSync();
 
-    if (sb->type & CPMFS_DS_DATES) {
-        free(sb->ds);
+    if (drive.type & CPMFS_DS_DATES) {
+        free(drive.ds);
     }
 
-    free(sb->alv);
-    free(sb->skewtab);
-    free(sb->dir);
+    free(drive.alv);
+    free(drive.skewtab);
+    free(drive.dir);
 
-    if (sb->passwdLength) {
-        free(sb->passwd);
+    if (drive.passwdLength) {
+        free(drive.passwd);
     }
 }
 
@@ -1842,7 +1835,7 @@ int CpmTools::cpmNamei(const CpmInode_t *dir, const char *filename, CpmInode_t *
         highestExtno = -1;
         lowestExtno = 2049;
 
-        while ((extent = findFileExtent(dir->sb, user, name, extension, extent + 1, -1)) != -1) {
+        while ((extent = findFileExtent(user, name, extension, extent + 1, -1)) != -1) {
             int extno = EXTENT(dir->sb->dir[extent].extnol, dir->sb->dir[extent].extnoh);
 
             if (extno > highestExtno) {
@@ -2004,31 +1997,31 @@ int CpmTools::cpmUnlink(const CpmInode_t *dir, const char *fname) {
     int user;
     char name[8], extension[3];
     int extent;
-    CpmSuperBlock_t *drive;
+//    CpmSuperBlock_t *drive;
 
     if (!S_ISDIR(dir->mode)) {
         boo = "No such file";
         return (-1);
     }
 
-    drive = dir->sb;
+//    drive = dir->sb;
 
     if (splitFilename(fname, dir->sb->type, name, extension, &user) == -1) {
         return (-1);
     }
 
-    if ((extent = findFileExtent(drive, user, name, extension, 0, -1)) == -1) {
+    if ((extent = findFileExtent(user, name, extension, 0, -1)) == -1) {
         return (-1);
     }
 
-    drive->dirtyDirectory = 1;
-    drive->dir[extent].status = (char)0xe5;
+    drive.dirtyDirectory = 1;
+    drive.dir[extent].status = (char)0xe5;
 
     do {
-        drive->dir[extent].status = (char)0xe5;
-    } while ((extent = findFileExtent(drive, user, name, extension, extent + 1, -1)) >= 0);
+        drive.dir[extent].status = (char)0xe5;
+    } while ((extent = findFileExtent(user, name, extension, extent + 1, -1)) >= 0);
 
-    alvInit(drive);
+    alvInit();
     return (0);
 }
 
@@ -2036,7 +2029,7 @@ int CpmTools::cpmUnlink(const CpmInode_t *dir, const char *fname) {
 //  -- rename
 // --------------------------------------------------------------------------------
 int CpmTools::cpmRename(const CpmInode_t *dir, const char *oldn, const char *newn) {
-    CpmSuperBlock_t *drive;
+//    CpmSuperBlock_t *drive;
     int extent;
     int olduser;
     char oldname[8], oldext[3];
@@ -2048,7 +2041,7 @@ int CpmTools::cpmRename(const CpmInode_t *dir, const char *oldn, const char *new
         return (-1);
     }
 
-    drive = dir->sb;
+//    drive = dir->sb;
 
     if (splitFilename(oldn, dir->sb->type, oldname, oldext, &olduser) == -1) {
         return (-1);
@@ -2058,21 +2051,21 @@ int CpmTools::cpmRename(const CpmInode_t *dir, const char *oldn, const char *new
         return (-1);
     }
 
-    if ((extent = findFileExtent(drive, olduser, oldname, oldext, 0, -1)) == -1) {
+    if ((extent = findFileExtent(olduser, oldname, oldext, 0, -1)) == -1) {
         return (-1);
     }
 
-    if (findFileExtent(drive, newuser, newname, newext, 0, -1) != -1) {
+    if (findFileExtent(newuser, newname, newext, 0, -1) != -1) {
         boo = "file already exists";
         return (-1);
     }
 
     do {
-        drive->dirtyDirectory = 1;
-        drive->dir[extent].status = newuser;
-        memcpy7(drive->dir[extent].name, newname, 8);
-        memcpy7(drive->dir[extent].ext, newext, 3);
-    } while ((extent = findFileExtent(drive, olduser, oldname, oldext, extent + 1, -1)) != -1);
+        drive.dirtyDirectory = 1;
+        drive.dir[extent].status = newuser;
+        memcpy7(drive.dir[extent].name, newname, 8);
+        memcpy7(drive.dir[extent].ext, newext, 3);
+    } while ((extent = findFileExtent(olduser, oldname, oldext, extent + 1, -1)) != -1);
 
     return (0);
 }
@@ -2267,7 +2260,7 @@ int CpmTools::cpmRead(CpmFile_t *file, char *buf, int count) {
 
             if (findext) {
                 extentno = file->pos / 16384;
-                extent = findFileExtent(file->ino->sb, file->ino->sb->dir[file->ino->ino].status, file->ino->sb->dir[file->ino->ino].name, file->ino->sb->dir[file->ino->ino].ext, 0, extentno);
+                extent = findFileExtent(file->ino->sb->dir[file->ino->ino].status, file->ino->sb->dir[file->ino->ino].name, file->ino->sb->dir[file->ino->ino].ext, 0, extentno);
                 nextextpos = (file->pos / extcap) * extcap + extcap;
                 findext = 0;
                 findblock = 1;
@@ -2295,7 +2288,7 @@ int CpmTools::cpmRead(CpmFile_t *file, char *buf, int count) {
                         start = (file->pos % blocksize) / file->ino->sb->secLength;
                         end = ((file->pos % blocksize + count) > blocksize ? blocksize - 1 : (file->pos % blocksize + count - 1)) / file->ino->sb->secLength;
 
-                        if (readBlock(file->ino->sb, block, buffer, start, end) == -1) {
+                        if (readBlock(block, buffer, start, end) == -1) {
                             if (got == 0) {
                                 got = -1;
                             }
@@ -2345,11 +2338,11 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
     while (count > 0) {
         if (findext) {
             extentno = file->pos / 16384;
-            extent = findFileExtent(file->ino->sb, file->ino->sb->dir[file->ino->ino].status, file->ino->sb->dir[file->ino->ino].name, file->ino->sb->dir[file->ino->ino].ext, 0, extentno);
+            extent = findFileExtent(file->ino->sb->dir[file->ino->ino].status, file->ino->sb->dir[file->ino->ino].name, file->ino->sb->dir[file->ino->ino].ext, 0, extentno);
             nextextpos = (file->pos / extcap) * extcap + extcap;
 
             if (extent == -1) {
-                if ((extent = findFreeExtent(file->ino->sb)) == -1) {
+                if ((extent = findFreeExtent()) == -1) {
                     return (got == 0 ? -1 : got);
                 }
 
@@ -2382,7 +2375,7 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
             }
 
             if (block == 0) {   /* allocate new block, set start/end to cover it */
-                if ((block = allocBlock(file->ino->sb)) == -1) {
+                if ((block = allocBlock()) == -1) {
                     return (got == 0 ? -1 : got);
                 }
 
@@ -2409,7 +2402,7 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
                 end = ((file->pos % blocksize + count) >= blocksize ? blocksize - 1 : (file->pos % blocksize + count - 1)) / file->ino->sb->secLength;
 
                 if (file->pos % file->ino->sb->secLength) {
-                    if (readBlock(file->ino->sb, block, buffer, start, start) == -1) {
+                    if (readBlock(block, buffer, start, start) == -1) {
                         if (got == 0) {
                             got = -1;
                         }
@@ -2419,7 +2412,7 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
                 }
 
                 if (end != start && file->pos % blocksize + count < blocksize && (file->pos + count) % file->ino->sb->secLength) {
-                    if (readBlock(file->ino->sb, block, buffer, end, end) == -1) {
+                    if (readBlock(block, buffer, end, end) == -1) {
                         if (got == 0) {
                             got = -1;
                         }
@@ -2452,7 +2445,7 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
          * still initialized: A new block was cleared and the boundaries
          * of an existing block were read.
          */
-        (void)writeBlock(file->ino->sb, block, buffer, start, end);
+        writeBlock(block, buffer, start, end);
         time(&file->ino->mtime);
 
         if (file->ino->sb->size < 256) for (last = 15; last >= 0; --last) {
@@ -2510,7 +2503,7 @@ int CpmTools::cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode
     int user;
     char name[8], extension[3];
     int extent;
-    CpmSuperBlock_t *drive;
+//    CpmSuperBlock_t *drive;
     PhysDirectoryEntry_t *ent;
 
     if (!S_ISDIR(dir->mode)) {
@@ -2522,18 +2515,18 @@ int CpmTools::cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode
         return (-1);
     }
 
-    if (findFileExtent(dir->sb, user, name, extension, 0, -1) != -1) {
+    if (findFileExtent(user, name, extension, 0, -1) != -1) {
         return (-1);
     }
 
-    drive = dir->sb;
+//    drive = dir->sb;
 
-    if ((extent = findFreeExtent(dir->sb)) == -1) {
+    if ((extent = findFreeExtent()) == -1) {
         return (-1);
     }
 
     ent = dir->sb->dir + extent;
-    drive->dirtyDirectory = 1;
+    drive.dirtyDirectory = 1;
     memset(ent, 0, 32);
     ent->status = user;
     memcpy(ent->name, name, 8);
@@ -2562,19 +2555,19 @@ int CpmTools::cpmAttrGet(CpmInode_t *ino, cpm_attr_t *attrib) {
 //  -- set CP/M attributes
 // --------------------------------------------------------------------------------
 int CpmTools::cpmAttrSet(CpmInode_t *ino, cpm_attr_t attrib) {
-    CpmSuperBlock_t *drive;
+//    CpmSuperBlock_t *drive;
     int extent;
     int user;
     char name[8], extension[3];
     memset(name,      0, sizeof(name));
     memset(extension, 0, sizeof(extension));
-    drive  = ino->sb;
+//    drive  = ino->sb;
     extent = ino->ino;
-    drive->dirtyDirectory = 1;
+    drive.dirtyDirectory = 1;
     /* Strip off existing attribute bits */
-    memcpy7(name,      drive->dir[extent].name, 8);
-    memcpy7(extension, drive->dir[extent].ext,  3);
-    user = drive->dir[extent].status;
+    memcpy7(name, drive.dir[extent].name, 8);
+    memcpy7(extension, drive.dir[extent].ext,  3);
+    user = drive.dir[extent].status;
 
     /* And set new ones */
     if (attrib & CPM_ATTR_F1) {
@@ -2606,9 +2599,9 @@ int CpmTools::cpmAttrSet(CpmInode_t *ino, cpm_attr_t attrib) {
     }
 
     do {
-        memcpy(drive->dir[extent].name, name, 8);
-        memcpy(drive->dir[extent].ext, extension, 3);
-    } while ((extent = findFileExtent(drive, user, name, extension, extent + 1, -1)) != -1);
+        memcpy(drive.dir[extent].name, name, 8);
+        memcpy(drive.dir[extent].ext, extension, 3);
+    } while ((extent = findFileExtent(user, name, extension, extent + 1, -1)) != -1);
 
     /* Update the stored (inode) copies of the file attributes and mode */
     ino->attr = attrib;
@@ -2719,7 +2712,7 @@ void CpmTools::convertFilename(const char *filename, char *cpmname) {
 // --------------------------------------------------------------------------------
 //  -- create new empty binary Image-File
 // --------------------------------------------------------------------------------
-int CpmTools::mkfs(CpmSuperBlock_t *drive, const char *format, const char *label, char *bootTracks, int timeStamps) {
+int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int timeStamps) {
     /* variables */
     unsigned int i;
     char buf[128];
@@ -2741,10 +2734,10 @@ int CpmTools::mkfs(CpmSuperBlock_t *drive, const char *format, const char *label
 
     /* write system tracks */
     /* this initialises only whole tracks, so it skew is not an issue */
-    trkbytes = drive->secLength * drive->sectrk;
+    trkbytes = drive.secLength * drive.sectrk;
 
-    for (i = 0; i < trkbytes * drive->boottrk; i += drive->secLength) {
-        if (fwrite(bootTracks + i, sizeof(char), drive->secLength, fd) != (size_t)drive->secLength) {
+    for (i = 0; i < trkbytes * drive.boottrk; i += drive.secLength) {
+        if (fwrite(bootTracks + i, sizeof(char), drive.secLength, fd) != (size_t)drive.secLength) {
             boo = strerror(errno);
             fclose(fd);
             return -1;
@@ -2753,19 +2746,19 @@ int CpmTools::mkfs(CpmSuperBlock_t *drive, const char *format, const char *label
 
     /* write directory */
     memset(buf, 0xe5, 128);
-    bytes = drive->maxdir * 32;
+    bytes = drive.maxdir * 32;
 
     if (bytes % trkbytes) {
         bytes = ((bytes + trkbytes) / trkbytes) * trkbytes;
     }
 
-    if (timeStamps && (drive->type == CPMFS_P2DOS || drive->type == CPMFS_DR3)) {
+    if (timeStamps && (drive.type == CPMFS_P2DOS || drive.type == CPMFS_DR3)) {
         buf[3 * 32] = 0x21;
     }
 
     memcpy(firstbuf, buf, 128);
 
-    if (drive->type == CPMFS_DR3) {
+    if (drive.type == CPMFS_DR3) {
         time_t now;
         struct tm *t;
         int min, hour, days;
@@ -2816,9 +2809,9 @@ int CpmTools::mkfs(CpmSuperBlock_t *drive, const char *format, const char *label
 
     /* fill remaining size */
     memset(buf, 0xe5, 128);
-    int imagesize = (drive->secLength * drive->sectrk * drive->tracks);
+    int imagesize = (drive.secLength * drive.sectrk * drive.tracks);
 
-    for (i = 0; i < (imagesize - (bytes + (trkbytes * drive->boottrk))); i += 128) {
+    for (i = 0; i < (imagesize - (bytes + (trkbytes * drive.boottrk))); i += 128) {
         if (fwrite(buf, sizeof(char), 128, fd) != 128) {
             boo = strerror(errno);
             fclose(fd);
@@ -2832,13 +2825,13 @@ int CpmTools::mkfs(CpmSuperBlock_t *drive, const char *format, const char *label
         return -1;
     }
 
-    if (timeStamps && !(drive->type == CPMFS_P2DOS || drive->type == CPMFS_DR3)) { /*{{{*/
+    if (timeStamps && !(drive.type == CPMFS_P2DOS || drive.type == CPMFS_DR3)) { /*{{{*/
         int offset, j;
         CpmInode_t ino, root;
         static const char sig[] = "!!!TIME";
         unsigned int records;
         DsDate_t *ds;
-        CpmSuperBlock_t super;
+//        CpmSuperBlock_t super;
         const char *err;
 
         if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
@@ -2846,11 +2839,11 @@ int CpmTools::mkfs(CpmSuperBlock_t *drive, const char *format, const char *label
             exit(1);
         }
 
-        cpmReadSuper(&super, &root, format);
+        cpmReadSuper(&root, format);
         records = root.sb->maxdir / 8;
 
         if (!(ds = (DsDate_t *)malloc(records * 128))) {
-            cpmUmount(&super);
+            cpmUmount();
             return -1;
         }
 
@@ -2874,7 +2867,7 @@ int CpmTools::mkfs(CpmSuperBlock_t *drive, const char *format, const char *label
 
         root.sb->ds = ds;
         root.sb->dirtyDs = 1;
-        cpmUmount(&super);
+        cpmUmount();
     }
 
     return 0;
