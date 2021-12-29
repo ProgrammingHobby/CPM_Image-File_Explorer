@@ -60,7 +60,7 @@ void CpmTools::showDirectory() {
     cmd = "cpmls";
     std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
-    if ((err = deviceOpen(&drive.dev, imageFileName.c_str(), "rb"))) {
+    if ((err = deviceOpen(imageFileName.c_str(), "rb"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err));
         return;
     }
@@ -156,7 +156,7 @@ void CpmTools::showDirectory() {
         guiintf->printDirInfo(" No files.");
     }
 
-    if ((err = deviceClose(&drive.dev))) {
+    if ((err = deviceClose())) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err));
         return;
     }
@@ -172,7 +172,7 @@ void CpmTools::deleteFile(wxArrayString files) {
     cmd = "cpmrm";
     std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
-    if ((err = deviceOpen(&drive.dev, imageFileName.c_str(), "r+b"))) {
+    if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
         return;
     }
@@ -193,7 +193,7 @@ void CpmTools::deleteFile(wxArrayString files) {
 
     cpmUmount(&drive);
 
-    if ((err = deviceClose(&drive.dev))) {
+    if ((err = deviceClose())) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
     }
 }
@@ -209,7 +209,7 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     cmd = "cpmrn";
     std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
-    if ((err = deviceOpen(&drive.dev, imageFileName.c_str(), "r+b"))) {
+    if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
         return;
     }
@@ -228,7 +228,7 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
 
     cpmUmount(&drive);
 
-    if ((err = deviceClose(&drive.dev))) {
+    if ((err = deviceClose())) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
         return;
     }
@@ -244,7 +244,7 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
     cmd = "cpmchattr";
     std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
-    if ((err = deviceOpen(&drive.dev, imageFileName.c_str(), "r+b"))) {
+    if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
         return;
     }
@@ -266,7 +266,7 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
 
     cpmUmount(&drive);
 
-    if ((err = deviceClose(&drive.dev))) {
+    if ((err = deviceClose())) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
     }
 }
@@ -281,7 +281,7 @@ void CpmTools::setFileProtections(wxString name, int protections) {
     cmd = "cpmchprot";
     std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
-    if ((err = deviceOpen(&drive.dev, imageFileName.c_str(), "r+b"))) {
+    if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
         return;
     }
@@ -303,7 +303,7 @@ void CpmTools::setFileProtections(wxString name, int protections) {
 
     cpmUmount(&drive);
 
-    if ((err = deviceClose(&drive.dev))) {
+    if ((err = deviceClose())) {
         guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
     }
 }
@@ -322,7 +322,7 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
     cmd = "cpm.mkfs";
     wxString bootImage = bootTrackFile.substr(bootTrackFile.find_last_of("/\\") + 1);
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
-    drive.dev.opened = 0;
+    device.opened = 0;
     cpmReadSuper(&drive, &root, imageTypeName.c_str());
     bootTrackSize = drive.boottrk * drive.secLength * drive.sectrk;
 
@@ -376,8 +376,8 @@ void CpmTools::checkImage(bool doRepair) {
     cmd = "cpm.fsck";
     std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
-    if ((err = deviceOpen(&sb.dev, imageFileName.c_str(), (doRepair ? "r+b" : "rb")))) {
-        if ((err = deviceOpen(&sb.dev, imageFileName.c_str(), "rb"))) {
+    if ((err = deviceOpen(imageFileName.c_str(), (doRepair ? "r+b" : "rb")))) {
+        if ((err = deviceOpen(imageFileName.c_str(), "rb"))) {
             guiintf->printMsg(wxString::Format("%s: cannot open %s: %s\n", cmd, image.c_str(), err), CpmGuiInterface::msgColRed);
             return;
         }
@@ -416,38 +416,38 @@ void CpmTools::checkImage(bool doRepair) {
 // --------------------------------------------------------------------------------
 //
 // --------------------------------------------------------------------------------
-const char *CpmTools::deviceOpen(Device_t *device, const char *filename, const char *mode) {
-    device->file = fopen(filename, mode);
-    device->opened = ((device->file == nullptr) ? false : true);
-    return ((device->opened) ? (const char *)0 : strerror(errno));
+const char *CpmTools::deviceOpen(const char *filename, const char *mode) {
+    device.file = fopen(filename, mode);
+    device.opened = ((device.file == nullptr) ? false : true);
+    return ((device.opened) ? (const char *)0 : strerror(errno));
 }
 
 // --------------------------------------------------------------------------------
-const char *CpmTools::deviceSetGeometry(Device_t *device, int secLength, int sectrk, int tracks, long offset) {
-    device->secLength = secLength;
-    device->sectrk = sectrk;
-    device->tracks = tracks;
-    device->offset = offset;
+const char *CpmTools::deviceSetGeometry(int secLength, int sectrk, int tracks, long offset) {
+    device.secLength = secLength;
+    device.sectrk = sectrk;
+    device.tracks = tracks;
+    device.offset = offset;
     return ((const char *)0);
 }
 
 //--------------------------------------------------------------------------------
-const char *CpmTools::deviceClose(Device_t *device) {
-    device->opened = false;
-    return ((fclose(device->file) == 0) ? (const char *)0 : strerror(errno));
+const char *CpmTools::deviceClose() {
+    device.opened = false;
+    return ((fclose(device.file) == 0) ? (const char *)0 : strerror(errno));
 }
 
 // --------------------------------------------------------------------------------
-const char *CpmTools::deviceReadSector(const Device_t *device, int track, int sector, char *buffer) {
-    if (fseek(device->file, (((sector + (track * device->sectrk)) * device->secLength) + device->offset), SEEK_SET) != 0) {
+const char *CpmTools::deviceReadSector(int track, int sector, char *buffer) {
+    if (fseek(device.file, (((sector + (track * device.sectrk)) * device.secLength) + device.offset), SEEK_SET) != 0) {
         return (strerror(errno));
     }
 
-    int readCount = fread(buffer, sizeof(char), device->secLength, device->file);
+    int readCount = fread(buffer, sizeof(char), device.secLength, device.file);
 
-    if (readCount != device->secLength) {
-        guiintf->printMsg(wxString::Format("Read Sector: %d bytes lost.\n", (device->secLength - readCount)), CpmGuiInterface::msgColRed);
-        memset((buffer + readCount), 0, device->secLength - readCount);
+    if (readCount != device.secLength) {
+        guiintf->printMsg(wxString::Format("Read Sector: %d bytes lost.\n", (device.secLength - readCount)), CpmGuiInterface::msgColRed);
+        memset((buffer + readCount), 0, device.secLength - readCount);
         return (strerror(errno));
     }
 
@@ -455,15 +455,15 @@ const char *CpmTools::deviceReadSector(const Device_t *device, int track, int se
 }
 
 // --------------------------------------------------------------------------------
-const char *CpmTools::deviceWriteSector(const Device_t *device, int track, int sector, const char *buffer) {
-    if (fseek(device->file, (((sector + (track * device->sectrk)) * device->secLength) + device->offset), SEEK_SET) != 0) {
+const char *CpmTools::deviceWriteSector(int track, int sector, const char *buffer) {
+    if (fseek(device.file, (((sector + (track * device.sectrk)) * device.secLength) + device.offset), SEEK_SET) != 0) {
         return (strerror(errno));
     }
 
-    int writeCount = fwrite(buffer, sizeof(char), device->secLength, device->file);
+    int writeCount = fwrite(buffer, sizeof(char), device.secLength, device.file);
 
-    if (writeCount != device->secLength) {
-        guiintf->printMsg(wxString::Format("Write Sector: %d bytes lost.\n", (device->secLength - writeCount)), CpmGuiInterface::msgColRed);
+    if (writeCount != device.secLength) {
+        guiintf->printMsg(wxString::Format("Write Sector: %d bytes lost.\n", (device.secLength - writeCount)), CpmGuiInterface::msgColRed);
         return (strerror(errno));
     }
 
@@ -780,7 +780,7 @@ int CpmTools::readBlock(const CpmSuperBlock_t *d, int blockno, char *buffer, int
         const char *err;
 
         if (counter >= start) {
-            if ((err = deviceReadSector(&d->dev, track, d->skewtab[sect], buffer + (d->secLength * counter)))) {
+            if ((err = deviceReadSector(track, d->skewtab[sect], buffer + (d->secLength * counter)))) {
                 boo = err;
                 return (-1);
             }
@@ -813,7 +813,7 @@ int CpmTools::writeBlock(const CpmSuperBlock_t *d, int blockno, const char *buff
     for (counter = 0; counter <= end; ++counter) {
         const char *err;
 
-        if (counter >= start && (err = deviceWriteSector(&d->dev, track, d->skewtab[sect], buffer + (d->secLength * counter)))) {
+        if (counter >= start && (err = deviceWriteSector(track, d->skewtab[sect], buffer + (d->secLength * counter)))) {
             boo = err;
             return (-1);
         }
@@ -1409,9 +1409,9 @@ int CpmTools::diskdefReadSuper(CpmSuperBlock_t *d, const char *format) {
 int CpmTools::amsReadSuper(CpmSuperBlock_t *d, const char *format) {
     unsigned char boot_sector[512], *boot_spec;
     const char *err;
-    deviceSetGeometry(&d->dev, 512, 9, 40, 0);
+    deviceSetGeometry(512, 9, 40, 0);
 
-    if ((err = deviceReadSector(&d->dev, 0, 0, (char *)boot_sector))) {
+    if ((err = deviceReadSector(0, 0, (char *)boot_sector))) {
         guiintf->printMsg(wxString::Format("%s: Failed to read Amstrad superblock (%s)\n", cmd, err));
         return (1);
     }
@@ -1537,7 +1537,7 @@ int CpmTools::cpmReadSuper(CpmSuperBlock_t *d, CpmInode_t *root, const char *for
     }
 
     boottracksused = (d->boottrk > 0) ? true : false;
-    boo = deviceSetGeometry(&d->dev, d->secLength, d->sectrk, d->tracks, d->offset);
+    boo = deviceSetGeometry(d->secLength, d->sectrk, d->tracks, d->offset);
 
     if (boo) {
         return (-1);
@@ -1585,7 +1585,7 @@ int CpmTools::cpmReadSuper(CpmSuperBlock_t *d, CpmInode_t *root, const char *for
         return (-1);
     }
 
-    if (d->dev.opened == false) { /* create empty directory in core */
+    if (device.opened == false) { /* create empty directory in core */
         memset(d->dir, 0xe5, d->maxdir * 32);
     }
     else { /* read directory in core */
@@ -2841,7 +2841,7 @@ int CpmTools::mkfs(CpmSuperBlock_t *drive, const char *format, const char *label
         CpmSuperBlock_t super;
         const char *err;
 
-        if ((err = deviceOpen(&super.dev, imageFileName.c_str(), "r+b"))) {
+        if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
             guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
             exit(1);
         }

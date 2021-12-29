@@ -102,9 +102,8 @@ class CpmTools {
             char checksum;
         } DsDate_t;
 
-
         typedef struct CpmSuperBlock {
-            Device_t dev;
+//            Device_t dev;
             int secLength;
             int tracks;
             int sectrk;
@@ -165,6 +164,7 @@ class CpmTools {
         } CpmStatFS_t;
 
         CpmGuiInterface *guiintf;
+        Device_t device;
         std::string imageTypeName;
         std::string imageFileName;
         const char *boo;
@@ -180,11 +180,11 @@ class CpmTools {
         // --------------------------------------------------------------------------------
         // Basic File Input/Output
         // --------------------------------------------------------------------------------
-        const char *deviceOpen(Device_t *device, const char *filename, const char *mode);
-        const char *deviceSetGeometry(Device_t *device, int secLength, int sectrk, int tracks, long offset);
-        const char *deviceClose(Device_t *device);
-        const char *deviceReadSector(const Device_t *device, int track, int sector, char *buffer);
-        const char *deviceWriteSector(const Device_t *device, int track, int sector, const char *buffer);
+        const char *deviceOpen(const char *filename, const char *mode);
+        const char *deviceSetGeometry(int secLength, int sectrk, int tracks, long offset);
+        const char *deviceClose();
+        const char *deviceReadSector(int track, int sector, char *buffer);
+        const char *deviceWriteSector(int track, int sector, const char *buffer);
         // --------------------------------------------------------------------------------
         // CP/M File-System
         // --------------------------------------------------------------------------------
