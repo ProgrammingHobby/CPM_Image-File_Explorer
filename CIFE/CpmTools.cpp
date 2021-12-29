@@ -49,7 +49,7 @@ void CpmTools::setImageFile(wxString fileName) {
 
 // --------------------------------------------------------------------------------
 void CpmTools::showDirectory() {
-    CpmInode_t root, file;
+    CpmInode_t file;
     CpmStatFS_t buf;
     CpmStat_t statbuf;
     wxString files = "*";
@@ -64,25 +64,25 @@ void CpmTools::showDirectory() {
         return;
     }
 
-    if (cpmReadSuper(&root, imageTypeName.c_str()) == -1) {
+    if (cpmReadSuper(imageTypeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo));
         return;
     }
 
-    cpmglob(files.c_str(), &root, &gargc, &gargv);
+    cpmglob(files.c_str(), &gargc, &gargv);
 
     if (gargc) {
         int i, l, user, attrib;
         int totalBytes = 0, totalRecs = 0;
         qsort(gargv, gargc, sizeof(char *), namecmp);
-        cpmStatFS(&root, &buf);
+        cpmStatFS(&buf);
 
         for (l = user = 0; user < 32; ++user) {
             for (i = 0; i < gargc; ++i) {
                 tm *tmp;
 
                 if (gargv[i][0] == '0' + user / 10 && gargv[i][1] == '0' + user % 10) {
-                    cpmNamei(&root, gargv[i], &file);
+                    cpmNamei(gargv[i], &file);
                     cpmStat(&file, &statbuf);
                     cpmAttrGet(&file, &attrib);
                     totalBytes += statbuf.size;
@@ -163,7 +163,6 @@ void CpmTools::showDirectory() {
 
 // --------------------------------------------------------------------------------
 void CpmTools::deleteFile(wxArrayString files) {
-    CpmInode_t root;
     const char *err;
     char **gargv;
     int gargc;
@@ -175,16 +174,16 @@ void CpmTools::deleteFile(wxArrayString files) {
         return;
     }
 
-    if (cpmReadSuper(&root, imageTypeName.c_str()) == -1) {
+    if (cpmReadSuper(imageTypeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
 
     for (size_t count = 0; count < files.GetCount(); count++) {
         wxString fileName = files.Item(count);
-        cpmglob(fileName.c_str(), &root, &gargc, &gargv);
+        cpmglob(fileName.c_str(), &gargc, &gargv);
 
-        if (cpmUnlink(&root, gargv[0]) == -1) {
+        if (cpmUnlink(gargv[0]) == -1) {
             guiintf->printMsg(wxString::Format("%s: can not erase %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
         }
     }
@@ -198,7 +197,6 @@ void CpmTools::deleteFile(wxArrayString files) {
 
 // --------------------------------------------------------------------------------
 void CpmTools::renameFile(wxString oldName, wxString newName) {
-    CpmInode_t root;
     const char *err;
     char nName[15];
     char **gargv;
@@ -211,15 +209,15 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
         return;
     }
 
-    if (cpmReadSuper(&root, imageTypeName.c_str()) == -1) {
+    if (cpmReadSuper(imageTypeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
 
-    cpmglob(oldName.c_str(), &root, &gargc, &gargv);
+    cpmglob(oldName.c_str(), &gargc, &gargv);
     convertFilename(newName.c_str(), nName);
 
-    if (cpmRename(&root, gargv[0], nName) == -1) {
+    if (cpmRename(gargv[0], nName) == -1) {
         guiintf->printMsg(wxString::Format("%s: can not rename %s in %s:  %s\n", cmd, oldName, newName, boo), CpmGuiInterface::msgColRed);
     }
 
@@ -233,7 +231,6 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
 
 // --------------------------------------------------------------------------------
 void CpmTools::setFileAttributes(wxString name, int attributes) {
-    CpmInode_t root;
     const char *err;
     char **gargv;
     int gargc;
@@ -245,15 +242,15 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
         return;
     }
 
-    if (cpmReadSuper(&root, imageTypeName.c_str()) == -1) {
+    if (cpmReadSuper(imageTypeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
 
-    cpmglob(name.c_str(), &root, &gargc, &gargv);
+    cpmglob(name.c_str(), &gargc, &gargv);
     CpmInode_t ino;
 
-    if (cpmNamei(&root, gargv[0], &ino) == -1) {
+    if (cpmNamei(gargv[0], &ino) == -1) {
         guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
     }
     else if (cpmAttrSet(&ino, attributes) == -1) {
@@ -269,7 +266,6 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
 
 // --------------------------------------------------------------------------------
 void CpmTools::setFileProtections(wxString name, int protections) {
-    CpmInode_t root;
     const char *err;
     char **gargv;
     int gargc;
@@ -281,15 +277,15 @@ void CpmTools::setFileProtections(wxString name, int protections) {
         return;
     }
 
-    if (cpmReadSuper(&root, imageTypeName.c_str()) == -1) {
+    if (cpmReadSuper(imageTypeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
 
-    cpmglob(name.c_str(), &root, &gargc, &gargv);
+    cpmglob(name.c_str(), &gargc, &gargv);
     CpmInode_t ino;
 
-    if (cpmNamei(&root, gargv[0], &ino) == -1) {
+    if (cpmNamei(gargv[0], &ino) == -1) {
         guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
     }
     else if (cpmProtSet(&ino, protections) == -1) {
@@ -310,14 +306,13 @@ bool CpmTools::getBootTracksEnabled() {
 
 // --------------------------------------------------------------------------------
 void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootTrackFile) {
-    CpmInode_t root;
     size_t bootTrackSize;
     char *bootTracks;
     cmd = "cpm.mkfs";
     wxString bootImage = bootTrackFile.substr(bootTrackFile.find_last_of("/\\") + 1);
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
     device.opened = 0;
-    cpmReadSuper(&root, imageTypeName.c_str());
+    cpmReadSuper(imageTypeName.c_str());
     bootTrackSize = drive.boottrk * drive.secLength * drive.sectrk;
 
     if ((bootTracks = (char *)malloc(bootTrackSize)) == (char *)0) {
@@ -363,7 +358,6 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
 
 // --------------------------------------------------------------------------------
 void CpmTools::checkImage(bool doRepair) {
-    CpmInode_t root;
     const char *err;
     int ret;
     cmd = "cpm.fsck";
@@ -379,12 +373,12 @@ void CpmTools::checkImage(bool doRepair) {
         }
     }
 
-    if (cpmReadSuper(&root, imageTypeName.c_str()) == -1) {
+    if (cpmReadSuper(imageTypeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
         return;
     }
 
-    ret = fsck(&root, image.c_str(), doRepair);
+    ret = fsck(image.c_str(), doRepair);
 
     if (ret & MODIFIED) {
         if (cpmSync() == -1) {
@@ -1100,14 +1094,14 @@ int CpmTools::match(const char *a, const char *pattern) {
 // --------------------------------------------------------------------------------
 //  -- expand CP/M style wildcards
 // --------------------------------------------------------------------------------
-void CpmTools::cpmglob(const char *argv, CpmInode_t *root, int *gargc, char ***gargv) {
+void CpmTools::cpmglob(const char *argv, int *gargc, char ***gargv) {
     CpmFile_t dir;
     int entries, dirsize = 0;
     CpmDirent_t *dirent = (CpmDirent_t *)0;
     int gargcap = 0, j;
     *gargv = (char **)0;
     *gargc = 0;
-    cpmOpendir(root, &dir);
+    cpmOpendir(&dir);
     entries = 0;
     dirsize = 8;
     dirent = (CpmDirent_t *)malloc(sizeof(CpmDirent_t) * dirsize);
@@ -1513,7 +1507,7 @@ int CpmTools::cpmCheckDs() {
 // --------------------------------------------------------------------------------
 //  -- get DPB and init in-core data for drive
 // --------------------------------------------------------------------------------
-int CpmTools::cpmReadSuper(CpmInode_t *root, const char *format) {
+int CpmTools::cpmReadSuper(const char *format) {
     while (s_ifdir && !S_ISDIR(s_ifdir)) {
         s_ifdir <<= 1;
     }
@@ -1682,13 +1676,13 @@ int CpmTools::cpmReadSuper(CpmInode_t *root, const char *format) {
         drive.labelLength = 0;
     }
 
-    drive.root = root;
+    drive.root = &root;
     drive.dirtyDirectory = 0;
-    root->ino = drive.maxdir;
-    root->sb = &drive;
-    root->mode = (s_ifdir | 0777);
-    root->size = 0;
-    root->atime = root->mtime = root->ctime = 0;
+    root.ino = drive.maxdir;
+    root.sb = &drive;
+    root.mode = (s_ifdir | 0777);
+    root.size = 0;
+    root.atime = root.mtime = root.ctime = 0;
     drive.dirtyDs = 0;
 
     if (cpmCheckDs() == 0) {
@@ -1789,41 +1783,41 @@ void CpmTools::cpmUmount() {
 // --------------------------------------------------------------------------------
 //  -- map name to inode
 // --------------------------------------------------------------------------------
-int CpmTools::cpmNamei(const CpmInode_t *dir, const char *filename, CpmInode_t *i) {
+int CpmTools::cpmNamei(const char *filename, CpmInode_t *i) {
     int user;
     char name[8], extension[3];
     int highestExtno, highestExt = -1, lowestExtno, lowestExt = -1;
     int protectMode = 0;
 
-    if (!S_ISDIR(dir->mode)) {
+    if (!S_ISDIR(root.mode)) {
         boo = "No such file";
         return (-1);
     }
 
     if (strcmp(filename, ".") == 0 || strcmp(filename, "..") == 0) { /* root directory */
-        *i = *dir;
+        *i = root;
         return (0);
     }
-    else if (strcmp(filename, "[passwd]") == 0 && dir->sb->passwdLength) { /* access passwords */
+    else if (strcmp(filename, "[passwd]") == 0 && root.sb->passwdLength) { /* access passwords */
         i->attr = 0;
-        i->ino = dir->sb->maxdir + 1;
+        i->ino = root.sb->maxdir + 1;
         i->mode = s_ifreg | 0444;
-        i->sb = dir->sb;
+        i->sb = root.sb;
         i->atime = i->mtime = i->ctime = 0;
         i->size = i->sb->passwdLength;
         return (0);
     }
-    else if (strcmp(filename, "[label]") == 0 && dir->sb->labelLength) { /* access label */
+    else if (strcmp(filename, "[label]") == 0 && root.sb->labelLength) { /* access label */
         i->attr = 0;
-        i->ino = dir->sb->maxdir + 2;
+        i->ino = root.sb->maxdir + 2;
         i->mode = s_ifreg | 0444;
-        i->sb = dir->sb;
+        i->sb = root.sb;
         i->atime = i->mtime = i->ctime = 0;
         i->size = i->sb->labelLength;
         return (0);
     }
 
-    if (splitFilename(filename, dir->sb->type, name, extension, &user) == -1) {
+    if (splitFilename(filename, root.sb->type, name, extension, &user) == -1) {
         return (-1);
     }
 
@@ -1836,7 +1830,7 @@ int CpmTools::cpmNamei(const CpmInode_t *dir, const char *filename, CpmInode_t *
         lowestExtno = 2049;
 
         while ((extent = findFileExtent(user, name, extension, extent + 1, -1)) != -1) {
-            int extno = EXTENT(dir->sb->dir[extent].extnol, dir->sb->dir[extent].extnoh);
+            int extno = EXTENT(root.sb->dir[extent].extnol, root.sb->dir[extent].extnoh);
 
             if (extno > highestExtno) {
                 highestExtno = extno;
@@ -1859,61 +1853,61 @@ int CpmTools::cpmNamei(const CpmInode_t *dir, const char *filename, CpmInode_t *
         int block;
         i->size = highestExtno * 16384;
 
-        if (dir->sb->size < 256) for (block = 15; block >= 0; --block) {
-                if (dir->sb->dir[highestExt].pointers[block]) {
+        if (root.sb->size < 256) for (block = 15; block >= 0; --block) {
+                if (root.sb->dir[highestExt].pointers[block]) {
                     break;
                 }
             }
         else for (block = 7; block >= 0; --block) {
-                if (dir->sb->dir[highestExt].pointers[2 * block] || dir->sb->dir[highestExt].pointers[2 * block + 1]) {
+                if (root.sb->dir[highestExt].pointers[2 * block] || root.sb->dir[highestExt].pointers[2 * block + 1]) {
                     break;
                 }
             }
 
-        if (dir->sb->dir[highestExt].blkcnt) {
-            i->size += ((dir->sb->dir[highestExt].blkcnt & 0xff) - 1) * 128;
+        if (root.sb->dir[highestExt].blkcnt) {
+            i->size += ((root.sb->dir[highestExt].blkcnt & 0xff) - 1) * 128;
 
-            if (dir->sb->type & CPMFS_ISX) {
-                i->size += (128 - dir->sb->dir[highestExt].lrc);
+            if (root.sb->type & CPMFS_ISX) {
+                i->size += (128 - root.sb->dir[highestExt].lrc);
             }
             else {
-                i->size += dir->sb->dir[highestExt].lrc ? (dir->sb->dir[highestExt].lrc & 0xff) : 128;
+                i->size += root.sb->dir[highestExt].lrc ? (root.sb->dir[highestExt].lrc & 0xff) : 128;
             }
         }
     }
     i->ino = lowestExt;
     i->mode = s_ifreg;
-    i->sb = dir->sb;
+    i->sb = root.sb;
     /* read timestamps */
     protectMode = readTimeStamps(i, lowestExt);
     /* Determine the inode attributes */
     i->attr = 0;
 
-    if (dir->sb->dir[lowestExt].name[0] & 0x80) {
+    if (root.sb->dir[lowestExt].name[0] & 0x80) {
         i->attr |= CPM_ATTR_F1;
     }
 
-    if (dir->sb->dir[lowestExt].name[1] & 0x80) {
+    if (root.sb->dir[lowestExt].name[1] & 0x80) {
         i->attr |= CPM_ATTR_F2;
     }
 
-    if (dir->sb->dir[lowestExt].name[2] & 0x80) {
+    if (root.sb->dir[lowestExt].name[2] & 0x80) {
         i->attr |= CPM_ATTR_F3;
     }
 
-    if (dir->sb->dir[lowestExt].name[3] & 0x80) {
+    if (root.sb->dir[lowestExt].name[3] & 0x80) {
         i->attr |= CPM_ATTR_F4;
     }
 
-    if (dir->sb->dir[lowestExt].ext [0] & 0x80) {
+    if (root.sb->dir[lowestExt].ext [0] & 0x80) {
         i->attr |= CPM_ATTR_RO;
     }
 
-    if (dir->sb->dir[lowestExt].ext [1] & 0x80) {
+    if (root.sb->dir[lowestExt].ext [1] & 0x80) {
         i->attr |= CPM_ATTR_SYS;
     }
 
-    if (dir->sb->dir[lowestExt].ext [2] & 0x80) {
+    if (root.sb->dir[lowestExt].ext [2] & 0x80) {
         i->attr |= CPM_ATTR_ARCV;
     }
 
@@ -1929,13 +1923,13 @@ int CpmTools::cpmNamei(const CpmInode_t *dir, const char *filename, CpmInode_t *
         i->attr |= CPM_ATTR_PWREAD;
     }
 
-    if (dir->sb->dir[lowestExt].ext[1] & 0x80) {
+    if (root.sb->dir[lowestExt].ext[1] & 0x80) {
         i->mode |= 01000;
     }
 
     i->mode |= 0444;
 
-    if (!(dir->sb->dir[lowestExt].ext[0] & 0x80)) {
+    if (!(root.sb->dir[lowestExt].ext[0] & 0x80)) {
         i->mode |= 0222;
     }
 
@@ -1950,10 +1944,10 @@ int CpmTools::cpmNamei(const CpmInode_t *dir, const char *filename, CpmInode_t *
 // --------------------------------------------------------------------------------
 //  -- statfs
 // --------------------------------------------------------------------------------
-void CpmTools::cpmStatFS(const CpmInode_t *ino, CpmStatFS_t *buf) {
+void CpmTools::cpmStatFS(CpmStatFS_t *buf) {
     int i;
     CpmSuperBlock_t *d;
-    d = ino->sb;
+    d = root.sb;
     buf->f_bsize = d->blksiz;
     buf->f_blocks = d->size;
     buf->f_bfree = 0;
@@ -1993,20 +1987,17 @@ void CpmTools::cpmStatFS(const CpmInode_t *ino, CpmStatFS_t *buf) {
 // --------------------------------------------------------------------------------
 //  -- unlink
 // --------------------------------------------------------------------------------
-int CpmTools::cpmUnlink(const CpmInode_t *dir, const char *fname) {
+int CpmTools::cpmUnlink(const char *fname) {
     int user;
     char name[8], extension[3];
     int extent;
-//    CpmSuperBlock_t *drive;
 
-    if (!S_ISDIR(dir->mode)) {
+    if (!S_ISDIR(root.mode)) {
         boo = "No such file";
         return (-1);
     }
 
-//    drive = dir->sb;
-
-    if (splitFilename(fname, dir->sb->type, name, extension, &user) == -1) {
+    if (splitFilename(fname, root.sb->type, name, extension, &user) == -1) {
         return (-1);
     }
 
@@ -2028,26 +2019,23 @@ int CpmTools::cpmUnlink(const CpmInode_t *dir, const char *fname) {
 // --------------------------------------------------------------------------------
 //  -- rename
 // --------------------------------------------------------------------------------
-int CpmTools::cpmRename(const CpmInode_t *dir, const char *oldn, const char *newn) {
-//    CpmSuperBlock_t *drive;
+int CpmTools::cpmRename(const char *oldn, const char *newn) {
     int extent;
     int olduser;
     char oldname[8], oldext[3];
     int newuser;
     char newname[8], newext[3];
 
-    if (!S_ISDIR(dir->mode)) {
+    if (!S_ISDIR(root.mode)) {
         boo = "No such file";
         return (-1);
     }
 
-//    drive = dir->sb;
-
-    if (splitFilename(oldn, dir->sb->type, oldname, oldext, &olduser) == -1) {
+    if (splitFilename(oldn, root.sb->type, oldname, oldext, &olduser) == -1) {
         return (-1);
     }
 
-    if (splitFilename(newn, dir->sb->type, newname, newext, &newuser) == -1) {
+    if (splitFilename(newn, root.sb->type, newname, newext, &newuser) == -1) {
         return (-1);
     }
 
@@ -2073,13 +2061,13 @@ int CpmTools::cpmRename(const CpmInode_t *dir, const char *oldn, const char *new
 // --------------------------------------------------------------------------------
 //  -- opendir
 // --------------------------------------------------------------------------------
-int CpmTools::cpmOpendir(CpmInode_t *dir, CpmFile_t *dirp) {
-    if (!S_ISDIR(dir->mode)) {
+int CpmTools::cpmOpendir(CpmFile_t *dirp) {
+    if (!S_ISDIR(root.mode)) {
         boo = "No such file";
         return (-1);
     }
 
-    dirp->ino = dir;
+    dirp->ino = &root;
     dirp->pos = 0;
     dirp->mode = O_RDONLY;
     return (0);
@@ -2503,7 +2491,6 @@ int CpmTools::cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode
     int user;
     char name[8], extension[3];
     int extent;
-//    CpmSuperBlock_t *drive;
     PhysDirectoryEntry_t *ent;
 
     if (!S_ISDIR(dir->mode)) {
@@ -2518,8 +2505,6 @@ int CpmTools::cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode
     if (findFileExtent(user, name, extension, 0, -1) != -1) {
         return (-1);
     }
-
-//    drive = dir->sb;
 
     if ((extent = findFreeExtent()) == -1) {
         return (-1);
@@ -2555,13 +2540,11 @@ int CpmTools::cpmAttrGet(CpmInode_t *ino, cpm_attr_t *attrib) {
 //  -- set CP/M attributes
 // --------------------------------------------------------------------------------
 int CpmTools::cpmAttrSet(CpmInode_t *ino, cpm_attr_t attrib) {
-//    CpmSuperBlock_t *drive;
     int extent;
     int user;
     char name[8], extension[3];
     memset(name,      0, sizeof(name));
     memset(extension, 0, sizeof(extension));
-//    drive  = ino->sb;
     extent = ino->ino;
     drive.dirtyDirectory = 1;
     /* Strip off existing attribute bits */
@@ -2827,11 +2810,10 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
 
     if (timeStamps && !(drive.type == CPMFS_P2DOS || drive.type == CPMFS_DR3)) { /*{{{*/
         int offset, j;
-        CpmInode_t ino, root;
+        CpmInode_t ino;
         static const char sig[] = "!!!TIME";
         unsigned int records;
         DsDate_t *ds;
-//        CpmSuperBlock_t super;
         const char *err;
 
         if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
@@ -2839,7 +2821,7 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
             exit(1);
         }
 
-        cpmReadSuper(&root, format);
+        cpmReadSuper(format);
         records = root.sb->maxdir / 8;
 
         if (!(ds = (DsDate_t *)malloc(records * 128))) {
@@ -2933,13 +2915,13 @@ int CpmTools::ask(const char *msg) {
 // --------------------------------------------------------------------------------
 //  -- print file name
 // --------------------------------------------------------------------------------
-char *CpmTools::prfile(CpmSuperBlock_t *sb, int extent) {
+char *CpmTools::prfile(int extent) {
     PhysDirectoryEntry_t *dir;
     static char name[80];
     char *s = name;
     int i;
     char c;
-    dir = sb->dir + extent;
+    dir = drive.dir + extent;
 
     for (i = 0; i < 8; ++i) {
         c = dir->name[i];
@@ -2978,12 +2960,12 @@ char *CpmTools::prfile(CpmSuperBlock_t *sb, int extent) {
 // --------------------------------------------------------------------------------
 //  -- file system check
 // --------------------------------------------------------------------------------
-int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
+int CpmTools::fsck(const char *image, bool repair) {
     /* variables */
     int ret = OK;
     int extent, extent2;
     PhysDirectoryEntry_t *dir, *dir2;
-    CpmSuperBlock_t *sb = root->sb;
+    CpmSuperBlock_t *sb = root.sb;
     /* Phase 1: check extent fields */
     guiintf->printMsg("====================================================================================================\n", CpmGuiInterface::msgColGreen);
     guiintf->printMsg("  Phase 1: check extent fields\n", CpmGuiInterface::msgColGreen);
@@ -3004,7 +2986,7 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
                     c = &(dir->name[i]);
 
                     if (!ISFILECHAR(i, *c & 0x7f) || islower(*c & 0x7f)) {
-                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(sb, extent), i), CpmGuiInterface::msgColGreen);
+                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(extent), i), CpmGuiInterface::msgColGreen);
 
                         if (repair && ask("Remove file")) {
                             *status = (char)0xE5;
@@ -3025,7 +3007,7 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
                     c = &(dir->ext[i]);
 
                     if (!ISFILECHAR(1, *c & 0x7f) || islower(*c & 0x7f)) {
-                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(sb, extent), i), CpmGuiInterface::msgColGreen);
+                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(extent), i), CpmGuiInterface::msgColGreen);
 
                         if (repair && ask("Remove file")) {
                             *status = (char)0xE5;
@@ -3045,7 +3027,7 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
 
             /* check extent number */
             if ((dir->extnol & 0xff) > 0x1f) {
-                guiintf->printMsg(wxString::Format("    Error: Bad lower bits of extent number (extent=%d, name=\"%s\", low bits=%d)\n", extent, prfile(sb, extent), dir->extnol & 0xff), CpmGuiInterface::msgColGreen);
+                guiintf->printMsg(wxString::Format("    Error: Bad lower bits of extent number (extent=%d, name=\"%s\", low bits=%d)\n", extent, prfile(extent), dir->extnol & 0xff), CpmGuiInterface::msgColGreen);
 
                 if (repair && ask("Remove file")) {
                     *status = (char)0xE5;
@@ -3061,7 +3043,7 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
             }
 
             if ((dir->extnoh & 0xff) > 0x3f) {
-                guiintf->printMsg(wxString::Format("    Error: Bad higher bits of extent number (extent=%d, name=\"%s\", high bits=%d)\n", extent, prfile(sb, extent), dir->extnoh & 0xff), CpmGuiInterface::msgColGreen);
+                guiintf->printMsg(wxString::Format("    Error: Bad higher bits of extent number (extent=%d, name=\"%s\", high bits=%d)\n", extent, prfile(extent), dir->extnoh & 0xff), CpmGuiInterface::msgColGreen);
 
                 if (repair && ask("Remove file")) {
                     *status = (char)0xE5;
@@ -3078,7 +3060,7 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
 
             /* check last record byte count */
             if ((dir->lrc & 0xff) > 128) {
-                guiintf->printMsg(wxString::Format("    Error: Bad last record byte count (extent=%d, name=\"%s\", lrc=%d)\n", extent, prfile(sb, extent), dir->lrc & 0xff), CpmGuiInterface::msgColGreen);
+                guiintf->printMsg(wxString::Format("    Error: Bad last record byte count (extent=%d, name=\"%s\", lrc=%d)\n", extent, prfile(extent), dir->lrc & 0xff), CpmGuiInterface::msgColGreen);
 
                 if (repair && ask("Clear last record byte count")) {
                     dir->lrc = (char)0;
@@ -3110,7 +3092,7 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
                         ++usedBlocks;
 
                         if (block < min || block >= max) {
-                            guiintf->printMsg(wxString::Format("    Error: Bad block number (extent=%d, name=\"%s\", block=%d)\n", extent, prfile(sb, extent), block), CpmGuiInterface::msgColGreen);
+                            guiintf->printMsg(wxString::Format("    Error: Bad block number (extent=%d, name=\"%s\", block=%d)\n", extent, prfile(extent), block), CpmGuiInterface::msgColGreen);
 
                             if (repair && ask("Remove file")) {
                                 *status = (char)0xE5;
@@ -3151,7 +3133,7 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
                 recordsInBlocks = (((unsigned char)dir->blkcnt) * 128 + sb->blksiz - 1) / sb->blksiz;
 
                 if (recordsInBlocks != used) {
-                    guiintf->printMsg(wxString::Format("    Error: Bad record count (extent=%d, name=\"%s\", record count=%d)\n", extent, prfile(sb, extent), dir->blkcnt & 0xff), CpmGuiInterface::msgColGreen);
+                    guiintf->printMsg(wxString::Format("    Error: Bad record count (extent=%d, name=\"%s\", record count=%d)\n", extent, prfile(extent), dir->blkcnt & 0xff), CpmGuiInterface::msgColGreen);
 
                     if (repair && ask("Remove file")) {
                         *status = (char)0xE5;
@@ -3169,7 +3151,7 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
 
             /* check for too large .com files */
             if (((EXTENT(dir->extnol, dir->extnoh) == 3 && dir->blkcnt >= 126) || EXTENT(dir->extnol, dir->extnoh) >= 4) && (dir->ext[0] & 0x7f) == 'C' && (dir->ext[1] & 0x7f) == 'O' && (dir->ext[2] & 0x7f) == 'M') {
-                guiintf->printMsg(wxString::Format("    Warning: Oversized .COM file (extent=%d, name=\"%s\")\n", extent, prfile(sb, extent)), CpmGuiInterface::msgColGreen);
+                guiintf->printMsg(wxString::Format("    Warning: Oversized .COM file (extent=%d, name=\"%s\")\n", extent, prfile(extent)), CpmGuiInterface::msgColGreen);
             }
         }
         else if ((sb->type == CPMFS_P2DOS || sb->type == CPMFS_DR3) && *status == 33) { /* check time stamps ? */
@@ -3275,7 +3257,7 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
                     c = &(dir->name[i]);
 
                     if (!ISFILECHAR(i, *c & 0x7f) || islower(*c & 0x7f)) {
-                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(sb, extent), i), CpmGuiInterface::msgColGreen);
+                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(extent), i), CpmGuiInterface::msgColGreen);
 
                         if (repair && ask("Clear password entry")) {
                             *status = (char)0xE5;
@@ -3296,7 +3278,7 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
                     c = &(dir->ext[i]);
 
                     if (!ISFILECHAR(1, *c & 0x7f) || islower(*c & 0x7f)) {
-                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(sb, extent), i), CpmGuiInterface::msgColGreen);
+                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(extent), i), CpmGuiInterface::msgColGreen);
 
                         if (repair && ask("Clear password entry")) {
                             *status = (char)0xE5;
@@ -3337,7 +3319,7 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
             }
         }
         else if (*status != (char)0xe5) { /* bad status */
-            guiintf->printMsg(wxString::Format("    Error: Bad status (extent=%d, name=\"%s\", status=0x%02x)\n", extent, prfile(sb, extent), *status & 0xff), CpmGuiInterface::msgColGreen);
+            guiintf->printMsg(wxString::Format("    Error: Bad status (extent=%d, name=\"%s\", status=0x%02x)\n", extent, prfile(extent), *status & 0xff), CpmGuiInterface::msgColGreen);
 
             if (repair && ask("Clear entry")) {
                 *status = (char)0xE5;
@@ -3374,8 +3356,8 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
                             }
 
                             if (block != 0 && block2 != 0 && block == block2 && !(extent == extent2 && i == j)) {
-                                guiintf->printMsg(wxString::Format("    Error: Multiple allocated block (extent=%d,%d, name=\"%s\"", extent, extent2, prfile(sb, extent)), CpmGuiInterface::msgColGreen);
-                                guiintf->printMsg(wxString::Format(",\"%s\" block=%d)\n", prfile(sb, extent2), block), CpmGuiInterface::msgColGreen);
+                                guiintf->printMsg(wxString::Format("    Error: Multiple allocated block (extent=%d,%d, name=\"%s\"", extent, extent2, prfile(extent)), CpmGuiInterface::msgColGreen);
+                                guiintf->printMsg(wxString::Format(",\"%s\" block=%d)\n", prfile(extent2), block), CpmGuiInterface::msgColGreen);
                                 ret |= BROKEN;
                             }
                         }
@@ -3406,7 +3388,7 @@ int CpmTools::fsck(CpmInode_t *root, const char *image, bool repair) {
     if (ret == 0) { /* print statistics */
         CpmStatFS_t statfsbuf;
         int fragmented = 0, borders = 0;
-        cpmStatFS(root, &statfsbuf);
+        cpmStatFS(&statfsbuf);
 
         for (extent = 0; extent < sb->maxdir; ++extent) if ((dir = sb->dir + extent)->status >= 0 && dir->status <= (sb->type == CPMFS_P2DOS ? 31 : 15)) {
                 int i, block, previous = -1;

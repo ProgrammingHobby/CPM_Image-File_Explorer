@@ -103,7 +103,6 @@ class CpmTools {
         } DsDate_t;
 
         typedef struct CpmSuperBlock {
-//            Device_t dev;
             int secLength;
             int tracks;
             int sectrk;
@@ -166,6 +165,7 @@ class CpmTools {
         CpmGuiInterface *guiintf;
         Device_t device;
         CpmSuperBlock_t drive;
+        CpmInode_t root;
         std::string imageTypeName;
         std::string imageFileName;
         const char *boo;
@@ -208,19 +208,19 @@ class CpmTools {
         void readDsStamps(CpmInode_t *i, int lowestExt);
         int recmatch(const char *a, const char *pattern);
         int match(const char *a, const char *pattern);
-        void cpmglob(const char *argv, CpmInode_t *root, int *gargc, char ***gargv);
+        void cpmglob(const char *argv, int *gargc, char ***gargv);
         int diskdefReadSuper(const char *format);
         int amsReadSuper(const char *format);
         int cpmCheckDs();
-        int cpmReadSuper(CpmInode_t *root, const char *format);
+        int cpmReadSuper(const char *format);
         int syncDs();
         int cpmSync();
         void cpmUmount();
-        int cpmNamei(const CpmInode_t *dir, const char *filename, CpmInode_t *i);
-        void cpmStatFS(const CpmInode_t *ino, CpmStatFS_t *buf);
-        int cpmUnlink(const CpmInode_t *dir, const char *fname);
-        int cpmRename(const CpmInode_t *dir, const char *oldname, const char *newname);
-        int cpmOpendir(CpmInode_t *dir, CpmFile_t *dirp);
+        int cpmNamei(const char *filename, CpmInode_t *i);
+        void cpmStatFS(CpmStatFS_t *buf);
+        int cpmUnlink(const char *fname);
+        int cpmRename(const char *oldname, const char *newname);
+        int cpmOpendir(CpmFile_t *dirp);
         int cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent);
         void cpmStat(const CpmInode_t *ino, CpmStat_t *buf);
         int cpmOpen(CpmInode_t *ino, CpmFile_t *file, mode_t mode);
@@ -241,9 +241,9 @@ class CpmTools {
         int bcdCheck(int n, int max, const char *msg, const char *unit, int extent1, int extent2);
         int pwdCheck(int extent, const char *pwd, char decode);
         int ask(const char *msg);
-        char *prfile(CpmSuperBlock_t *sb, int extent);
+        char *prfile(int extent);
         int mkfs(const char *format, const char *label, char *bootTracks, int timeStamps);
-        int fsck(CpmInode_t *root, const char *image, bool repair);
+        int fsck(const char *image, bool repair);
 
 };
 
