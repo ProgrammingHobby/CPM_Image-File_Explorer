@@ -57,9 +57,8 @@ void CpmTools::showDirectory() {
     CpmStatFS_t buf;
     CpmStat_t statbuf;
     wxString files = "*";
-    const char *err;
-    char **gargv;
     int gargc, row = 0;
+    char **gargv;
     cmd = "cpmls";
     std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
@@ -69,7 +68,7 @@ void CpmTools::showDirectory() {
     }
 
     if (cpmReadSuper(imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo));
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err));
         return;
     }
 
@@ -167,7 +166,6 @@ void CpmTools::showDirectory() {
 
 // --------------------------------------------------------------------------------
 void CpmTools::deleteFile(wxArrayString files) {
-    const char *err;
     char **gargv;
     int gargc;
     cmd = "cpmrm";
@@ -179,7 +177,7 @@ void CpmTools::deleteFile(wxArrayString files) {
     }
 
     if (cpmReadSuper(imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err), CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -188,7 +186,7 @@ void CpmTools::deleteFile(wxArrayString files) {
         cpmglob(fileName.c_str(), &gargc, &gargv);
 
         if (cpmUnlink(gargv[0]) == -1) {
-            guiintf->printMsg(wxString::Format("%s: can not erase %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("%s: can not erase %s: %s\n", cmd, gargv[0], err), CpmGuiInterface::msgColRed);
         }
     }
 
@@ -201,7 +199,6 @@ void CpmTools::deleteFile(wxArrayString files) {
 
 // --------------------------------------------------------------------------------
 void CpmTools::renameFile(wxString oldName, wxString newName) {
-    const char *err;
     char nName[15];
     char **gargv;
     int gargc;
@@ -214,7 +211,7 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     }
 
     if (cpmReadSuper(imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err), CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -222,7 +219,7 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     convertFilename(newName.c_str(), nName);
 
     if (cpmRename(gargv[0], nName) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not rename %s in %s:  %s\n", cmd, oldName, newName, boo), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not rename %s in %s:  %s\n", cmd, oldName, newName, err), CpmGuiInterface::msgColRed);
     }
 
     cpmUmount();
@@ -235,7 +232,6 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
 
 // --------------------------------------------------------------------------------
 void CpmTools::setFileAttributes(wxString name, int attributes) {
-    const char *err;
     char **gargv;
     int gargc;
     cmd = "cpmchattr";
@@ -247,7 +243,7 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
     }
 
     if (cpmReadSuper(imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err), CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -255,10 +251,10 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
     CpmInode_t ino;
 
     if (cpmNamei(gargv[0], &ino) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], err), CpmGuiInterface::msgColRed);
     }
     else if (cpmAttrSet(&ino, attributes) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not set attributes %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not set attributes %s: %s\n", cmd, gargv[0], err), CpmGuiInterface::msgColRed);
     }
 
     cpmUmount();
@@ -270,7 +266,6 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
 
 // --------------------------------------------------------------------------------
 void CpmTools::setFileProtections(wxString name, int protections) {
-    const char *err;
     char **gargv;
     int gargc;
     cmd = "cpmchprot";
@@ -282,7 +277,7 @@ void CpmTools::setFileProtections(wxString name, int protections) {
     }
 
     if (cpmReadSuper(imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err), CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -290,10 +285,10 @@ void CpmTools::setFileProtections(wxString name, int protections) {
     CpmInode_t ino;
 
     if (cpmNamei(gargv[0], &ino) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], err), CpmGuiInterface::msgColRed);
     }
     else if (cpmProtSet(&ino, protections) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not set protections %s: %s\n", cmd, gargv[0], boo), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not set protections %s: %s\n", cmd, gargv[0], err), CpmGuiInterface::msgColRed);
     }
 
     cpmUmount();
@@ -348,7 +343,7 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
     }
 
     if (mkfs(imageTypeName.c_str(), label.c_str(), bootTracks, (useTimeStamps ? 1 : 0)) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not make new file system: %s\n", cmd, boo), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not make new file system: %s\n", cmd, err), CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -357,7 +352,6 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
 
 // --------------------------------------------------------------------------------
 void CpmTools::checkImage(bool doRepair) {
-    const char *err;
     int ret;
     cmd = "cpm.fsck";
     std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
@@ -373,7 +367,7 @@ void CpmTools::checkImage(bool doRepair) {
     }
 
     if (cpmReadSuper(imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, boo), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err), CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -479,7 +473,7 @@ int CpmTools::splitFilename(const char *fullname, int type, char *name, char *ex
     memset(ext, ' ', 3);
 
     if (!isdigit(fullname[0]) || !isdigit(fullname[1])) {
-        boo = "illegal CP/M filename";
+        err = "illegal CP/M filename";
         return (-1);
     }
 
@@ -487,13 +481,13 @@ int CpmTools::splitFilename(const char *fullname, int type, char *name, char *ex
     fullname += 2;
 
     if ((fullname[0] == '\0') || *user >= ((type & CPMFS_HI_USER) ? 32 : 16)) {
-        boo = "illegal CP/M filename";
+        err = "illegal CP/M filename";
         return (-1);
     }
 
     for (i = 0; i < 8 && fullname[i] && fullname[i] != '.'; ++i) {
         if (!ISFILECHAR(i, fullname[i])) {
-            boo = "illegal CP/M filename";
+            err = "illegal CP/M filename";
             return (-1);
         }
         else {
@@ -506,7 +500,7 @@ int CpmTools::splitFilename(const char *fullname, int type, char *name, char *ex
 
         for (j = 0; j < 3 && fullname[i]; ++i, ++j) {
             if (!ISFILECHAR(1, fullname[i])) {
-                boo = "illegal CP/M filename";
+                err = "illegal CP/M filename";
                 return (-1);
             }
             else {
@@ -515,7 +509,7 @@ int CpmTools::splitFilename(const char *fullname, int type, char *name, char *ex
         }
 
         if (i == 1 && j == 0) {
-            boo = "illegal CP/M filename";
+            err = "illegal CP/M filename";
             return (-1);
         }
     }
@@ -727,7 +721,7 @@ int CpmTools::allocBlock() {
                 block = i * INTBITS + j;
 
                 if (block >= drive.size) {
-                    boo = "device full";
+                    err = "device full";
                     return (-1);
                 }
 
@@ -739,7 +733,7 @@ int CpmTools::allocBlock() {
         }
     }
 
-    boo = "device full";
+    err = "device full";
     return (-1);
 }
 
@@ -750,7 +744,7 @@ int CpmTools::readBlock(int blockno, char *buffer, int start, int end) {
     int sect, track, counter;
 
     if (blockno >= drive.size) {
-        boo = "Attempting to access block beyond end of disk";
+        err = "Attempting to access block beyond end of disk";
         return (-1);
     }
 
@@ -762,11 +756,8 @@ int CpmTools::readBlock(int blockno, char *buffer, int start, int end) {
     track = (blockno * (drive.blksiz / drive.secLength) + drive.sectrk * drive.boottrk) / drive.sectrk;
 
     for (counter = 0; counter <= end; ++counter) {
-        const char *err;
-
         if (counter >= start) {
             if ((err = deviceReadSector(track, drive.skewtab[sect], buffer + (drive.secLength * counter)))) {
-                boo = err;
                 return (-1);
             }
         }
@@ -796,10 +787,7 @@ int CpmTools::writeBlock(int blockno, const char *buffer, int start, int end) {
     track = (blockno * (drive.blksiz / drive.secLength)) / drive.sectrk + drive.boottrk;
 
     for (counter = 0; counter <= end; ++counter) {
-        const char *err;
-
         if (counter >= start && (err = deviceWriteSector(track, drive.skewtab[sect], buffer + (drive.secLength * counter)))) {
-            boo = err;
             return (-1);
         }
 
@@ -818,7 +806,7 @@ int CpmTools::writeBlock(int blockno, const char *buffer, int start, int end) {
 //  -- find first/next extent for a file
 // --------------------------------------------------------------------------------
 int CpmTools::findFileExtent(int user, const char *name, const char *ext, int start, int extno) {
-    boo = "file already exists";
+    err = "file already exists";
 
     for (; start < drive.maxdir; ++start) {
         if (((unsigned char)drive.dir[start].status) <= (drive.type & CPMFS_HI_USER ? 31 : 15)
@@ -828,7 +816,7 @@ int CpmTools::findFileExtent(int user, const char *name, const char *ext, int st
         }
     }
 
-    boo = "file not found";
+    err = "file not found";
     return (-1);
 }
 
@@ -842,7 +830,7 @@ int CpmTools::findFreeExtent() {
             return (i);
         }
 
-    boo = "directory full";
+    err = "directory full";
     return (-1);
 }
 
@@ -1393,7 +1381,6 @@ int CpmTools::diskdefReadSuper(const char *format) {
 // --------------------------------------------------------------------------------
 int CpmTools::amsReadSuper(const char *format) {
     unsigned char boot_sector[512], *boot_spec;
-    const char *err;
     deviceSetGeometry(512, 9, 40, 0);
 
     if ((err = deviceReadSector(0, 0, (char *)boot_sector))) {
@@ -1527,7 +1514,7 @@ int CpmTools::cpmReadSuper(const char *format) {
         int	i, j, k;
 
         if ((drive.skewtab = (int *)malloc(drive.sectrk * sizeof(int))) == (int *)0) {
-            boo = strerror(errno);
+            err = strerror(errno);
             return (-1);
         }
 
@@ -1554,14 +1541,14 @@ int CpmTools::cpmReadSuper(const char *format) {
         drive.alvSize = ((drive.secLength * drive.sectrk * (drive.tracks - drive.boottrk)) / drive.blksiz + INTBITS - 1) / INTBITS;
 
         if ((drive.alv = (int *)malloc(drive.alvSize * sizeof(int))) == (int *)0) {
-            boo = strerror(errno);
+            err = strerror(errno);
             return (-1);
         }
     }
 
     /* allocate directory buffer */
     if ((drive.dir = (PhysDirectoryEntry_t *) malloc(((drive.maxdir * 32 + drive.blksiz - 1) / drive.blksiz) * drive.blksiz)) == (PhysDirectoryEntry_t *)0) {
-        boo = strerror(errno);
+        err = strerror(errno);
         return (-1);
     }
 
@@ -1596,7 +1583,7 @@ int CpmTools::cpmReadSuper(const char *format) {
 
             if ((drive.passwdLength = passwords * PASSWD_RECLEN)) {
                 if ((drive.passwd = (char *)malloc(drive.passwdLength)) == (char *)0) {
-                    boo = "out of memory";
+                    err = "out of memory";
                     return (-1);
                 }
 
@@ -1637,7 +1624,7 @@ int CpmTools::cpmReadSuper(const char *format) {
                     drive.labelLength = 12;
 
                     if ((drive.label = (char *)malloc(drive.labelLength)) == (char *)0) {
-                        boo = "out of memory";
+                        err = "out of memory";
                         return -1;
                     }
 
@@ -1785,7 +1772,7 @@ int CpmTools::cpmNamei(const char *filename, CpmInode_t *i) {
     int protectMode = 0;
 
     if (!S_ISDIR(root.mode)) {
-        boo = "No such file";
+        err = "No such file";
         return (-1);
     }
 
@@ -1983,7 +1970,7 @@ int CpmTools::cpmUnlink(const char *fname) {
     int extent;
 
     if (!S_ISDIR(root.mode)) {
-        boo = "No such file";
+        err = "No such file";
         return (-1);
     }
 
@@ -2017,7 +2004,7 @@ int CpmTools::cpmRename(const char *oldn, const char *newn) {
     char newname[8], newext[3];
 
     if (!S_ISDIR(root.mode)) {
-        boo = "No such file";
+        err = "No such file";
         return (-1);
     }
 
@@ -2034,7 +2021,7 @@ int CpmTools::cpmRename(const char *oldn, const char *newn) {
     }
 
     if (findFileExtent(newuser, newname, newext, 0, -1) != -1) {
-        boo = "file already exists";
+        err = "file already exists";
         return (-1);
     }
 
@@ -2053,7 +2040,7 @@ int CpmTools::cpmRename(const char *oldn, const char *newn) {
 // --------------------------------------------------------------------------------
 int CpmTools::cpmOpendir(CpmFile_t *dirp) {
     if (!S_ISDIR(root.mode)) {
-        boo = "No such file";
+        err = "No such file";
         return (-1);
     }
 
@@ -2073,7 +2060,7 @@ int CpmTools::cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent) {
     int hasext;
 
     if (!(S_ISDIR(dir->ino->mode))) { /* error: not a directory */
-        boo = "not a directory";
+        err = "not a directory";
         return (-1);
     }
 
@@ -2181,7 +2168,7 @@ void CpmTools::cpmStat(const CpmInode_t *ino, CpmStat_t *buf) {
 int CpmTools::cpmOpen(CpmInode_t *ino, CpmFile_t *file, mode_t mode) {
     if (S_ISREG(ino->mode)) {
         if ((mode & O_WRONLY) && (ino->mode & 0222) == 0) {
-            boo = "permission denied";
+            err = "permission denied";
             return (-1);
         }
 
@@ -2191,7 +2178,7 @@ int CpmTools::cpmOpen(CpmInode_t *ino, CpmFile_t *file, mode_t mode) {
         return (0);
     }
     else {
-        boo = "not a regular file";
+        err = "not a regular file";
         return (-1);
     }
 }
@@ -2484,7 +2471,7 @@ int CpmTools::cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode
     PhysDirectoryEntry_t *ent;
 
     if (!S_ISDIR(dir->mode)) {
-        boo = "No such file or directory";
+        err = "No such file or directory";
         return (-1);
     }
 
@@ -2700,7 +2687,7 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
 
     /* open image file */
     if ((fd = fopen(imageFileName.c_str(), "w+b")) == (FILE *)0) {
-        boo = strerror(errno);
+        err = strerror(errno);
         return -1;
     }
 
@@ -2710,7 +2697,7 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
 
     for (i = 0; i < trkbytes * drive.boottrk; i += drive.secLength) {
         if (fwrite(bootTracks + i, sizeof(char), drive.secLength, fd) != (size_t)drive.secLength) {
-            boo = strerror(errno);
+            err = strerror(errno);
             fclose(fd);
             return -1;
         }
@@ -2773,7 +2760,7 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
 
     for (i = 0; i < bytes; i += 128) {
         if (fwrite((i == 0 ? firstbuf : buf), sizeof(char), 128, fd) != 128) {
-            boo = strerror(errno);
+            err = strerror(errno);
             fclose(fd);
             return -1;
         }
@@ -2785,7 +2772,7 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
 
     for (i = 0; i < (imagesize - (bytes + (trkbytes * drive.boottrk))); i += 128) {
         if (fwrite(buf, sizeof(char), 128, fd) != 128) {
-            boo = strerror(errno);
+            err = strerror(errno);
             fclose(fd);
             return -1;
         }
@@ -2793,7 +2780,7 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
 
     /* close image file */
     if (fclose(fd) == -1) {
-        boo = strerror(errno);
+        err = strerror(errno);
         return -1;
     }
 
@@ -2803,7 +2790,6 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
         static const char sig[] = "!!!TIME";
         unsigned int records;
         DsDate_t *ds;
-        const char *err;
 
         if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
             guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
@@ -2832,7 +2818,7 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
 
         /* Set things up so cpmSync will generate checksums and write the * file. */
         if (cpmCreat(&root, "00!!!TIME&.DAT", &ino, 0) == -1) {
-            guiintf->printMsg(wxString::Format("%s: Unable to create DateStamper file: %s\n", cmd, boo), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("%s: Unable to create DateStamper file: %s\n", cmd, err), CpmGuiInterface::msgColRed);
             return -1;
         }
 

@@ -165,8 +165,8 @@ class CpmTools {
         CpmInode_t root;
         std::string imageTypeName;
         std::string imageFileName;
-        const char *boo;
-        std::string cmd;
+        const char *err;
+        const char *cmd;
         mode_t s_ifdir = 1;
         mode_t s_ifreg = 1;
 
