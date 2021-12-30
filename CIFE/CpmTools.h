@@ -163,8 +163,8 @@ class CpmTools {
         Device_t device;
         CpmSuperBlock_t drive;
         CpmInode_t root;
-        std::string imageTypeName;
-        std::string imageFileName;
+        wxString imageTypeName;
+        wxString imageFileName;
         const char *err;
         const char *cmd;
         mode_t s_ifdir = 1;

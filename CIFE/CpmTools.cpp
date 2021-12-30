@@ -60,7 +60,7 @@ void CpmTools::showDirectory() {
     int gargc, row = 0;
     char **gargv;
     cmd = "cpmls";
-    std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
+    wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "rb"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err));
@@ -169,7 +169,7 @@ void CpmTools::deleteFile(wxArrayString files) {
     char **gargv;
     int gargc;
     cmd = "cpmrm";
-    std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
+    wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
@@ -203,7 +203,7 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     char **gargv;
     int gargc;
     cmd = "cpmrn";
-    std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
+    wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
@@ -235,7 +235,7 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
     char **gargv;
     int gargc;
     cmd = "cpmchattr";
-    std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
+    wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
@@ -269,7 +269,7 @@ void CpmTools::setFileProtections(wxString name, int protections) {
     char **gargv;
     int gargc;
     cmd = "cpmchprot";
-    std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
+    wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
         guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
@@ -354,7 +354,7 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
 void CpmTools::checkImage(bool doRepair) {
     int ret;
     cmd = "cpm.fsck";
-    std::string image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
+    wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), (doRepair ? "r+b" : "rb")))) {
         if ((err = deviceOpen(imageFileName.c_str(), "rb"))) {
