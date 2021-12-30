@@ -59,7 +59,7 @@ void CpmTools::showDirectory() {
     wxString files = "*";
     int gargc, row = 0;
     char **gargv;
-    cmd = "cpmls";
+    cmd = "cpm.directory";
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "rb"))) {
@@ -168,7 +168,7 @@ void CpmTools::showDirectory() {
 void CpmTools::deleteFile(wxArrayString files) {
     char **gargv;
     int gargc;
-    cmd = "cpmrm";
+    cmd = "cpm.remove";
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
@@ -202,7 +202,7 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     char nName[15];
     char **gargv;
     int gargc;
-    cmd = "cpmrn";
+    cmd = "cpm.rename";
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
@@ -234,7 +234,7 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
 void CpmTools::setFileAttributes(wxString name, int attributes) {
     char **gargv;
     int gargc;
-    cmd = "cpmchattr";
+    cmd = "cpm.chattr";
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
@@ -268,7 +268,7 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
 void CpmTools::setFileProtections(wxString name, int protections) {
     char **gargv;
     int gargc;
-    cmd = "cpmchprot";
+    cmd = "cpm.chprot";
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
