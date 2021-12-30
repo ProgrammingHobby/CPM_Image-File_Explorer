@@ -38,6 +38,7 @@
 #include <wx/bitmap.h>
 #include <wx/icon.h>
 #include <wx/msgdlg.h>
+#include <wx/datetime.h>
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CLOSE, MainWindow::onMenuCloseClicked)
@@ -113,6 +114,7 @@ void MainWindow::onMenuCloseClicked(wxCommandEvent &event) {
 void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
     WXUNUSED(event)
     wxAboutDialogInfo aboutInfo;
+    wxDateTime datetime;
     wxVersionInfo versionInfo("", wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER);
     aboutInfo.SetName("CP/M Image-File Explorer");
     aboutInfo.SetVersion(VERSION_STRING);
@@ -120,7 +122,7 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
                                "Using wxWidgets GUI - Framework Version ") + versionInfo.GetVersionString() +
                              _("\n\nCP/M Images Functionality based on the CP/M-Tools\n"
                                "Source Code Version 2.21 from Michael Haardt."));
-    aboutInfo.SetCopyright("Uwe Merker  (C) 2021");
+    aboutInfo.SetCopyright(wxString::Format("Uwe Merker  (C) %d", datetime.GetCurrentYear()));
     aboutInfo.SetWebSite("http://www.moria.de/~michael/cpmtools\n"
                          "https://github.com/ProgrammingHobby/CPM_Image-File_Explorer.git");
     wxBitmap iconBmp = wxXmlResource::Get()->LoadBitmap(wxT("appiconsmall"));
