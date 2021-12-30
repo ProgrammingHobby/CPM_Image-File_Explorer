@@ -1,5 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+==================== v0.0.5 ====================
+- diverse Verbesserungen / Optimierungen in der Datenbearbeitung der CP/M Tools.
+
+>>>>>>> 32f8d93... Projekt aktualisierung.
 ==================== v0.0.4 ====================
 - es können nun neue leere Images erstellt, oder schon bestehende Images neu 'Formatiert' werden.
 - Images können nun geprüft werden 'cpm.fsck'
