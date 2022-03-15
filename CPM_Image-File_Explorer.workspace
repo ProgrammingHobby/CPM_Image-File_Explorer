@@ -2,29 +2,37 @@
 <CodeLite_Workspace Name="CPM_Image-File_Explorer" Database="" Version="10000">
   <Project Name="CIFE" Path="CIFE/CIFE.project" Active="Yes"/>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug-GTK_wx3.0_dynamic" Selected="no">
+    <WorkspaceConfiguration Name="MSW-Release_wx3.1_64bit_static">
       <Environment/>
-      <Project Name="CIFE" ConfigName="Debug - GTK wx3.0 dynamic"/>
+      <Project Name="CIFE" ConfigName="MSW-Release wx3.1 64bit static"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release-GTK_wx3.0_dynamic" Selected="no">
+    <WorkspaceConfiguration Name="MSW-Release_wx3.1_32bit_static">
       <Environment/>
-      <Project Name="CIFE" ConfigName="Release - GTK wx3.0 dynamic"/>
+      <Project Name="CIFE" ConfigName="MSW-Release wx3.1 32bit static"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release-MSW_static" Selected="yes">
+    <WorkspaceConfiguration Name="MSW-Debug_wx3.1_64bit_static">
       <Environment/>
-      <Project Name="CIFE" ConfigName="Release - MSW static"/>
+      <Project Name="CIFE" ConfigName="MSW-Debug wx3.1 64bit static"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Debug-MSW_static" Selected="no">
+    <WorkspaceConfiguration Name="MSW-Debug_wx3.1_32bit_static">
       <Environment/>
-      <Project Name="CIFE" ConfigName="Debug - MSW static"/>
+      <Project Name="CIFE" ConfigName="MSW-Debug wx3.1 32bit static"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Debug-GTK_wx3.1_static" Selected="no">
+    <WorkspaceConfiguration Name="GTK-Debug_wx3.0_64bit_shared">
       <Environment/>
-      <Project Name="CIFE" ConfigName="Debug - GTK wx3.1 static"/>
+      <Project Name="CIFE" ConfigName="GTK-Debug wx3.0 64bit shared"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release-GTK_wx3.1_static" Selected="no">
+    <WorkspaceConfiguration Name="GTK-Release_wx3.0_64bit_shared">
       <Environment/>
-      <Project Name="CIFE" ConfigName="Release - GTK wx3.1 static"/>
+      <Project Name="CIFE" ConfigName="GTK-Release wx3.0 64bit shared"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="GTK-Debug_wx3.1_64bit_static">
+      <Environment/>
+      <Project Name="CIFE" ConfigName="GTK-Debug wx3.1 64bit static"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="GTK-Release_wx3.1_64bit_static">
+      <Environment/>
+      <Project Name="CIFE" ConfigName="GTK-Release wx3.1 64bit static"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

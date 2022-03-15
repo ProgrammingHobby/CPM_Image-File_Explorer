@@ -1,6 +1,7 @@
 .directory
 .codelite
-tags
+*tags*
 *build*
+*makefile*
 Test_Disk-Images
 TODO.txt
