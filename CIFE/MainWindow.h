@@ -35,7 +35,7 @@ class MainWindow : public Ui_MainWindow {
     public:     // Methods
 
     public:     // Constructor & Destructor
-        MainWindow(wxWindow *parent);
+        MainWindow(wxWindow *parent, wxString appPath);
         virtual ~MainWindow();
 
     protected:  // Event Methods
@@ -63,7 +63,7 @@ class MainWindow : public Ui_MainWindow {
         bool isImageLoaded;
 
     private:    // Methods
-        wxArrayString getImageTypes();
+        wxArrayString getImageTypes(wxString appPath);
         void correctWindowSize();
         void presetMenues();
         void showDirectory();

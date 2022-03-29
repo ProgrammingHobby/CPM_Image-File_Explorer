@@ -24,6 +24,8 @@
 #include <wx/msgdlg.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/image.h>
+#include <wx/filename.h>
+#include <wx/stdpaths.h>
 // --------------------------------------------------------------------------------
 #include "MainWindow.h"
 // --------------------------------------------------------------------------------
@@ -38,10 +40,13 @@ IMPLEMENT_APP(wxCifeApp);
 
 // --------------------------------------------------------------------------------
 bool wxCifeApp::OnInit() {
-    if (wxFileExists("diskdefs")) {
+    wxFileName f(wxStandardPaths::Get().GetExecutablePath());
+    wxString appPath(f.GetPath() + wxFileName::GetPathSeparator());
+
+    if (wxFileExists(appPath  + "diskdefs")) {
         wxXmlResource::Get()->InitAllHandlers();
         wxImage::AddHandler(new wxPNGHandler);
-        SetTopWindow(new MainWindow(NULL));
+        SetTopWindow(new MainWindow(NULL, appPath));
         GetTopWindow()->Show();
         return (true);
     }

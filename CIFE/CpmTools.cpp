@@ -28,8 +28,9 @@
 #include <errno.h>
 #include <fcntl.h>
 // --------------------------------------------------------------------------------
-CpmTools::CpmTools(CpmGuiInterface *intf) {
+CpmTools::CpmTools(CpmGuiInterface *intf, wxString appPath) {
     guiintf = intf;
+    diskdefsPath = appPath;
 }
 
 // --------------------------------------------------------------------------------
@@ -1127,7 +1128,7 @@ int CpmTools::diskdefReadSuper(const char *format) {
     int insideDef = 0, found = 0;
     drive.type = 0;
 
-    if ((fp = fopen("diskdefs", "r")) == (FILE *)0) {
+    if ((fp = fopen(diskdefsPath + "diskdefs", "r")) == (FILE *)0) {
         guiintf->printMsg(wxString::Format("%s: `diskdefs' couldn't be opened.\n", cmd));
         return (1);
     }

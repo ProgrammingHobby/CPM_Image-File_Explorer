@@ -59,11 +59,11 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_LIST_ITEM_RIGHT_CLICK(wxID_IMAGE_CONTENTS, MainWindow::onListItemRightClick)
 END_EVENT_TABLE()
 // --------------------------------------------------------------------------------
-MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
+MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(parent) {
     int size = editImageFile->GetSize().GetHeight();
     buttonImageFile->SetMinSize(wxSize(size, size));
     buttonImageFile->SetMaxSize(wxSize(size, size));
-    comboboxImageType->Append(getImageTypes());
+    comboboxImageType->Append(getImageTypes(appPath));
     comboboxImageType->SetSelection(0);
     editImageFile->SetFocus();
     //
@@ -76,7 +76,7 @@ MainWindow::MainWindow(wxWindow *parent) : Ui_MainWindow(parent) {
     listImageContents->Bind(wxEVT_CONTEXT_MENU, &MainWindow::onShowContextMenu, this);
     //
     cpmguiinterface = new CpmGuiInterface(listImageContents, textMessages, textContentsInfo);
-    cpmtools = new CpmTools(cpmguiinterface);
+    cpmtools = new CpmTools(cpmguiinterface, appPath);
     cpmtools->setImageType(comboboxImageType->GetValue());
     //
     isImageLoaded = false;
@@ -170,9 +170,9 @@ void MainWindow::onImageTypeChanged(wxCommandEvent &event) {
 }
 
 // --------------------------------------------------------------------------------
-wxArrayString MainWindow::getImageTypes() {
+wxArrayString MainWindow::getImageTypes(wxString appPath) {
     wxArrayString imageTypes;
-    wxFileInputStream file(wxT("diskdefs"));
+    wxFileInputStream file(appPath + "diskdefs");
     wxTextInputStream text(file);
     int diskdefsCount = 0;
 

@@ -47,7 +47,7 @@ class CpmTools {
         void checkImage(bool doRepair);
 
     public:     // Constructor & Destructor
-        CpmTools(CpmGuiInterface *intf);
+        CpmTools(CpmGuiInterface *intf, wxString appPath);
         ~CpmTools();
 
     protected:  // Event Methods
@@ -165,6 +165,7 @@ class CpmTools {
         CpmInode_t root;
         wxString imageTypeName;
         wxString imageFileName;
+        wxString diskdefsPath;
         const char *err;
         const char *cmd;
         mode_t s_ifdir = 1;
