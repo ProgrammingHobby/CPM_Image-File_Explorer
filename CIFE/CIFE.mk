@@ -8,13 +8,13 @@ ConfigurationName      :=GTK-Debug_wx3.1_64bit_static
 WorkspaceConfiguration :=GTK-Debug_wx3.1_64bit_static
 WorkspacePath          :=/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer
 ProjectPath            :=/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE
-IntermediateDirectory  :=../build-$(WorkspaceConfiguration)/CIFE
+IntermediateDirectory  :=../build_$(ProjectName)_$(WorkspaceConfiguration)/lib
 OutDir                 :=$(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Uwe
-Date                   :=14.03.2022
+Date                   :=08/05/22
 CodeLitePath           :=/home/uwe/.codelite
 MakeDirCommand         :=mkdir -p
 LinkerName             :=/usr/bin/g++
@@ -29,8 +29,8 @@ OutputSwitch           :=-o
 LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
-OutputDirectory        :=/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/build-$(WorkspaceConfiguration)/bin
-OutputFile             :=../build-$(WorkspaceConfiguration)/bin/$(ProjectName)
+OutputDirectory        :=/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/build_$(ProjectName)_$(WorkspaceConfiguration)/bin
+OutputFile             :=../build_$(ProjectName)_$(WorkspaceConfiguration)/bin/$(ProjectName)
 Preprocessors          :=
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
@@ -47,7 +47,7 @@ LibPath                := $(LibraryPathSwitch).
 
 ##
 ## Common variables
-## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
+## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overridden using an environment variable
 ##
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++

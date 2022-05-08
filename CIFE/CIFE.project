@@ -59,7 +59,7 @@
       <Compiler Options="-g;-O0;-Wall;$(shell /usr/bin/wx-config --cxxflags --unicode=yes --static=no)" C_Options="-g;-O0;-Wall;$(shell /usr/bin/wx-config --cxxflags --unicode=yes --static=no)" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="-no-pie;$(shell /usr/bin/wx-config --libs --unicode=yes --static=no)" Required="yes"/>
       <ResourceCompiler Options="$(shell /usr/bin/wx-config --rcflags --unicode=yes --static=no)" Required="no"/>
-      <General OutputFile="$(ProjectName)" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
+      <General OutputFile="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/bin/$(ProjectName)" IntermediateDirectory="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/lib" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="CodeLite Makefile Generator"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
@@ -96,7 +96,7 @@
       <Compiler Options="-g;-O0;-Wall;$(shell /usr/local/bin/wx-config --cxxflags --unicode=yes --static=yes)" C_Options="-g;-O0;-Wall;$(shell /usr/local/bin/wx-config --cxxflags --unicode=yes --static=yes)" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="-no-pie;$(shell /usr/local/bin/wx-config --libs --unicode=yes --static=yes)" Required="yes"/>
       <ResourceCompiler Options="$(shell /usr/local/bin/wx-config --rcflags --unicode=yes --static=yes)" Required="no"/>
-      <General OutputFile="$(ProjectName)" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
+      <General OutputFile="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/bin/$(ProjectName)" IntermediateDirectory="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/lib" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="CodeLite Makefile Generator"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
@@ -135,7 +135,7 @@
       </Compiler>
       <Linker Options="-s;-no-pie;$(shell /usr/bin/wx-config --libs --unicode=yes --static=no)" Required="yes"/>
       <ResourceCompiler Options="$(shell /usr/bin/wx-config --rcflags --unicode=yes --static=no)" Required="no"/>
-      <General OutputFile="$(ProjectName)" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
+      <General OutputFile="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/bin/$(ProjectName)" IntermediateDirectory="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/lib" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="CodeLite Makefile Generator"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
@@ -174,7 +174,7 @@
       </Compiler>
       <Linker Options="-s;-no-pie;$(shell /usr/local/bin/wx-config --libs --unicode=yes --static=yes)" Required="yes"/>
       <ResourceCompiler Options="$(shell /usr/local/bin/wx-config --libs --unicode=yes --static=yes)" Required="no"/>
-      <General OutputFile="$(ProjectName)" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
+      <General OutputFile="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/bin/$(ProjectName)" IntermediateDirectory="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/lib" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="CodeLite Makefile Generator"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
@@ -211,7 +211,7 @@
       <Compiler Options="-g;-O0;-Wall;$(shell wx-config --cxxflags --wxcfg=gcc_lib32\mswu)" C_Options="-g;-O0;-Wall;$(shell wx-config --cxxflags --wxcfg=gcc_lib32\mswu)" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="-mwindows;$(shell wx-config --libs --wxcfg=gcc_lib32\mswu)" Required="yes"/>
       <ResourceCompiler Options="--use-temp-file;-F pe-i386;$(shell wx-config --rcflags --wxcfg=gcc_lib32\mswu)" Required="no"/>
-      <General OutputFile="$(ProjectName)" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
+      <General OutputFile="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/bin/$(ProjectName)" IntermediateDirectory="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/lib" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="CodeLite Makefile Generator"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
@@ -248,7 +248,7 @@
       <Compiler Options="-g;-O0;-Wall;$(shell wx-config --cxxflags --wxcfg=gcc_lib64\mswu)" C_Options="-g;-O0;-Wall;$(shell wx-config --cxxflags --wxcfg=gcc_lib64\mswu)" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="-mwindows;$(shell wx-config --libs --wxcfg=gcc_lib64\mswu)" Required="yes"/>
       <ResourceCompiler Options="$(shell wx-config --rcflags --wxcfg=gcc_lib64\mswu)" Required="no"/>
-      <General OutputFile="$(ProjectName)" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
+      <General OutputFile="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/bin/$(ProjectName)" IntermediateDirectory="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/lib" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="CodeLite Makefile Generator"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
@@ -287,7 +287,7 @@
       </Compiler>
       <Linker Options="-s;-mwindows;$(shell wx-config --libs --wxcfg=gcc_lib32\mswu)" Required="yes"/>
       <ResourceCompiler Options="--use-temp-file;-F pe-i386;$(shell wx-config --rcflags --wxcfg=gcc_lib32\mswu)" Required="no"/>
-      <General OutputFile="$(ProjectName)" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
+      <General OutputFile="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/bin/$(ProjectName)" IntermediateDirectory="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/lib" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="CodeLite Makefile Generator"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
@@ -326,7 +326,7 @@
       </Compiler>
       <Linker Options="-s;-mwindows;$(shell wx-config --libs --wxcfg=gcc_lib64\mswu)" Required="yes"/>
       <ResourceCompiler Options="$(shell wx-config --rcflags --wxcfg=gcc_lib64\mswu)" Required="no"/>
-      <General OutputFile="$(ProjectName)" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
+      <General OutputFile="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/bin/$(ProjectName)" IntermediateDirectory="$(WorkspacePath)/build_$(ProjectName)_$(WorkspaceConfiguration)/lib" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="no" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="CodeLite Makefile Generator"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
