@@ -28,6 +28,7 @@
 // --------------------------------------------------------------------------------
 class CpmTools;
 class CpmGuiInterface;
+class Settings;
 // --------------------------------------------------------------------------------
 class MainWindow : public Ui_MainWindow {
     public:     // Attributes
@@ -58,6 +59,7 @@ class MainWindow : public Ui_MainWindow {
         void onListItemRightClick(wxListEvent &event);
 
     private:    // Attributes
+        Settings *cifeSettings;
         CpmTools *cpmtools;
         CpmGuiInterface *cpmguiinterface;
         bool isImageLoaded;

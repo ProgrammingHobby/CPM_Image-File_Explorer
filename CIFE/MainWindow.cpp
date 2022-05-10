@@ -27,6 +27,7 @@
 #include "FileAttributesDialog.h"
 #include "FileProtectionsDialog.h"
 #include "CreateFileDialog.h"
+#include "settings.h"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/versioninfo.h>
@@ -66,19 +67,20 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     comboboxImageType->Append(getImageTypes(appPath));
     comboboxImageType->SetSelection(0);
     editImageFile->SetFocus();
-    //
+
     wxSize fontSize = this->GetFont().GetPixelSize();
     wxFont listFont = wxFont(fontSize, wxFontFamily::wxFONTFAMILY_TELETYPE, wxFontStyle::wxFONTSTYLE_NORMAL, wxFontWeight::wxFONTWEIGHT_NORMAL);
     listImageContents->SetFont(listFont);
     textContentsInfo->SetFont(listFont);
     textMessages->SetFont(listFont);
-    //
+
     listImageContents->Bind(wxEVT_CONTEXT_MENU, &MainWindow::onShowContextMenu, this);
-    //
+
     cpmguiinterface = new CpmGuiInterface(listImageContents, textMessages, textContentsInfo);
     cpmtools = new CpmTools(cpmguiinterface, appPath);
+    cifeSettings = new Settings(appPath + "cife.conf");
     cpmtools->setImageType(comboboxImageType->GetValue());
-    //
+
     isImageLoaded = false;
     correctWindowSize();
     presetMenues();
@@ -94,14 +96,27 @@ void MainWindow::correctWindowSize() {
     int width = this->GetBestSize().GetWidth();
     width += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X, listImageContents);
     int height = this->GetBestSize().GetHeight();
-    this->SetSize(wxSize(width, (height * 1.5)));
+    wxSize size;
+    size.x = cifeSettings->readInteger("MainWindow", "SizeX", width);
+    size.y = cifeSettings->readInteger("MainWindow", "SizeY", (height * 1.5));
+    this->SetSize(size);
     this->SetMinSize(wxSize(width, (height * 1.5)));
+    wxPoint point;
+    point.x = cifeSettings->readInteger("MainWindow", "PosX", 10);
+    point.y = cifeSettings->readInteger("MainWindow", "PosY", 10);
+    this->SetPosition(point);
 }
 
 // --------------------------------------------------------------------------------
 MainWindow::~MainWindow() {
+    cifeSettings->writeInteger("MainWindow", "PosX", this->GetPosition().x);
+    cifeSettings->writeInteger("MainWindow", "PosY", this->GetPosition().y);
+    cifeSettings->writeInteger("MainWindow", "SizeX", this->GetSize().x);
+    cifeSettings->writeInteger("MainWindow", "SizeY", this->GetSize().y);
+
     wxDELETE(cpmguiinterface);
     wxDELETE(cpmtools);
+    wxDELETE(cifeSettings);
 }
 
 // --------------------------------------------------------------------------------
