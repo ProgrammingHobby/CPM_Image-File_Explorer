@@ -29,6 +29,7 @@
 class CpmTools;
 class CpmGuiInterface;
 class Settings;
+class wxMenu;
 // --------------------------------------------------------------------------------
 class MainWindow : public Ui_MainWindow {
     public:     // Attributes
@@ -57,15 +58,18 @@ class MainWindow : public Ui_MainWindow {
         void onShowContextMenu(wxContextMenuEvent &event);
         void onListItemSelected(wxListEvent &event);
         void onListItemRightClick(wxListEvent &event);
+        void onEnterWindow(wxMouseEvent &event);
 
     private:    // Attributes
         Settings *cifeSettings;
         CpmTools *cpmtools;
         CpmGuiInterface *cpmguiinterface;
         bool isImageLoaded;
+        wxMenu *popupMenu;
 
     private:    // Methods
         wxArrayString getImageTypes(wxString appPath);
+        void createPopupMenu();
         void correctWindowSize();
         void presetMenues();
         void showDirectory();
