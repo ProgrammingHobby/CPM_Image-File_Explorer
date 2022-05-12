@@ -179,6 +179,7 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
     aboutInfo.SetVersion(VERSION_STRING);
     aboutInfo.SetDescription(_("Written in C/C++ with CodeLite-IDE\n"
                                "Using wxWidgets GUI - Framework Version ") + versionInfo.GetVersionString() +
+                             wxString::Format(" - %dbit", (sizeof(nullptr) * 8)) +
                              _("\n\nCP/M Images Functionality based on the CP/M-Tools\n"
                                "Source Code Version 2.21 from Michael Haardt."));
     aboutInfo.SetCopyright(wxString::Format("Uwe Merker  (C) %d", datetime.GetCurrentYear()));
