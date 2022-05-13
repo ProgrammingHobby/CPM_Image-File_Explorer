@@ -22,49 +22,79 @@ Ui_CreateFileDialog::Ui_CreateFileDialog(wxWindow *parent, wxWindowID id, const 
         bBitmapLoaded = true;
     }
 
-    sizerCreateFileDialog = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *sizerCreateFileDialog = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(sizerCreateFileDialog);
-    sizerImageSettings = new wxGridBagSizer(0, 0);
+
+    wxGridBagSizer *sizerImageSettings = new wxGridBagSizer(0, 0);
+
     sizerCreateFileDialog->Add(sizerImageSettings, 1, wxLEFT | wxBOTTOM | wxEXPAND, WXC_FROM_DIP(4));
+
     textBootTrackFile = new wxStaticText(this, wxID_ANY, _("Boottrack File:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
+
     sizerImageSettings->Add(textBootTrackFile, wxGBPosition(0, 0), wxGBSpan(1, 1), wxTOP | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+
     textFileSystemLabel = new wxStaticText(this, wxID_ANY, _("File-System Label:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
+
     sizerImageSettings->Add(textFileSystemLabel, wxGBPosition(1, 0), wxGBSpan(1, 1), wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+
     editFileSystemLabel = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
 #if wxVERSION_NUMBER >= 3000
     editFileSystemLabel->SetHint(wxT(""));
 #endif
+
     sizerImageSettings->Add(editFileSystemLabel, wxGBPosition(1, 1), wxGBSpan(1, 1), wxLEFT | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+
     checkboxUseTimeStamps = new wxCheckBox(this, wxID_ANY, _("use File-System Timestamps"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxCHK_2STATE);
     checkboxUseTimeStamps->SetValue(true);
+
     sizerImageSettings->Add(checkboxUseTimeStamps, wxGBPosition(2, 0), wxGBSpan(1, 2), wxBOTTOM, WXC_FROM_DIP(4));
+
     panelBootTrackFile = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxTAB_TRAVERSAL);
+
     sizerImageSettings->Add(panelBootTrackFile, wxGBPosition(0, 1), wxGBSpan(1, 1), wxALL | wxEXPAND, WXC_FROM_DIP(4));
-    sizerBootTrackFile = new wxBoxSizer(wxHORIZONTAL);
+
+    wxBoxSizer *sizerBootTrackFile = new wxBoxSizer(wxHORIZONTAL);
     panelBootTrackFile->SetSizer(sizerBootTrackFile);
+
     editBootTrackFile = new wxTextCtrl(panelBootTrackFile, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelBootTrackFile, wxSize(-1, -1)), 0);
 #if wxVERSION_NUMBER >= 3000
     editBootTrackFile->SetHint(wxT(""));
 #endif
+
     sizerBootTrackFile->Add(editBootTrackFile, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+
     buttonBootTrackFile = new wxButton(panelBootTrackFile, wxID_BUTTON_BOOTFILE, _("..."), wxDefaultPosition, wxDLG_UNIT(panelBootTrackFile, wxSize(-1, -1)), 0);
+
     sizerBootTrackFile->Add(buttonBootTrackFile, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
     sizerImageSettings->AddGrowableCol(1);
     sizerImageSettings->AddGrowableRow(0);
     panelCreationWarning = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxTAB_TRAVERSAL | wxBORDER_THEME);
+
     sizerCreateFileDialog->Add(panelCreationWarning, 0, wxLEFT | wxRIGHT | wxEXPAND, WXC_FROM_DIP(4));
-    sizerCreationWarning = new wxBoxSizer(wxVERTICAL);
+
+    wxBoxSizer *sizerCreationWarning = new wxBoxSizer(wxVERTICAL);
     panelCreationWarning->SetSizer(sizerCreationWarning);
+
     m_staticText38 = new wxStaticText(panelCreationWarning, wxID_ANY, _("Are you sure you want create an new empty Image-File ?"), wxDefaultPosition, wxDLG_UNIT(panelCreationWarning, wxSize(-1, -1)), 0);
+
     sizerCreationWarning->Add(m_staticText38, 1, wxLEFT | wxRIGHT | wxEXPAND, WXC_FROM_DIP(4));
+
     m_staticText40 = new wxStaticText(panelCreationWarning, wxID_ANY, _("All existing Data will be lost !"), wxDefaultPosition, wxDLG_UNIT(panelCreationWarning, wxSize(-1, -1)), 0);
+
     sizerCreationWarning->Add(m_staticText40, 1, wxLEFT | wxRIGHT | wxEXPAND, WXC_FROM_DIP(4));
-    sizerDialogButtons = new wxBoxSizer(wxHORIZONTAL);
+
+    wxBoxSizer *sizerDialogButtons = new wxBoxSizer(wxHORIZONTAL);
+
     sizerCreateFileDialog->Add(sizerDialogButtons, 0, wxALL | wxALIGN_RIGHT, WXC_FROM_DIP(4));
+
     buttonCancel = new wxButton(this, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
+
     sizerDialogButtons->Add(buttonCancel, 1, wxALL | wxEXPAND, WXC_FROM_DIP(4));
+
     buttonOk = new wxButton(this, wxID_OK, _("Ok"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
+
     sizerDialogButtons->Add(buttonOk, 1, wxALL | wxEXPAND, WXC_FROM_DIP(4));
+
     SetName(wxT("Ui_CreateFileDialog"));
     SetSize(wxDLG_UNIT(this, wxSize(-1, -1)));
 

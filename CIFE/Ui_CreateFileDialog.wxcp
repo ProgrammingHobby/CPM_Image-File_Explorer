@@ -4,9 +4,9 @@
 		"m_objCounter":	42,
 		"m_includeFiles":	[],
 		"m_bitmapFunction":	"wxCraftertMBioxInitBitmapResources",
-		"m_bitmapsFile":	"Ui_CreateFileDialog_cife_bitmaps.cpp",
+		"m_bitmapsFile":	"Ui_CreateFileDialog_bitmaps.cpp",
 		"m_GenerateCodeTypes":	1,
-		"m_outputFileName":	"",
+		"m_outputFileName":	"Ui_CreateFileDialog",
 		"m_firstWindowId":	10000,
 		"m_useEnum":	true,
 		"m_useUnderscoreMacro":	true,
@@ -145,6 +145,10 @@
 							"m_label":	"Style:",
 							"m_value":	""
 						}, {
+							"type":	"bool",
+							"m_label":	"Keep as a class member",
+							"m_value":	false
+						}, {
 							"type":	"choice",
 							"m_label":	"Orientation:",
 							"m_selection":	0,
@@ -171,6 +175,10 @@
 									"type":	"string",
 									"m_label":	"Style:",
 									"m_value":	""
+								}, {
+									"type":	"bool",
+									"m_label":	"Keep as a class member",
+									"m_value":	false
 								}, {
 									"type":	"string",
 									"m_label":	"Growable columns:",
@@ -588,6 +596,10 @@
 													"m_label":	"Style:",
 													"m_value":	""
 												}, {
+													"type":	"bool",
+													"m_label":	"Keep as a class member",
+													"m_value":	false
+												}, {
 													"type":	"choice",
 													"m_label":	"Orientation:",
 													"m_selection":	1,
@@ -859,6 +871,10 @@
 											"m_label":	"Style:",
 											"m_value":	""
 										}, {
+											"type":	"bool",
+											"m_label":	"Keep as a class member",
+											"m_value":	false
+										}, {
 											"type":	"choice",
 											"m_label":	"Orientation:",
 											"m_selection":	0,
@@ -1037,6 +1053,10 @@
 									"type":	"string",
 									"m_label":	"Style:",
 									"m_value":	""
+								}, {
+									"type":	"bool",
+									"m_label":	"Keep as a class member",
+									"m_value":	false
 								}, {
 									"type":	"choice",
 									"m_label":	"Orientation:",

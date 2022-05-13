@@ -45,21 +45,16 @@ class Ui_CreateFileDialog : public wxDialog {
             wxID_BUTTON_BOOTFILE = 10001,
         };
     protected:
-        wxBoxSizer *sizerCreateFileDialog;
-        wxGridBagSizer *sizerImageSettings;
         wxStaticText *textBootTrackFile;
         wxStaticText *textFileSystemLabel;
         wxTextCtrl *editFileSystemLabel;
         wxCheckBox *checkboxUseTimeStamps;
         wxPanel *panelBootTrackFile;
-        wxBoxSizer *sizerBootTrackFile;
         wxTextCtrl *editBootTrackFile;
         wxButton *buttonBootTrackFile;
         wxPanel *panelCreationWarning;
-        wxBoxSizer *sizerCreationWarning;
         wxStaticText *m_staticText38;
         wxStaticText *m_staticText40;
-        wxBoxSizer *sizerDialogButtons;
         wxButton *buttonCancel;
         wxButton *buttonOk;
 
