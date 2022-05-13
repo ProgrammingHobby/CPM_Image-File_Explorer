@@ -51,12 +51,13 @@ class Ui_MainWindow : public wxFrame {
             wxID_BUTTON_CLEAR_MESSAGES = 10001,
             wxID_BUTTON_IMAGE_FILE = 10002,
             wxID_IMAGE_TYPE = 10003,
-            wxID_CHECK_IMAGE = 10004,
-            wxID_CREATE_NEW = 10005,
-            wxID_BUTTON_SAVE_MESSAGES = 10006,
-            wxID_IMAGE_CONTENTS = 10007,
-            wxID_PROTECTIONS = 10008,
-            wxID_ATTRIBUTES = 10009,
+            wxID_COPY_SETTINGS = 10004,
+            wxID_CHECK_IMAGE = 10005,
+            wxID_CREATE_NEW = 10006,
+            wxID_BUTTON_SAVE_MESSAGES = 10007,
+            wxID_IMAGE_CONTENTS = 10008,
+            wxID_PROTECTIONS = 10009,
+            wxID_ATTRIBUTES = 10010,
         };
     protected:
         wxMenuBar *menuMainWindow;
@@ -79,35 +80,29 @@ class Ui_MainWindow : public wxFrame {
         wxMenuItem *menuItemRefresh;
         wxMenu *menuTools;
         wxMenuItem *menuItemCheckImage;
+        wxMenu *menuOptions;
+        wxMenuItem *menuItemCopySettings;
         wxMenu *menuHelp;
         wxMenuItem *menuItemAbout;
         wxStatusBar *statusMainWindow;
-        wxBoxSizer *sizerMainWindow;
         wxPanel *panelImageFile;
-        wxGridBagSizer *sizerImage;
         wxStaticText *textImageType;
-        wxBoxSizer *sizerImageType;
         wxComboBox *comboboxImageType;
         wxStaticText *textDiskdefsCount;
         wxStaticText *textImageFile;
         wxTextCtrl *editImageFile;
         wxButton *buttonImageFile;
         wxPanel *panelImageViews;
-        wxBoxSizer *sizerImageViews;
         wxSplitterWindow *splitterImageViews;
         wxPanel *splitterPageImageContents;
-        wxBoxSizer *sizerImageContents;
         wxListView *listImageContents;
         wxStaticLine *lineImageContents;
         wxTextCtrl *textContentsInfo;
         wxPanel *splitterPageMessages;
-        wxBoxSizer *sizerMessages;
-        wxBoxSizer *sizerMessagesControl;
         wxButton *buttonClearMessages;
         wxButton *buttonSaveMessages;
         wxStaticLine *lineTextMessages;
         wxPanel *panelTextMessages;
-        wxBoxSizer *sizerTextMessages;
         wxTextCtrl *textMessages;
 
     protected:

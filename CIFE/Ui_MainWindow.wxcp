@@ -1,7 +1,7 @@
 {
 	"metadata":	{
 		"m_generatedFilesDir":	".",
-		"m_objCounter":	170,
+		"m_objCounter":	172,
 		"m_includeFiles":	[],
 		"m_bitmapFunction":	"wxCrafterbA4dhxInitBitmapResources",
 		"m_bitmapsFile":	"Ui_MainWindow_bitmaps.cpp",
@@ -942,6 +942,69 @@
 							"m_properties":	[{
 									"type":	"string",
 									"m_label":	"Name:",
+									"m_value":	"menuOptions"
+								}, {
+									"type":	"string",
+									"m_label":	"Label:",
+									"m_value":	"Options"
+								}],
+							"m_events":	[],
+							"m_children":	[{
+									"m_type":	4459,
+									"proportion":	0,
+									"border":	5,
+									"gbSpan":	"1,1",
+									"gbPosition":	"0,0",
+									"m_styles":	[],
+									"m_sizerFlags":	[],
+									"m_properties":	[{
+											"type":	"winid",
+											"m_label":	"ID:",
+											"m_winid":	"wxID_COPY_SETTINGS"
+										}, {
+											"type":	"string",
+											"m_label":	"Name:",
+											"m_value":	"menuItemCopySettings"
+										}, {
+											"type":	"string",
+											"m_label":	"Label:",
+											"m_value":	"Copy Settings"
+										}, {
+											"type":	"string",
+											"m_label":	"Shortcut:",
+											"m_value":	""
+										}, {
+											"type":	"string",
+											"m_label":	"Help String:",
+											"m_value":	""
+										}, {
+											"type":	"bitmapPicker",
+											"m_label":	"Bitmap File:",
+											"m_path":	""
+										}, {
+											"type":	"choice",
+											"m_label":	"Kind:",
+											"m_selection":	0,
+											"m_options":	["normal", "checkable", "radio", "separator"]
+										}, {
+											"type":	"bool",
+											"m_label":	"Checked",
+											"m_value":	false
+										}],
+									"m_events":	[],
+									"m_children":	[]
+								}]
+						}, {
+							"m_type":	4458,
+							"proportion":	0,
+							"border":	5,
+							"gbSpan":	"1,1",
+							"gbPosition":	"0,0",
+							"m_styles":	[],
+							"m_sizerFlags":	["wxALL", "wxLEFT", "wxRIGHT", "wxTOP", "wxBOTTOM"],
+							"m_properties":	[{
+									"type":	"string",
+									"m_label":	"Name:",
 									"m_value":	"menuHelp"
 								}, {
 									"type":	"string",
@@ -1087,6 +1150,10 @@
 							"m_label":	"Style:",
 							"m_value":	""
 						}, {
+							"type":	"bool",
+							"m_label":	"Keep as a class member",
+							"m_value":	false
+						}, {
 							"type":	"choice",
 							"m_label":	"Orientation:",
 							"m_selection":	0,
@@ -1179,6 +1246,10 @@
 											"type":	"string",
 											"m_label":	"Style:",
 											"m_value":	""
+										}, {
+											"type":	"bool",
+											"m_label":	"Keep as a class member",
+											"m_value":	false
 										}, {
 											"type":	"string",
 											"m_label":	"Growable columns:",
@@ -1292,6 +1363,10 @@
 													"type":	"string",
 													"m_label":	"Style:",
 													"m_value":	""
+												}, {
+													"type":	"bool",
+													"m_label":	"Keep as a class member",
+													"m_value":	false
 												}, {
 													"type":	"choice",
 													"m_label":	"Orientation:",
@@ -1816,6 +1891,10 @@
 											"m_label":	"Style:",
 											"m_value":	""
 										}, {
+											"type":	"bool",
+											"m_label":	"Keep as a class member",
+											"m_value":	false
+										}, {
 											"type":	"choice",
 											"m_label":	"Orientation:",
 											"m_selection":	0,
@@ -1991,6 +2070,10 @@
 																	"type":	"string",
 																	"m_label":	"Style:",
 																	"m_value":	""
+																}, {
+																	"type":	"bool",
+																	"m_label":	"Keep as a class member",
+																	"m_value":	false
 																}, {
 																	"type":	"choice",
 																	"m_label":	"Orientation:",
@@ -2308,6 +2391,10 @@
 																	"m_label":	"Style:",
 																	"m_value":	""
 																}, {
+																	"type":	"bool",
+																	"m_label":	"Keep as a class member",
+																	"m_value":	false
+																}, {
 																	"type":	"choice",
 																	"m_label":	"Orientation:",
 																	"m_selection":	0,
@@ -2334,6 +2421,10 @@
 																			"type":	"string",
 																			"m_label":	"Style:",
 																			"m_value":	""
+																		}, {
+																			"type":	"bool",
+																			"m_label":	"Keep as a class member",
+																			"m_value":	false
 																		}, {
 																			"type":	"choice",
 																			"m_label":	"Orientation:",
@@ -2690,6 +2781,10 @@
 																					"type":	"string",
 																					"m_label":	"Style:",
 																					"m_value":	""
+																				}, {
+																					"type":	"bool",
+																					"m_label":	"Keep as a class member",
+																					"m_value":	false
 																				}, {
 																					"type":	"choice",
 																					"m_label":	"Orientation:",

@@ -26,10 +26,10 @@
 // --------------------------------------------------------------------------------
 #include <wx/arrstr.h>
 // --------------------------------------------------------------------------------
+class wxMenu;
 class CpmTools;
 class CpmGuiInterface;
 class Settings;
-class wxMenu;
 // --------------------------------------------------------------------------------
 class MainWindow : public Ui_MainWindow {
     public:     // Attributes
@@ -55,17 +55,18 @@ class MainWindow : public Ui_MainWindow {
         void onProtections(wxCommandEvent &event);
         void onCreateNew(wxCommandEvent &event);
         void onCheckImage(wxCommandEvent &event);
+        void onCopySettings(wxCommandEvent &event);
         void onShowContextMenu(wxContextMenuEvent &event);
         void onListItemSelected(wxListEvent &event);
         void onListItemRightClick(wxListEvent &event);
         void onEnterWindow(wxMouseEvent &event);
 
     private:    // Attributes
+        wxMenu *popupMenu;
         Settings *cifeSettings;
         CpmTools *cpmtools;
         CpmGuiInterface *cpmguiinterface;
         bool isImageLoaded;
-        wxMenu *popupMenu;
 
     private:    // Methods
         wxArrayString getImageTypes(wxString appPath);

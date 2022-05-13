@@ -281,41 +281,6 @@ void MainWindow::onViewRefresh(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
     if (isImageLoaded) {
-//        wxMenu *popupMenu = new wxMenu();
-//        wxMenuItem *popupItemRefresh = new wxMenuItem(popupMenu, wxID_REFRESH, _("Refresh\tF5"), wxT(""), wxITEM_NORMAL);
-//        popupItemRefresh->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("refresh")));
-//        popupMenu->Append(popupItemRefresh);
-//        popupMenu->AppendSeparator();
-//        wxMenuItem *popupItemCut = new wxMenuItem(popupMenu, wxID_CUT, _("Cut\tCtrl+X"), wxT(""), wxITEM_NORMAL);
-//        popupItemCut->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("cut")));
-//        popupMenu->Append(popupItemCut);
-//        wxMenuItem *popupItemCopy = new wxMenuItem(popupMenu, wxID_COPY, _("Copy\tCtrl+C"), wxT(""), wxITEM_NORMAL);
-//        popupItemCopy->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("copy")));
-//        popupMenu->Append(popupItemCopy);
-//        wxMenuItem *popupItemPaste = new wxMenuItem(popupMenu, wxID_PASTE, _("Paste\tCtrl+V"), wxT(""), wxITEM_NORMAL);
-//        popupItemPaste->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("paste")));
-//        popupMenu->Append(popupItemPaste);
-//        wxMenuItem *popupItemSelectAll = new wxMenuItem(popupMenu, wxID_SELECTALL, _("Select all\tCtrl+A"), wxT(""), wxITEM_NORMAL);
-//        popupItemSelectAll->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("select_all")));
-//        popupMenu->Append(popupItemSelectAll);
-//        popupMenu->AppendSeparator();
-//        wxMenuItem *popupItemRename = new wxMenuItem(popupMenu, wxID_EDIT, _("Rename\tF2"), wxT(""), wxITEM_NORMAL);
-//        popupItemRename->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("edit")));
-//        popupMenu->Append(popupItemRename);
-//        wxMenuItem *popupItemDelete = new wxMenuItem(popupMenu, wxID_DELETE, _("Delete\tDel"), wxT(""), wxITEM_NORMAL);
-//        popupItemDelete->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("delete")));
-//        popupMenu->Append(popupItemDelete);
-//        popupMenu->AppendSeparator();
-//        wxMenuItem *popupItemAttributes = new wxMenuItem(popupMenu, wxID_ATTRIBUTES, _("Attributes\tF7"), wxT(""), wxITEM_NORMAL);
-//        popupItemAttributes->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("attributes")));
-//        popupMenu->Append(popupItemAttributes);
-//        wxMenuItem *popupItemProtections = new wxMenuItem(popupMenu, wxID_PROTECTIONS, _("Protections\tF9"), wxT(""), wxITEM_NORMAL);
-//        popupItemProtections->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("permissions")));
-//        popupMenu->Append(popupItemProtections);
-//        popupMenu->AppendSeparator();
-//        wxMenuItem *popupItemCheckImage = new wxMenuItem(popupMenu, wxID_CHECK_IMAGE, _("Check Image\tF11"), wxT(""), wxITEM_NORMAL);
-//        popupItemCheckImage->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("check_image")));
-//        popupMenu->Append(popupItemCheckImage);
 
         if (listImageContents->GetItemCount() == 0) {
             popupMenu->Enable(wxID_SELECTALL, false);
@@ -496,6 +461,11 @@ void MainWindow::onCheckImage(wxCommandEvent &event) {
     else {
         cpmtools->checkImage(false);
     }
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onCopySettings(wxCommandEvent &event) {
+
 }
 
 // --------------------------------------------------------------------------------
