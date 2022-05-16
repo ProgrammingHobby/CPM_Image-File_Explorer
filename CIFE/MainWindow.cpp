@@ -27,6 +27,7 @@
 #include "FileAttributesDialog.h"
 #include "FileProtectionsDialog.h"
 #include "CreateFileDialog.h"
+#include "FileCopySettingsDialog.h"
 #include "Settings.h"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
@@ -53,6 +54,7 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_PROTECTIONS, MainWindow::onProtections)
     EVT_MENU(wxID_CREATE_NEW, MainWindow::onCreateNew)
     EVT_MENU(wxID_CHECK_IMAGE, MainWindow::onCheckImage)
+    EVT_MENU(wxID_COPY_SETTINGS, MainWindow::onCopySettings)
     EVT_BUTTON(wxID_BUTTON_IMAGE_FILE, MainWindow::onButtonImageFileClicked)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
@@ -465,7 +467,13 @@ void MainWindow::onCheckImage(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onCopySettings(wxCommandEvent &event) {
+    FileCopySettingsDialog *dialog = new FileCopySettingsDialog(this, cifeSettings);
 
+    if (dialog->ShowModal() == wxID_OK) {
+
+    }
+
+    wxDELETE(dialog);
 }
 
 // --------------------------------------------------------------------------------
