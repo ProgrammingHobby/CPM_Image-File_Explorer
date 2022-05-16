@@ -27,7 +27,7 @@
 #include "FileAttributesDialog.h"
 #include "FileProtectionsDialog.h"
 #include "CreateFileDialog.h"
-#include "settings.h"
+#include "Settings.h"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/versioninfo.h>

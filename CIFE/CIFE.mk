@@ -14,11 +14,11 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Uwe
-Date                   :=08/05/22
+Date                   :=16/05/22
 CodeLitePath           :=/home/uwe/.codelite
 MakeDirCommand         :=mkdir -p
-LinkerName             :=/usr/bin/g++
-SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
+LinkerName             :=/usr/bin/g++-11
+SharedObjectLinkerName :=/usr/bin/g++-11 -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -50,8 +50,8 @@ LibPath                := $(LibraryPathSwitch).
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overridden using an environment variable
 ##
 AR       := /usr/bin/ar rcu
-CXX      := /usr/bin/g++
-CC       := /usr/bin/gcc
+CXX      := /usr/bin/g++-11
+CC       := /usr/bin/gcc-11
 CXXFLAGS :=  -g -O0 -Wall $(shell /usr/local/bin/wx-config --cxxflags --unicode=yes --static=yes) $(Preprocessors)
 CFLAGS   :=  -g -O0 -Wall $(shell /usr/local/bin/wx-config --cxxflags --unicode=yes --static=yes) $(Preprocessors)
 ASFLAGS  := 
@@ -62,8 +62,8 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/CpmTools.cpp$(ObjectSuffix) $(IntermediateDirectory)/RenameFileDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/CpmGuiInterface.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_RenameFileDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_MainWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_FileAttributesDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(ObjectSuffix) $(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/CreateFileDialog.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Ui_CreateFileDialog_cife_bitmaps.cpp$(ObjectSuffix) $(IntermediateDirectory)/FileAttributesDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_CreateFileDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/FileProtectionsDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_FileProtectionsDialog_bitmaps.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_MainWindow_bitmaps.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_FileAttributesDialog_bitmaps.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_FileProtectionsDialog.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/CpmTools.cpp$(ObjectSuffix) $(IntermediateDirectory)/CpmGuiInterface.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_RenameFileDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_MainWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_FileAttributesDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/RenameFileDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/Settings.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/CreateFileDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_CreateFileDialog_bitmaps.cpp$(ObjectSuffix) $(IntermediateDirectory)/FileAttributesDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_CreateFileDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/FileProtectionsDialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_FileProtectionsDialog_bitmaps.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_MainWindow_bitmaps.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_FileAttributesDialog_bitmaps.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ui_FileProtectionsDialog.cpp$(ObjectSuffix) 
 
 
 
@@ -110,14 +110,6 @@ $(IntermediateDirectory)/CpmTools.cpp$(DependSuffix): CpmTools.cpp
 $(IntermediateDirectory)/CpmTools.cpp$(PreprocessSuffix): CpmTools.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CpmTools.cpp$(PreprocessSuffix) CpmTools.cpp
 
-$(IntermediateDirectory)/RenameFileDialog.cpp$(ObjectSuffix): RenameFileDialog.cpp $(IntermediateDirectory)/RenameFileDialog.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/RenameFileDialog.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/RenameFileDialog.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/RenameFileDialog.cpp$(DependSuffix): RenameFileDialog.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/RenameFileDialog.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/RenameFileDialog.cpp$(DependSuffix) -MM RenameFileDialog.cpp
-
-$(IntermediateDirectory)/RenameFileDialog.cpp$(PreprocessSuffix): RenameFileDialog.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/RenameFileDialog.cpp$(PreprocessSuffix) RenameFileDialog.cpp
-
 $(IntermediateDirectory)/CpmGuiInterface.cpp$(ObjectSuffix): CpmGuiInterface.cpp $(IntermediateDirectory)/CpmGuiInterface.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/CpmGuiInterface.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CpmGuiInterface.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/CpmGuiInterface.cpp$(DependSuffix): CpmGuiInterface.cpp
@@ -133,6 +125,14 @@ $(IntermediateDirectory)/Ui_RenameFileDialog.cpp$(DependSuffix): Ui_RenameFileDi
 
 $(IntermediateDirectory)/Ui_RenameFileDialog.cpp$(PreprocessSuffix): Ui_RenameFileDialog.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Ui_RenameFileDialog.cpp$(PreprocessSuffix) Ui_RenameFileDialog.cpp
+
+$(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(ObjectSuffix): Ui_RenameFileDialog_bitmaps.cpp $(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/Ui_RenameFileDialog_bitmaps.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(DependSuffix): Ui_RenameFileDialog_bitmaps.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(DependSuffix) -MM Ui_RenameFileDialog_bitmaps.cpp
+
+$(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(PreprocessSuffix): Ui_RenameFileDialog_bitmaps.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(PreprocessSuffix) Ui_RenameFileDialog_bitmaps.cpp
 
 $(IntermediateDirectory)/Ui_MainWindow.cpp$(ObjectSuffix): Ui_MainWindow.cpp $(IntermediateDirectory)/Ui_MainWindow.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/Ui_MainWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Ui_MainWindow.cpp$(ObjectSuffix) $(IncludePath)
@@ -150,14 +150,6 @@ $(IntermediateDirectory)/Ui_FileAttributesDialog.cpp$(DependSuffix): Ui_FileAttr
 $(IntermediateDirectory)/Ui_FileAttributesDialog.cpp$(PreprocessSuffix): Ui_FileAttributesDialog.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Ui_FileAttributesDialog.cpp$(PreprocessSuffix) Ui_FileAttributesDialog.cpp
 
-$(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(ObjectSuffix): Ui_RenameFileDialog_bitmaps.cpp $(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/Ui_RenameFileDialog_bitmaps.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(DependSuffix): Ui_RenameFileDialog_bitmaps.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(DependSuffix) -MM Ui_RenameFileDialog_bitmaps.cpp
-
-$(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(PreprocessSuffix): Ui_RenameFileDialog_bitmaps.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Ui_RenameFileDialog_bitmaps.cpp$(PreprocessSuffix) Ui_RenameFileDialog_bitmaps.cpp
-
 $(IntermediateDirectory)/main.cpp$(ObjectSuffix): main.cpp $(IntermediateDirectory)/main.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/main.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/main.cpp$(DependSuffix): main.cpp
@@ -165,6 +157,22 @@ $(IntermediateDirectory)/main.cpp$(DependSuffix): main.cpp
 
 $(IntermediateDirectory)/main.cpp$(PreprocessSuffix): main.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/main.cpp$(PreprocessSuffix) main.cpp
+
+$(IntermediateDirectory)/RenameFileDialog.cpp$(ObjectSuffix): RenameFileDialog.cpp $(IntermediateDirectory)/RenameFileDialog.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/RenameFileDialog.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/RenameFileDialog.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/RenameFileDialog.cpp$(DependSuffix): RenameFileDialog.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/RenameFileDialog.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/RenameFileDialog.cpp$(DependSuffix) -MM RenameFileDialog.cpp
+
+$(IntermediateDirectory)/RenameFileDialog.cpp$(PreprocessSuffix): RenameFileDialog.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/RenameFileDialog.cpp$(PreprocessSuffix) RenameFileDialog.cpp
+
+$(IntermediateDirectory)/Settings.cpp$(ObjectSuffix): Settings.cpp $(IntermediateDirectory)/Settings.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/Settings.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Settings.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Settings.cpp$(DependSuffix): Settings.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Settings.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Settings.cpp$(DependSuffix) -MM Settings.cpp
+
+$(IntermediateDirectory)/Settings.cpp$(PreprocessSuffix): Settings.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Settings.cpp$(PreprocessSuffix) Settings.cpp
 
 $(IntermediateDirectory)/CreateFileDialog.cpp$(ObjectSuffix): CreateFileDialog.cpp $(IntermediateDirectory)/CreateFileDialog.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/CreateFileDialog.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CreateFileDialog.cpp$(ObjectSuffix) $(IncludePath)
@@ -174,13 +182,13 @@ $(IntermediateDirectory)/CreateFileDialog.cpp$(DependSuffix): CreateFileDialog.c
 $(IntermediateDirectory)/CreateFileDialog.cpp$(PreprocessSuffix): CreateFileDialog.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CreateFileDialog.cpp$(PreprocessSuffix) CreateFileDialog.cpp
 
-$(IntermediateDirectory)/Ui_CreateFileDialog_cife_bitmaps.cpp$(ObjectSuffix): Ui_CreateFileDialog_cife_bitmaps.cpp $(IntermediateDirectory)/Ui_CreateFileDialog_cife_bitmaps.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/Ui_CreateFileDialog_cife_bitmaps.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Ui_CreateFileDialog_cife_bitmaps.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Ui_CreateFileDialog_cife_bitmaps.cpp$(DependSuffix): Ui_CreateFileDialog_cife_bitmaps.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Ui_CreateFileDialog_cife_bitmaps.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Ui_CreateFileDialog_cife_bitmaps.cpp$(DependSuffix) -MM Ui_CreateFileDialog_cife_bitmaps.cpp
+$(IntermediateDirectory)/Ui_CreateFileDialog_bitmaps.cpp$(ObjectSuffix): Ui_CreateFileDialog_bitmaps.cpp $(IntermediateDirectory)/Ui_CreateFileDialog_bitmaps.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/Ui_CreateFileDialog_bitmaps.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Ui_CreateFileDialog_bitmaps.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Ui_CreateFileDialog_bitmaps.cpp$(DependSuffix): Ui_CreateFileDialog_bitmaps.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Ui_CreateFileDialog_bitmaps.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Ui_CreateFileDialog_bitmaps.cpp$(DependSuffix) -MM Ui_CreateFileDialog_bitmaps.cpp
 
-$(IntermediateDirectory)/Ui_CreateFileDialog_cife_bitmaps.cpp$(PreprocessSuffix): Ui_CreateFileDialog_cife_bitmaps.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Ui_CreateFileDialog_cife_bitmaps.cpp$(PreprocessSuffix) Ui_CreateFileDialog_cife_bitmaps.cpp
+$(IntermediateDirectory)/Ui_CreateFileDialog_bitmaps.cpp$(PreprocessSuffix): Ui_CreateFileDialog_bitmaps.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Ui_CreateFileDialog_bitmaps.cpp$(PreprocessSuffix) Ui_CreateFileDialog_bitmaps.cpp
 
 $(IntermediateDirectory)/FileAttributesDialog.cpp$(ObjectSuffix): FileAttributesDialog.cpp $(IntermediateDirectory)/FileAttributesDialog.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/uwe/Programming/wxWidgets/Projekte/CPM_Image-File_Explorer/CIFE/FileAttributesDialog.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FileAttributesDialog.cpp$(ObjectSuffix) $(IncludePath)

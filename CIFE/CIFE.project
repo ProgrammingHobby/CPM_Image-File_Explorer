@@ -9,7 +9,7 @@
     <File Name="Ui_MainWindow.wxcp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Header Files">
-    <File Name="settings.h"/>
+    <File Name="Settings.h"/>
     <File Name="CreateFileDialog.h"/>
     <File Name="Ui_CreateFileDialog.h"/>
     <File Name="Ui_FileProtectionsDialog.h"/>
@@ -27,9 +27,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="Source Files">
-    <File Name="settings.cpp"/>
+    <File Name="Settings.cpp"/>
     <File Name="CreateFileDialog.cpp"/>
-    <File Name="Ui_CreateFileDialog_cife_bitmaps.cpp"/>
+    <File Name="Ui_CreateFileDialog_bitmaps.cpp"/>
     <File Name="Ui_CreateFileDialog.cpp"/>
     <File Name="Ui_FileProtectionsDialog_bitmaps.cpp"/>
     <File Name="Ui_FileProtectionsDialog.cpp"/>
