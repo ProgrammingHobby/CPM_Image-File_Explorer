@@ -393,6 +393,33 @@ void CpmTools::checkImage(bool doRepair) {
 }
 
 // --------------------------------------------------------------------------------
+void CpmTools::writeFileToImage(wxString filename, int userNumber, bool isTextFile, bool preserveTimeStamps) {
+    char **gargv;
+    int gargc;
+    cmd = "cpm.cp";
+    wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
+    wxString cpmfile = wxString::Format("%d:", userNumber) + filename.substr(filename.find_last_of("/\\") + 1);
+
+    if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
+        return;
+    }
+
+    if (cpmReadSuper(imageTypeName.c_str()) == -1) {
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err), CpmGuiInterface::msgColRed);
+        return;
+    }
+
+    cpmglob(cpmfile.c_str(), &gargc, &gargv);
+    unix2cpm(filename, cpmfile, isTextFile, preserveTimeStamps);
+    cpmUmount();
+
+    if ((err = deviceClose())) {
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
+    }
+}
+
+// --------------------------------------------------------------------------------
 // Basic File Input/Output
 // --------------------------------------------------------------------------------
 //
@@ -3392,6 +3419,76 @@ int CpmTools::fsck(const char *image, bool repair) {
 
     guiintf->printMsg("====================================================================================================\n", CpmGuiInterface::msgColGreen);
     return ret;
+}
+
+// --------------------------------------------------------------------------------
+int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool text, bool preserve) {
+    int c, exitcode = 0;
+    FILE *ufp;
+    wxString unixfile = unixfilename;
+    unixfile = unixfile.substr(unixfile.find_last_of("/\\") + 1);
+
+    if ((ufp = fopen(unixfilename, "rb")) == (FILE *)0) {
+        guiintf->printMsg(wxString::Format("%s: can not open %s: %s\n", cmd, unixfile, strerror(errno)));
+        exitcode = 1;
+    }
+    else {
+        CpmInode_t ino;
+        char cpmname[2 + 8 + 1 + 3 + 1];
+        struct stat st;
+        stat(unixfilename, &st);
+        snprintf(cpmname, sizeof(cpmname), "%02d%s", getUserNumber(cpmfilename), strchr(cpmfilename, ':') + 1);
+
+        if (cpmCreat(&root, cpmname, &ino, 0666) == -1) {
+            guiintf->printMsg(wxString::Format("%s: can not create %s: %s\n", cmd, cpmfilename, err));
+            exitcode = 1;
+        }
+        else {
+            CpmFile_t file;
+            int ohno = 0;
+            char buf[4096 + 1];
+            cpmOpen(&ino, &file, O_WRONLY);
+
+            do {
+                unsigned int j;
+
+                for (j = 0; j < (sizeof(buf) / 2) && (c = getc(ufp)) != EOF; ++j) {
+                    if (text && c == '\n') {
+                        buf[j++] = '\r';
+                    }
+
+                    buf[j] = c;
+                }
+
+                if (text && c == EOF) {
+                    buf[j++] = '\032';
+                }
+
+                if (cpmWrite(&file, buf, j) != (ssize_t)j) {
+                    guiintf->printMsg(wxString::Format("%s: can not write %s: %s\n", cmd, cpmfilename, err));
+                    ohno = 1;
+                    exitcode = 1;
+                    break;
+                }
+            } while (c != EOF);
+
+            if (cpmClose(&file) == EOF && !ohno) {
+                guiintf->printMsg(wxString::Format("%s: can not close %s: %s\n", cmd, cpmfilename, err));
+                exitcode = 1;
+            }
+
+            if (preserve && !ohno) {
+                struct utimbuf times;
+                times.actime = st.st_atime;
+                times.modtime = st.st_mtime;
+                cpmUtime(&ino, &times);
+            }
+        }
+
+        fclose(ufp);
+    }
+
+    return (exitcode);
 }
 
 // --------------------------------------------------------------------------------

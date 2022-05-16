@@ -45,6 +45,7 @@ class CpmTools {
         bool getBootTracksEnabled();
         void createNewImage(wxString label, bool useTimeStamps, wxString bootTrackFile);
         void checkImage(bool doRepair);
+        void writeFileToImage(wxString filename, int userNumber, bool isTextFile, bool preserveTimeStamps);
 
     public:     // Constructor & Destructor
         CpmTools(CpmGuiInterface *intf, wxString appPath);
@@ -240,6 +241,7 @@ class CpmTools {
         char *prfile(int extent);
         int mkfs(const char *format, const char *label, char *bootTracks, int timeStamps);
         int fsck(const char *image, bool repair);
+        int unix2cpm(const char *unixfilename, const char *cpmfilename, bool text, bool preserve);
 
 };
 
