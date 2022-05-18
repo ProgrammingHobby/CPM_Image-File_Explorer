@@ -184,11 +184,10 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
     aboutInfo.SetDescription(_("Written in C/C++ with CodeLite-IDE\n"
                                "Using wxWidgets GUI - Framework Version ") + versionInfo.GetVersionString() +
                              wxString::Format(" - %dbit", (sizeof(nullptr) * 8)) +
-                             _("\n\nCP/M Images Functionality based on the CP/M-Tools\n"
+                             _("\n\nCP/M Images Functionality based on CP/M-Tools\n"
                                "Source Code Version 2.21 from Michael Haardt."));
     aboutInfo.SetCopyright(wxString::Format("Uwe Merker  (C) %d", datetime.GetCurrentYear()));
-    aboutInfo.SetWebSite("http://www.moria.de/~michael/cpmtools\n"
-                         "https://github.com/ProgrammingHobby/CPM_Image-File_Explorer.git");
+    aboutInfo.SetWebSite("http://www.moria.de/~michael/cpmtools");
     wxBitmap iconBmp = wxXmlResource::Get()->LoadBitmap(wxT("appiconsmall"));
 
     if (iconBmp.IsOk()) {
@@ -320,7 +319,6 @@ void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
         }
 
         listImageContents->PopupMenu(popupMenu);
-        this->SetFocus();
     }
 }
 
