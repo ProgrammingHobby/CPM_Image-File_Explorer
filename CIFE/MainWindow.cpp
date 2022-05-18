@@ -42,6 +42,7 @@
 #include <wx/msgdlg.h>
 #include <wx/datetime.h>
 #include <wx/clipbrd.h>
+#include <wx/filename.h>
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CLOSE, MainWindow::onMenuCloseClicked)
@@ -55,6 +56,7 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CREATE_NEW, MainWindow::onCreateNew)
     EVT_MENU(wxID_CHECK_IMAGE, MainWindow::onCheckImage)
     EVT_MENU(wxID_COPY_SETTINGS, MainWindow::onCopySettings)
+    EVT_MENU(wxID_PASTE, MainWindow::onPasteFile)
     EVT_BUTTON(wxID_BUTTON_IMAGE_FILE, MainWindow::onButtonImageFileClicked)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
@@ -287,6 +289,9 @@ void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
         if (listImageContents->GetItemCount() == 0) {
             popupMenu->Enable(wxID_SELECTALL, false);
         }
+        else {
+            popupMenu->Enable(wxID_SELECTALL, true);
+        }
 
         if (listImageContents->GetSelectedItemCount() == 0) {
             popupMenu->Enable(wxID_CUT, false);
@@ -295,14 +300,27 @@ void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
             popupMenu->Enable(wxID_ATTRIBUTES, false);
             popupMenu->Enable(wxID_PROTECTIONS, false);
         }
+        else {
+            popupMenu->Enable(wxID_CUT, true);
+            popupMenu->Enable(wxID_COPY, true);
+            popupMenu->Enable(wxID_DELETE, true);
+            popupMenu->Enable(wxID_ATTRIBUTES, true);
+            popupMenu->Enable(wxID_PROTECTIONS, true);
+        }
 
         if (listImageContents->GetSelectedItemCount() != 1) {
             popupMenu->Enable(wxID_EDIT, false);
             popupMenu->Enable(wxID_ATTRIBUTES, false);
             popupMenu->Enable(wxID_PROTECTIONS, false);
         }
+        else {
+            popupMenu->Enable(wxID_EDIT, true);
+            popupMenu->Enable(wxID_ATTRIBUTES, true);
+            popupMenu->Enable(wxID_PROTECTIONS, true);
+        }
 
         listImageContents->PopupMenu(popupMenu);
+        this->SetFocus();
     }
 }
 
@@ -474,6 +492,30 @@ void MainWindow::onCopySettings(wxCommandEvent &event) {
     }
 
     wxDELETE(dialog);
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onPasteFile(wxCommandEvent &event) {
+    wxClipboard cifeClipboard;
+
+    if (cifeClipboard.Open()) {
+        if (cifeClipboard.IsSupported(wxDF_FILENAME)) {
+            wxFileDataObject data;
+            cifeClipboard.GetData(data);
+            int defaultUserNumber = cifeSettings->readInteger("CpmOptions", "DefaultUserNumber", 0);
+            wxString textFileEndings = cifeSettings->readString("CpmOptions", "TextfileEndings", "txt pip pas");
+            wxArrayString files = data.GetFilenames();
+
+            for (size_t i = 0; i < files.Count(); i++) {
+                wxFileName fileName(files[i]);
+                wxString fileExt = fileName.GetExt();
+                bool isTextFile = textFileEndings.Matches("*" + fileExt + "*");
+                cpmtools->writeFileToImage(files[i], defaultUserNumber, isTextFile, true);
+            }
+
+            onViewRefresh(event);
+        }
+    }
 }
 
 // --------------------------------------------------------------------------------
