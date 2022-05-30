@@ -23,9 +23,18 @@
 // --------------------------------------------------------------------------------
 #include <wx/filename.h>
 #include <wx/log.h>
+#include <wx/stdpaths.h>
+#include <wx/filefn.h>
 // --------------------------------------------------------------------------------
 Settings::Settings(wxString settingsFileName) {
-    settingsFile = settingsFileName;
+
+    wxString configPath = wxStandardPaths::Get().GetUserLocalDataDir();
+
+    if (!wxDirExists(configPath)) {
+        wxMkDir(configPath, wxS_DIR_DEFAULT);
+    }
+
+    settingsFile = configPath + wxFileName::GetPathSeparator() + settingsFileName;
 
     if (!wxFile::Exists(settingsFile)) {
         xmlSettings.Save(settingsFile);

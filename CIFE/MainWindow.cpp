@@ -83,7 +83,7 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
 
     cpmguiinterface = new CpmGuiInterface(listImageContents, textMessages, textContentsInfo);
     cpmtools = new CpmTools(cpmguiinterface, appPath);
-    cifeSettings = new Settings(appPath + "cife.conf");
+    cifeSettings = new Settings("cife.conf");
     cpmtools->setImageType(comboboxImageType->GetValue());
 
     isImageLoaded = false;
@@ -513,6 +513,8 @@ void MainWindow::onPasteFile(wxCommandEvent &event) {
 
             onViewRefresh(event);
         }
+
+        cifeClipboard.Close();
     }
 }
 
