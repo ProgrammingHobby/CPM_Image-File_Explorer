@@ -83,15 +83,8 @@ void Settings::writeInteger(wxString section, wxString key, int data) {
         keyNode->AddAttribute("int", wxString::Format(wxT("%d"), data));
     }
     else {
-        wxString keyData = keyNode->GetAttribute("int", wxString::Format(wxT("%d"), data));
-
-        if (!keyData) {
-            keyNode->AddAttribute("int", wxString::Format(wxT("%d"), data));
-        }
-        else {
-            wxXmlAttribute *attr = new wxXmlAttribute("int", wxString::Format(wxT("%d"), data));
-            keyNode->SetAttributes(attr);
-        }
+        wxXmlAttribute *attr = new wxXmlAttribute("int", wxString::Format(wxT("%d"), data));
+        keyNode->SetAttributes(attr);
     }
 
     xmlSettings.Save(settingsFile);
@@ -112,15 +105,8 @@ void Settings::writeString(wxString section, wxString key, wxString data) {
         keyNode->AddAttribute("data", wxString::Format(wxT("%s"), data));
     }
     else {
-        wxString keyData = keyNode->GetAttribute("data", wxString::Format(wxT("%s"), data));
-
-        if (!keyData) {
-            keyNode->AddAttribute("data", wxString::Format(wxT("%s"), data));
-        }
-        else {
-            wxXmlAttribute *attr = new wxXmlAttribute("data", wxString::Format(wxT("%s"), data));
-            keyNode->SetAttributes(attr);
-        }
+        wxXmlAttribute *attr = new wxXmlAttribute("data", wxString::Format(wxT("%s"), data));
+        keyNode->SetAttributes(attr);
     }
 
     xmlSettings.Save(settingsFile);
@@ -141,15 +127,8 @@ void Settings::writeBoolean(wxString section, wxString key, bool data) {
         keyNode->AddAttribute("bool", wxString::Format(wxT("%s"), ((data) ? "true" : "false")));
     }
     else {
-        wxString keyData = keyNode->GetAttribute("bool", wxString::Format(wxT("%s"), ((data) ? "true" : "false")));
-
-        if (!keyData) {
-            keyNode->AddAttribute("bool", wxString::Format(wxT("%s"), ((data) ? "true" : "false")));
-        }
-        else {
-            wxXmlAttribute *attr = new wxXmlAttribute("bool", wxString::Format(wxT("%s"), ((data) ? "true" : "false")));
-            keyNode->SetAttributes(attr);
-        }
+        wxXmlAttribute *attr = new wxXmlAttribute("bool", wxString::Format(wxT("%s"), ((data) ? "true" : "false")));
+        keyNode->SetAttributes(attr);
     }
 
     xmlSettings.Save(settingsFile);
