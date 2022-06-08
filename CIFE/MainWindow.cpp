@@ -45,6 +45,7 @@
 #include <wx/filename.h>
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
+    EVT_ENTER_WINDOW(MainWindow::onEnterWindow)
     EVT_MENU(wxID_CLOSE, MainWindow::onMenuCloseClicked)
     EVT_MENU(wxID_ABOUT, MainWindow::onMenuAboutClicked)
     EVT_MENU(wxID_REFRESH, MainWindow::onViewRefresh)
@@ -66,6 +67,11 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
 END_EVENT_TABLE()
 // --------------------------------------------------------------------------------
 MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(parent) {
+
+    cpmguiinterface = new CpmGuiInterface(listImageContents, textMessages, textContentsInfo);
+    cpmtools = new CpmTools(cpmguiinterface, appPath);
+    cifeSettings = new Settings("cife.conf");
+
     int size = editImageFile->GetSize().GetHeight();
     buttonImageFile->SetMinSize(wxSize(size, size));
     buttonImageFile->SetMaxSize(wxSize(size, size));
@@ -81,20 +87,28 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
 
     listImageContents->Bind(wxEVT_CONTEXT_MENU, &MainWindow::onShowContextMenu, this);
 
-    cpmguiinterface = new CpmGuiInterface(listImageContents, textMessages, textContentsInfo);
-    cpmtools = new CpmTools(cpmguiinterface, appPath);
-    cifeSettings = new Settings("cife.conf");
+    comboboxImageType->SetSelection(cifeSettings->readInteger("CpmSettings", "ImageType", 0));
     cpmtools->setImageType(comboboxImageType->GetValue());
 
-    isImageLoaded = false;
-    correctWindowSize();
-    presetMenues();
+    wxString filePath = cifeSettings->readString("CpmSettings", "ImageFile", "");
+
+    if (wxFileExists(filePath)) {
+        editImageFile->SetValue(filePath);
+        editImageFile->SetInsertionPoint(filePath.length());
+        cpmtools->setImageFile(filePath);
+        isImageLoaded = true;
+        showDirectory();
+    }
+    else {
+        isImageLoaded = false;
+    }
 
     if (listImageContents->GetItemCount() > 0) {
         menuMainWindow->Enable(wxID_SELECTALL, true);
     }
 
-    Bind(wxEVT_ENTER_WINDOW, &MainWindow::onEnterWindow, this);
+    correctWindowSize();
+    presetMenues();
     createPopupMenu();
 }
 
@@ -161,6 +175,9 @@ MainWindow::~MainWindow() {
     cifeSettings->writeInteger("MainWindow", "SizeX", this->GetSize().x);
     cifeSettings->writeInteger("MainWindow", "SizeY", this->GetSize().y);
 
+    cifeSettings->writeInteger("CpmSettings", "ImageType", comboboxImageType->GetSelection());
+    cifeSettings->writeString("CpmSettings", "ImageFile", editImageFile->GetValue());
+
     wxDELETE(cpmguiinterface);
     wxDELETE(cpmtools);
     wxDELETE(cifeSettings);
@@ -204,8 +221,7 @@ void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
     WXUNUSED(event)
     wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"), wxStandardPaths::Get().GetUserDataDir(),
                             wxEmptyString, _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;*.fdd;*.FDD;*.dsk;*.DSK|"
-                                    "all Files (*.*)|*.*"),
-                            wxFD_OPEN);
+                                    "all Files (*.*)|*.*"), wxFD_OPEN);
 
     if (fileDialog.ShowModal() == wxID_OK) {
         wxString filePath = fileDialog.GetPath();
