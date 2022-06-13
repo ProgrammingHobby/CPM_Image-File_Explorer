@@ -27,7 +27,7 @@
 #include "FileAttributesDialog.h"
 #include "FileProtectionsDialog.h"
 #include "CreateFileDialog.h"
-#include "FileCopySettingsDialog.h"
+#include "FileCopySettingsDialog.hpp"
 #include "Settings.h"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>

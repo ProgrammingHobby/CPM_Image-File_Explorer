@@ -44,6 +44,6 @@ void wxCrafterJogQPpInitBitmapResources()
         else wxFileSystem::AddHandler(new wxMemoryFSHandlerBase);
     }
 
-    XRC_ADD_FILE(wxT("XRC_resource/Ui_FileCopySettings_Dialog_bitmaps.cpp$_home_uwe_Programming_wxWidgets_Projekte_CPM_Image-File_Explorer_CIFE_Ui_FileCopySettings_Dialog_bitmaps.xrc"), xml_res_file_0, xml_res_size_0, wxT("text/xml"));
-    wxXmlResource::Get()->Load(wxT("memory:XRC_resource/Ui_FileCopySettings_Dialog_bitmaps.cpp$_home_uwe_Programming_wxWidgets_Projekte_CPM_Image-File_Explorer_CIFE_Ui_FileCopySettings_Dialog_bitmaps.xrc"));
+    XRC_ADD_FILE(wxT("XRC_resource/Ui_FileCopySettingsDialog_bitmaps.cpp$_home_uwe_Programming_wxWidgets_Projekte_CPM_Image-File_Explorer_CIFE_Ui_FileCopySettingsDialog_bitmaps.xrc"), xml_res_file_0, xml_res_size_0, wxT("text/xml"));
+    wxXmlResource::Get()->Load(wxT("memory:XRC_resource/Ui_FileCopySettingsDialog_bitmaps.cpp$_home_uwe_Programming_wxWidgets_Projekte_CPM_Image-File_Explorer_CIFE_Ui_FileCopySettingsDialog_bitmaps.xrc"));
 }

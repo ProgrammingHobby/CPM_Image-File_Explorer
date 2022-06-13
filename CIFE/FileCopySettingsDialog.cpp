@@ -19,7 +19,7 @@
 **
 ***********************************************************************************/
 
-#include "FileCopySettingsDialog.h"
+#include "FileCopySettingsDialog.hpp"
 #include "Settings.h"
 // --------------------------------------------------------------------------------
 FileCopySettingsDialog::FileCopySettingsDialog(wxWindow *parent, Settings *settings) : Ui_FileCopySettingsDialog(parent) {
