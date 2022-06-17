@@ -92,6 +92,9 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
 
     wxString filePath = cifeSettings->readString("CpmSettings", "ImageFile", "");
 
+    presetMenues();
+    createPopupMenu();
+
     if (wxFileExists(filePath)) {
         editImageFile->SetValue(filePath);
         editImageFile->SetInsertionPoint(filePath.length());
@@ -107,9 +110,6 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
         menuMainWindow->Enable(wxID_SELECTALL, true);
     }
 
-
-    presetMenues();
-    createPopupMenu();
     listImageContents->enableSizing(true);
     correctWindowSize();
 }
@@ -230,11 +230,6 @@ void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
         editImageFile->SetValue(filePath);
         editImageFile->SetInsertionPoint(filePath.length());
         cpmtools->setImageFile(filePath);
-
-        if (!wxFileExists(filePath)) {
-            // Meldung Image nicht vorhanden, wird neu erstellt
-        }
-
         isImageLoaded = true;
         showDirectory();
     }
