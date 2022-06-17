@@ -11,7 +11,13 @@
 		"m_useEnum":	true,
 		"m_useUnderscoreMacro":	true,
 		"m_addHandlers":	true,
-		"m_templateClasses":	[]
+		"m_templateClasses":	[{
+				"m_includeFile":	"#include <CifeListView.h>",
+				"m_allocationLine":	"$name = new CifeListView($parent, $id, wxDefaultPosition, wxDLG_UNIT(splitterPageImageContents, wxSize(-1, -1)), wxLC_VRULES | wxLC_REPORT | wxBORDER_NONE)",
+				"m_className":	"CifeListView",
+				"m_xrcPreviewClass":	"",
+				"m_events":	[]
+			}]
 	},
 	"windows":	[{
 			"m_type":	4402,
@@ -1705,6 +1711,10 @@
 													"m_value":	"0"
 												}, {
 													"type":	"bool",
+													"m_label":	"Enable Spell Checking",
+													"m_value":	false
+												}, {
+													"type":	"bool",
 													"m_label":	"Auto Complete Directories:",
 													"m_value":	false
 												}, {
@@ -2082,12 +2092,12 @@
 																}],
 															"m_events":	[],
 															"m_children":	[{
-																	"m_type":	4413,
+																	"m_type":	4465,
 																	"proportion":	1,
 																	"border":	4,
 																	"gbSpan":	"1,1",
 																	"gbPosition":	"0,0",
-																	"m_styles":	["wxLC_VRULES", "wxLC_REPORT", "wxBORDER_NONE"],
+																	"m_styles":	[],
 																	"m_sizerFlags":	["wxEXPAND"],
 																	"m_properties":	[{
 																			"type":	"winid",
@@ -2112,7 +2122,7 @@
 																		}, {
 																			"type":	"colour",
 																			"m_label":	"Bg Colour:",
-																			"colour":	"(203,230,162)"
+																			"colour":	"<Default>"
 																		}, {
 																			"type":	"colour",
 																			"m_label":	"Fg Colour:",
@@ -2136,7 +2146,7 @@
 																		}, {
 																			"type":	"string",
 																			"m_label":	"Class Name:",
-																			"m_value":	"wxListView"
+																			"m_value":	""
 																		}, {
 																			"type":	"string",
 																			"m_label":	"Include File:",
@@ -2147,7 +2157,8 @@
 																			"m_value":	""
 																		}],
 																	"m_events":	[],
-																	"m_children":	[]
+																	"m_children":	[],
+																	"m_templInfoName":	"CifeListView"
 																}, {
 																	"m_type":	4418,
 																	"proportion":	0,
@@ -2291,6 +2302,10 @@
 																			"type":	"string",
 																			"m_label":	"Max Length:",
 																			"m_value":	"0"
+																		}, {
+																			"type":	"bool",
+																			"m_label":	"Enable Spell Checking",
+																			"m_value":	false
 																		}, {
 																			"type":	"bool",
 																			"m_label":	"Auto Complete Directories:",
@@ -2868,6 +2883,10 @@
 																							"type":	"string",
 																							"m_label":	"Max Length:",
 																							"m_value":	"0"
+																						}, {
+																							"type":	"bool",
+																							"m_label":	"Enable Spell Checking",
+																							"m_value":	false
 																						}, {
 																							"type":	"bool",
 																							"m_label":	"Auto Complete Directories:",

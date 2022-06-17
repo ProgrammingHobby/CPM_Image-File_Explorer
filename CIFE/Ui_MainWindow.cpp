@@ -182,9 +182,7 @@ Ui_MainWindow::Ui_MainWindow(wxWindow *parent, wxWindowID id, const wxString &ti
     wxBoxSizer *sizerImageContents = new wxBoxSizer(wxVERTICAL);
     splitterPageImageContents->SetSizer(sizerImageContents);
 
-    listImageContents = new wxListView(splitterPageImageContents, wxID_IMAGE_CONTENTS, wxDefaultPosition, wxDLG_UNIT(splitterPageImageContents, wxSize(-1, -1)), wxLC_VRULES | wxLC_REPORT | wxBORDER_NONE);
-    listImageContents->SetBackgroundColour(wxColour(wxT("rgb(203,230,162)")));
-
+    listImageContents = new CifeListView(splitterPageImageContents, wxID_IMAGE_CONTENTS, wxDefaultPosition, wxDLG_UNIT(splitterPageImageContents, wxSize(-1, -1)), wxLC_VRULES | wxLC_REPORT | wxBORDER_NONE);
     sizerImageContents->Add(listImageContents, 1, wxEXPAND, WXC_FROM_DIP(4));
 
     lineImageContents = new wxStaticLine(splitterPageImageContents, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(splitterPageImageContents, wxSize(1, 1)), wxLI_HORIZONTAL);

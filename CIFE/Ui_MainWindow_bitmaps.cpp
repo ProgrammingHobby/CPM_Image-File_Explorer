@@ -6668,6 +6668,6 @@ void wxCrafterbA4dhxInitBitmapResources()
     XRC_ADD_FILE(wxT("XRC_resource/Ui_MainWindow_bitmaps.cpp$Bitmaps_permissions.png"), xml_res_file_11, xml_res_size_11, wxT("image/png"));
     XRC_ADD_FILE(wxT("XRC_resource/Ui_MainWindow_bitmaps.cpp$Bitmaps_refresh.png"), xml_res_file_12, xml_res_size_12, wxT("image/png"));
     XRC_ADD_FILE(wxT("XRC_resource/Ui_MainWindow_bitmaps.cpp$Bitmaps_select_all.png"), xml_res_file_13, xml_res_size_13, wxT("image/png"));
-    XRC_ADD_FILE(wxT("XRC_resource/Ui_MainWindow_bitmaps.cpp$_home_uwe_Programming_wxWidgets_Projekte_CPM_Image-File_Explorer_CIFE_Ui_MainWindow_bitmaps.xrc"), xml_res_file_14, xml_res_size_14, wxT("text/xml"));
-    wxXmlResource::Get()->Load(wxT("memory:XRC_resource/Ui_MainWindow_bitmaps.cpp$_home_uwe_Programming_wxWidgets_Projekte_CPM_Image-File_Explorer_CIFE_Ui_MainWindow_bitmaps.xrc"));
+    XRC_ADD_FILE(wxT("XRC_resource/Ui_MainWindow_bitmaps.cpp$Z__wxWidgets_Projekte_CPM_Image-File_Explorer_CIFE_Ui_MainWindow_bitmaps.xrc"), xml_res_file_14, xml_res_size_14, wxT("text/xml"));
+    wxXmlResource::Get()->Load(wxT("memory:XRC_resource/Ui_MainWindow_bitmaps.cpp$Z__wxWidgets_Projekte_CPM_Image-File_Explorer_CIFE_Ui_MainWindow_bitmaps.xrc"));
 }

@@ -25,7 +25,7 @@
 #include <wx/textctrl.h>
 #include <wx/button.h>
 #include <wx/splitter.h>
-#include <wx/listctrl.h>
+#include <CifeListView.h>
 #include <wx/statline.h>
 #if wxVERSION_NUMBER >= 2900
     #include <wx/persist.h>
@@ -48,14 +48,14 @@
 class Ui_MainWindow : public wxFrame {
     public:
         enum {
-            wxID_BUTTON_CLEAR_MESSAGES = 10001,
-            wxID_BUTTON_IMAGE_FILE = 10002,
-            wxID_IMAGE_TYPE = 10003,
-            wxID_COPY_SETTINGS = 10004,
-            wxID_CHECK_IMAGE = 10005,
-            wxID_CREATE_NEW = 10006,
-            wxID_BUTTON_SAVE_MESSAGES = 10007,
-            wxID_IMAGE_CONTENTS = 10008,
+            wxID_BUTTON_SAVE_MESSAGES = 10001,
+            wxID_BUTTON_CLEAR_MESSAGES = 10002,
+            wxID_IMAGE_CONTENTS = 10003,
+            wxID_BUTTON_IMAGE_FILE = 10004,
+            wxID_IMAGE_TYPE = 10005,
+            wxID_COPY_SETTINGS = 10006,
+            wxID_CHECK_IMAGE = 10007,
+            wxID_CREATE_NEW = 10008,
             wxID_PROTECTIONS = 10009,
             wxID_ATTRIBUTES = 10010,
         };
@@ -95,7 +95,7 @@ class Ui_MainWindow : public wxFrame {
         wxPanel *panelImageViews;
         wxSplitterWindow *splitterImageViews;
         wxPanel *splitterPageImageContents;
-        wxListView *listImageContents;
+        CifeListView *listImageContents;
         wxStaticLine *lineImageContents;
         wxTextCtrl *textContentsInfo;
         wxPanel *splitterPageMessages;
@@ -135,7 +135,7 @@ class Ui_MainWindow : public wxFrame {
         wxPanel *GetPanelImageFile() {
             return panelImageFile;
         }
-        wxListView *GetListImageContents() {
+        CifeListView *GetListImageContents() {
             return listImageContents;
         }
         wxStaticLine *GetLineImageContents() {
