@@ -94,6 +94,8 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
 
     presetMenues();
     createPopupMenu();
+    listImageContents->enableSizing(true);
+    correctWindowSize();
 
     if (wxFileExists(filePath)) {
         editImageFile->SetValue(filePath);
@@ -110,8 +112,7 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
         menuMainWindow->Enable(wxID_SELECTALL, true);
     }
 
-    listImageContents->enableSizing(true);
-    correctWindowSize();
+
 }
 
 // --------------------------------------------------------------------------------
