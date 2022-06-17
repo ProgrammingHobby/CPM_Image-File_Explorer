@@ -107,9 +107,11 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
         menuMainWindow->Enable(wxID_SELECTALL, true);
     }
 
-    correctWindowSize();
+
     presetMenues();
     createPopupMenu();
+    listImageContents->enableSizing(true);
+    correctWindowSize();
 }
 
 // --------------------------------------------------------------------------------
@@ -157,11 +159,11 @@ void MainWindow::correctWindowSize() {
     int width = this->GetBestSize().GetWidth();
     width += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X, listImageContents);
     int height = this->GetBestSize().GetHeight();
+    this->SetMinSize(wxSize(width, (height * 1.5)));
     wxSize size;
     size.x = cifeSettings->readInteger("MainWindow", "SizeX", width);
     size.y = cifeSettings->readInteger("MainWindow", "SizeY", (height * 1.5));
     this->SetSize(size);
-    this->SetMinSize(wxSize(width, (height * 1.5)));
     wxPoint point;
     point.x = cifeSettings->readInteger("MainWindow", "PosX", 10);
     point.y = cifeSettings->readInteger("MainWindow", "PosY", 10);
