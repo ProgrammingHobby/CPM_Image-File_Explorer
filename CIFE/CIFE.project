@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="CIFE" Version="11000" InternalType="GUI">
   <VirtualDirectory Name="Resource Files">
+    <File Name="Ui_FileCopySettingsDialog.wxcp"/>
     <File Name="Ui_CreateFileDialog.wxcp"/>
     <File Name="Ui_FileProtectionsDialog.wxcp"/>
     <File Name="Ui_FileAttributesDialog.wxcp"/>
@@ -9,6 +10,9 @@
     <File Name="Ui_MainWindow.wxcp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Header Files">
+    <File Name="CifeListView.h"/>
+    <File Name="FileCopySettingsDialog.hpp"/>
+    <File Name="Ui_FileCopySettingsDialog.hpp"/>
     <File Name="Settings.h"/>
     <File Name="CreateFileDialog.h"/>
     <File Name="Ui_CreateFileDialog.h"/>
@@ -27,6 +31,10 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="Source Files">
+    <File Name="CifeListView.cpp"/>
+    <File Name="FileCopySettingsDialog.cpp"/>
+    <File Name="Ui_FileCopySettingsDialog_bitmaps.cpp"/>
+    <File Name="Ui_FileCopySettingsDialog.cpp"/>
     <File Name="Settings.cpp"/>
     <File Name="CreateFileDialog.cpp"/>
     <File Name="Ui_CreateFileDialog_bitmaps.cpp"/>
