@@ -1,7 +1,11 @@
 .directory
-.codelite
-*tags*
-*build*
+.metadata
+*gtk-build*
+*gtk-debug*
+*gtk-release*
+*msw-build*
+*msw-debug*
+*msw-release*
 *makefile*
 Test_Disk-Images
 TODO.txt
