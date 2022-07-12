@@ -1,6 +1,6 @@
 /***********************************************************************************
 **
-**	Copyright (C) 11.12.2021 Uwe Merker Germany
+**	Copyright (C) 01.12.2021 Uwe Merker Germany
 **
 **	Diese Datei ist Teil von CPM_Image-File_Explorer.
 **
@@ -19,34 +19,37 @@
 **
 ***********************************************************************************/
 
-#ifndef CREATEFILEDIALOG_H
-#define CREATEFILEDIALOG_H
+#ifndef FILEATTRIBUTESDIALOG_H
+#define FILEATTRIBUTESDIALOG_H
 // --------------------------------------------------------------------------------
-#include "Ui_CreateFileDialog.h"
+#include "Ui_FileAttributesDialog.hpp"
 // --------------------------------------------------------------------------------
-class CreateFileDialog : public Ui_CreateFileDialog {
-
+class FileAttributesDialog : public Ui_FileAttributesDialog {
     public:     // Attributes
 
     public:     // Methods
-        wxString getBootTrackFile();
-        wxString getFileSystemLabel();
-        bool getUseTimestamps();
-        void setBootTracksUsed(bool value);
+        void setAttributes(wxString attributes);
+        int getAttributes();
 
     public:     // Constructor & Destructor
-        CreateFileDialog(wxWindow *parent);
-        virtual ~CreateFileDialog();
+        FileAttributesDialog(wxWindow *parent);
+        virtual ~FileAttributesDialog();
 
     protected:  // Event Methods
-    void onButtonBootFileClicked(wxCommandEvent &event);
 
     private:    // Attributes
+        /* CP/M file attributes */
+        const int CPM_ATTR_F1 = 1;
+        const int CPM_ATTR_F2 = 2;
+        const int CPM_ATTR_F3 = 4;
+        const int CPM_ATTR_F4 = 8;
+        const int CPM_ATTR_RO = 256;   /* Read-only */
+        const int CPM_ATTR_SYS = 512;   /* System */
+        const int CPM_ATTR_ARCV = 1024;  /* Archive */
+        wxCheckBox *checkBoxes[7];
 
     private:    // Methods
-
-        DECLARE_EVENT_TABLE()
 };
 
 // --------------------------------------------------------------------------------
-#endif // CREATEFILEDIALOG_H
+#endif // FILEATTRIBUTESDIALOG_H

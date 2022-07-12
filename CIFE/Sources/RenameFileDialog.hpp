@@ -22,7 +22,7 @@
 #ifndef RENAMEFILEDIALOG_H
 #define RENAMEFILEDIALOG_H
 // --------------------------------------------------------------------------------
-#include "Ui_RenameFileDialog.h"
+#include "Ui_RenameFileDialog.hpp"
 // --------------------------------------------------------------------------------
 class RenameFileDialog : public Ui_RenameFileDialog {
 

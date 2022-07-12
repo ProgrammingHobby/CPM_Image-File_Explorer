@@ -4,7 +4,7 @@
 // Do not modify this file by hand!
 //////////////////////////////////////////////////////////////////////
 
-#include "Ui_CreateFileDialog.h"
+#include "Ui_CreateFileDialog.hpp"
 
 
 // Declare the bitmap loading function

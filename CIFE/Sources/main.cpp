@@ -27,7 +27,8 @@
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 // --------------------------------------------------------------------------------
-#include "MainWindow.h"
+
+#include "MainWindow.hpp"
 // --------------------------------------------------------------------------------
 // application class
 class wxCifeApp : public wxApp {

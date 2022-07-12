@@ -19,8 +19,8 @@
 **
 ***********************************************************************************/
 
-#include "FileProtectionsDialog.h"
-// --------------------------------------------------------------------------------
+#include "FileProtectionsDialog.hpp"
+
 #include <wx/tokenzr.h>
 // --------------------------------------------------------------------------------
 FileProtectionsDialog::FileProtectionsDialog(wxWindow *parent) : Ui_FileProtectionsDialog(parent) {

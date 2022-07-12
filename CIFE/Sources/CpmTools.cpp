@@ -19,7 +19,6 @@
 **
 ***********************************************************************************/
 #include "CpmTools.h"
-#include "CpmGuiInterface.h"
 #include "CpmDefs.h"
 // --------------------------------------------------------------------------------
 #include <cstdio>
@@ -27,6 +26,8 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <fcntl.h>
+
+#include "CpmGuiInterface.hpp"
 // --------------------------------------------------------------------------------
 CpmTools::CpmTools(CpmGuiInterface *intf, wxString appPath) {
     guiintf = intf;

@@ -4,7 +4,7 @@
 // Do not modify this file by hand!
 //////////////////////////////////////////////////////////////////////
 
-#include "Ui_MainWindow.h"
+#include "Ui_MainWindow.hpp"
 
 
 // Declare the bitmap loading function

@@ -22,7 +22,7 @@
 #ifndef FILEPROTECTIONSDIALOG_H
 #define FILEPROTECTIONSDIALOG_H
 // --------------------------------------------------------------------------------
-#include "Ui_FileProtectionsDialog.h"
+#include "Ui_FileProtectionsDialog.hpp"
 // --------------------------------------------------------------------------------
 class FileProtectionsDialog : public Ui_FileProtectionsDialog {
     public:     // Attributes

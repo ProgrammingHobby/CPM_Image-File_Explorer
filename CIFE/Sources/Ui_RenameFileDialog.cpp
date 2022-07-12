@@ -4,7 +4,7 @@
 // Do not modify this file by hand!
 //////////////////////////////////////////////////////////////////////
 
-#include "Ui_RenameFileDialog.h"
+#include "Ui_RenameFileDialog.hpp"
 
 
 // Declare the bitmap loading function

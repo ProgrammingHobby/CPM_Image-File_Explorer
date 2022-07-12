@@ -4,7 +4,7 @@
 // Do not modify this file by hand!
 //////////////////////////////////////////////////////////////////////
 
-#include "Ui_FileProtectionsDialog.h"
+#include "Ui_FileProtectionsDialog.hpp"
 
 
 // Declare the bitmap loading function

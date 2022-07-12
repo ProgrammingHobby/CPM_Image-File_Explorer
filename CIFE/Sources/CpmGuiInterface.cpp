@@ -19,8 +19,8 @@
 **
 ***********************************************************************************/
 
-#include "CpmGuiInterface.h"
-// --------------------------------------------------------------------------------
+#include "CpmGuiInterface.hpp"
+
 #include <wx/textctrl.h>
 #include <wx/listctrl.h>
 #include <wx/string.h>

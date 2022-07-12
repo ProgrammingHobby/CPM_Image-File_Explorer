@@ -19,14 +19,10 @@
 **
 ***********************************************************************************/
 
-#include "MainWindow.h"
+#include "MainWindow.hpp"
+
 #include "Version.h"
 #include "CpmTools.h"
-#include "CpmGuiInterface.h"
-#include "RenameFileDialog.h"
-#include "FileAttributesDialog.h"
-#include "FileProtectionsDialog.h"
-#include "CreateFileDialog.h"
 #include "FileCopySettingsDialog.hpp"
 #include "Settings.h"
 // --------------------------------------------------------------------------------
@@ -43,6 +39,12 @@
 #include <wx/datetime.h>
 #include <wx/clipbrd.h>
 #include <wx/filename.h>
+
+#include "CpmGuiInterface.hpp"
+#include "CreateFileDialog.hpp"
+#include "FileAttributesDialog.hpp"
+#include "FileProtectionsDialog.hpp"
+#include "RenameFileDialog.hpp"
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_ENTER_WINDOW(MainWindow::onEnterWindow)
