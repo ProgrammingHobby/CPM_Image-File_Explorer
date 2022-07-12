@@ -1,6 +1,6 @@
 {
 	"metadata":	{
-		"m_generatedFilesDir":	".",
+		"m_generatedFilesDir":	"../Sources/",
 		"m_objCounter":	172,
 		"m_includeFiles":	[],
 		"m_bitmapFunction":	"wxCrafterbA4dhxInitBitmapResources",
@@ -124,7 +124,7 @@
 				}, {
 					"type":	"bitmapPicker",
 					"m_label":	"Bitmap File (64x64)  :",
-					"m_path":	"Bitmaps/appiconsmall.png"
+					"m_path":	"../Bitmaps/appiconsmall.png"
 				}, {
 					"type":	"bitmapPicker",
 					"m_label":	"Bitmap File (128x128):",
@@ -250,7 +250,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/close.png"
+											"m_path":	"../Bitmaps/close.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -313,7 +313,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/cut.png"
+											"m_path":	"../Bitmaps/cut.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -357,7 +357,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/copy.png"
+											"m_path":	"../Bitmaps/copy.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -401,7 +401,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/paste.png"
+											"m_path":	"../Bitmaps/paste.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -445,7 +445,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/select_all.png"
+											"m_path":	"../Bitmaps/select_all.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -533,7 +533,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/edit.png"
+											"m_path":	"../Bitmaps/edit.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -577,7 +577,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/delete.png"
+											"m_path":	"../Bitmaps/delete.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -665,7 +665,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/attributes.png"
+											"m_path":	"../Bitmaps/attributes.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -709,7 +709,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/permissions.png"
+											"m_path":	"../Bitmaps/permissions.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -797,7 +797,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/create_new.png"
+											"m_path":	"../Bitmaps/create_new.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -860,7 +860,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/refresh.png"
+											"m_path":	"../Bitmaps/refresh.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -923,7 +923,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/check_image.png"
+											"m_path":	"../Bitmaps/check_image.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -1049,7 +1049,7 @@
 										}, {
 											"type":	"bitmapPicker",
 											"m_label":	"Bitmap File:",
-											"m_path":	"Bitmaps/about.png"
+											"m_path":	"../Bitmaps/about.png"
 										}, {
 											"type":	"choice",
 											"m_label":	"Kind:",
@@ -1711,10 +1711,6 @@
 													"m_value":	"0"
 												}, {
 													"type":	"bool",
-													"m_label":	"Enable Spell Checking",
-													"m_value":	false
-												}, {
-													"type":	"bool",
 													"m_label":	"Auto Complete Directories:",
 													"m_value":	false
 												}, {
@@ -2304,10 +2300,6 @@
 																			"m_value":	"0"
 																		}, {
 																			"type":	"bool",
-																			"m_label":	"Enable Spell Checking",
-																			"m_value":	false
-																		}, {
-																			"type":	"bool",
 																			"m_label":	"Auto Complete Directories:",
 																			"m_value":	false
 																		}, {
@@ -2883,10 +2875,6 @@
 																							"type":	"string",
 																							"m_label":	"Max Length:",
 																							"m_value":	"0"
-																						}, {
-																							"type":	"bool",
-																							"m_label":	"Enable Spell Checking",
-																							"m_value":	false
 																						}, {
 																							"type":	"bool",
 																							"m_label":	"Auto Complete Directories:",

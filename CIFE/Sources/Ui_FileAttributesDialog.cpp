@@ -13,64 +13,88 @@ extern void wxCrafterzJ6Hp9InitBitmapResources();
 static bool bBitmapLoaded = false;
 
 
-Ui_FileAttributesDialog::Ui_FileAttributesDialog(wxWindow *parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style)
-    : wxDialog(parent, id, title, pos, size, style) {
-    if (!bBitmapLoaded) {
+Ui_FileAttributesDialog::Ui_FileAttributesDialog(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
+    : wxDialog(parent, id, title, pos, size, style)
+{
+    if ( !bBitmapLoaded ) {
         // We need to initialise the default bitmap handler
         wxXmlResource::Get()->AddHandler(new wxBitmapXmlHandler);
         wxCrafterzJ6Hp9InitBitmapResources();
         bBitmapLoaded = true;
     }
-
-    sizerFileAttributesDialog = new wxBoxSizer(wxVERTICAL);
+    
+    wxBoxSizer* sizerFileAttributesDialog = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(sizerFileAttributesDialog);
-    panelFileAttributes = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxTAB_TRAVERSAL);
-    sizerFileAttributesDialog->Add(panelFileAttributes, 0, wxLEFT | wxEXPAND, WXC_FROM_DIP(4));
-    sizerFileAttributes = new wxBoxSizer(wxVERTICAL);
+    
+    panelFileAttributes = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
+    
+    sizerFileAttributesDialog->Add(panelFileAttributes, 0, wxLEFT|wxEXPAND, WXC_FROM_DIP(4));
+    
+    wxBoxSizer* sizerFileAttributes = new wxBoxSizer(wxVERTICAL);
     panelFileAttributes->SetSizer(sizerFileAttributes);
-    checkboxF1 = new wxCheckBox(panelFileAttributes, wxID_CHECK_F1, _("F1 (used by MP/M)"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1, -1)), 0);
+    
+    checkboxF1 = new wxCheckBox(panelFileAttributes, wxID_CHECK_F1, _("F1 (used by MP/M)"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1,-1)), 0);
     checkboxF1->SetValue(false);
-    sizerFileAttributes->Add(checkboxF1, 0, wxLEFT | wxRIGHT | wxTOP, WXC_FROM_DIP(4));
-    checkboxF2 = new wxCheckBox(panelFileAttributes, wxID_CHECK_F2, _("F2 (used by MP/M)"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1, -1)), 0);
+    
+    sizerFileAttributes->Add(checkboxF1, 0, wxLEFT|wxRIGHT|wxTOP, WXC_FROM_DIP(4));
+    
+    checkboxF2 = new wxCheckBox(panelFileAttributes, wxID_CHECK_F2, _("F2 (used by MP/M)"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1,-1)), 0);
     checkboxF2->SetValue(false);
-    sizerFileAttributes->Add(checkboxF2, 0, wxLEFT | wxRIGHT, WXC_FROM_DIP(4));
-    checkboxF3 = new wxCheckBox(panelFileAttributes, wxID_CHECK_F3, _("F3 (used by MP/M)"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1, -1)), 0);
+    
+    sizerFileAttributes->Add(checkboxF2, 0, wxLEFT|wxRIGHT, WXC_FROM_DIP(4));
+    
+    checkboxF3 = new wxCheckBox(panelFileAttributes, wxID_CHECK_F3, _("F3 (used by MP/M)"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1,-1)), 0);
     checkboxF3->SetValue(false);
-    sizerFileAttributes->Add(checkboxF3, 0, wxLEFT | wxRIGHT, WXC_FROM_DIP(4));
-    checkboxF4 = new wxCheckBox(panelFileAttributes, wxID_CHECK_F4, _("F4 (used by MP/M)"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1, -1)), 0);
+    
+    sizerFileAttributes->Add(checkboxF3, 0, wxLEFT|wxRIGHT, WXC_FROM_DIP(4));
+    
+    checkboxF4 = new wxCheckBox(panelFileAttributes, wxID_CHECK_F4, _("F4 (used by MP/M)"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1,-1)), 0);
     checkboxF4->SetValue(false);
-    sizerFileAttributes->Add(checkboxF4, 0, wxLEFT | wxRIGHT, WXC_FROM_DIP(4));
-    checkboxReadOnly = new wxCheckBox(panelFileAttributes, wxID_CHECK_READONLY, _("Read Only File"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1, -1)), 0);
+    
+    sizerFileAttributes->Add(checkboxF4, 0, wxLEFT|wxRIGHT, WXC_FROM_DIP(4));
+    
+    checkboxReadOnly = new wxCheckBox(panelFileAttributes, wxID_CHECK_READONLY, _("Read Only File"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1,-1)), 0);
     checkboxReadOnly->SetValue(false);
-    sizerFileAttributes->Add(checkboxReadOnly, 0, wxLEFT | wxRIGHT, WXC_FROM_DIP(4));
-    checkboxSystem = new wxCheckBox(panelFileAttributes, wxID_CHECK_SYSTEM, _("System File"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1, -1)), 0);
+    
+    sizerFileAttributes->Add(checkboxReadOnly, 0, wxLEFT|wxRIGHT, WXC_FROM_DIP(4));
+    
+    checkboxSystem = new wxCheckBox(panelFileAttributes, wxID_CHECK_SYSTEM, _("System File"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1,-1)), 0);
     checkboxSystem->SetValue(false);
-    sizerFileAttributes->Add(checkboxSystem, 0, wxLEFT | wxRIGHT, WXC_FROM_DIP(4));
-    checkboxArchived = new wxCheckBox(panelFileAttributes, wxID_CHECK_ARCHIVED, _("Archived File"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1, -1)), 0);
+    
+    sizerFileAttributes->Add(checkboxSystem, 0, wxLEFT|wxRIGHT, WXC_FROM_DIP(4));
+    
+    checkboxArchived = new wxCheckBox(panelFileAttributes, wxID_CHECK_ARCHIVED, _("Archived File"), wxDefaultPosition, wxDLG_UNIT(panelFileAttributes, wxSize(-1,-1)), 0);
     checkboxArchived->SetValue(false);
-    sizerFileAttributes->Add(checkboxArchived, 0, wxLEFT | wxRIGHT | wxBOTTOM, WXC_FROM_DIP(4));
-    panelDialogButtons = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), wxTAB_TRAVERSAL);
-    sizerFileAttributesDialog->Add(panelDialogButtons, 0, wxLEFT | wxRIGHT | wxBOTTOM, WXC_FROM_DIP(5));
-    sizerDialogButtons = new wxBoxSizer(wxHORIZONTAL);
+    
+    sizerFileAttributes->Add(checkboxArchived, 0, wxLEFT|wxRIGHT|wxBOTTOM, WXC_FROM_DIP(4));
+    
+    panelDialogButtons = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
+    
+    sizerFileAttributesDialog->Add(panelDialogButtons, 0, wxLEFT|wxRIGHT|wxBOTTOM, WXC_FROM_DIP(5));
+    
+    wxBoxSizer* sizerDialogButtons = new wxBoxSizer(wxHORIZONTAL);
     panelDialogButtons->SetSizer(sizerDialogButtons);
-    buttonCancel = new wxButton(panelDialogButtons, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDLG_UNIT(panelDialogButtons, wxSize(-1, -1)), 0);
+    
+    buttonCancel = new wxButton(panelDialogButtons, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDLG_UNIT(panelDialogButtons, wxSize(-1,-1)), 0);
+    
     sizerDialogButtons->Add(buttonCancel, 0, wxALL, WXC_FROM_DIP(4));
-    buttonOk = new wxButton(panelDialogButtons, wxID_OK, _("Ok"), wxDefaultPosition, wxDLG_UNIT(panelDialogButtons, wxSize(-1, -1)), 0);
+    
+    buttonOk = new wxButton(panelDialogButtons, wxID_OK, _("Ok"), wxDefaultPosition, wxDLG_UNIT(panelDialogButtons, wxSize(-1,-1)), 0);
+    
     sizerDialogButtons->Add(buttonOk, 0, wxALL, WXC_FROM_DIP(4));
+    
     SetName(wxT("Ui_FileAttributesDialog"));
-    SetSize(wxDLG_UNIT(this, wxSize(-1, -1)));
-
+    SetSize(wxDLG_UNIT(this, wxSize(-1,-1)));
     if (GetSizer()) {
-        GetSizer()->Fit(this);
+         GetSizer()->Fit(this);
     }
-
-    if (GetParent()) {
+    if(GetParent()) {
         CentreOnParent(wxBOTH);
-    }
-    else {
+    } else {
         CentreOnScreen(wxBOTH);
     }
 }
 
-Ui_FileAttributesDialog::~Ui_FileAttributesDialog() {
+Ui_FileAttributesDialog::~Ui_FileAttributesDialog()
+{
 }

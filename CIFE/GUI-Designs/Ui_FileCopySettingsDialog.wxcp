@@ -1,6 +1,6 @@
 {
 	"metadata":	{
-		"m_generatedFilesDir":	".",
+		"m_generatedFilesDir":	"../Sources/",
 		"m_objCounter":	13,
 		"m_includeFiles":	[],
 		"m_bitmapFunction":	"wxCrafterJogQPpInitBitmapResources",

@@ -4,8 +4,8 @@
 // Do not modify this file by hand!
 //////////////////////////////////////////////////////////////////////
 
-#ifndef _CPM_IMAGE_FILE_EXPLORER_CIFE_UI_FILECOPYSETTINGSDIALOG_BASE_CLASSES_HPP
-#define _CPM_IMAGE_FILE_EXPLORER_CIFE_UI_FILECOPYSETTINGSDIALOG_BASE_CLASSES_HPP
+#ifndef _CIFE_GUI_DESIGNS_UI_FILECOPYSETTINGSDIALOG_BASE_CLASSES_HPP
+#define _CIFE_GUI_DESIGNS_UI_FILECOPYSETTINGSDIALOG_BASE_CLASSES_HPP
 
 // clang-format off
 #include <wx/settings.h>
@@ -20,55 +20,44 @@
 #include <wx/spinctrl.h>
 #include <wx/textctrl.h>
 #if wxVERSION_NUMBER >= 2900
-    #include <wx/persist.h>
-    #include <wx/persist/toplevel.h>
-    #include <wx/persist/bookctrl.h>
-    #include <wx/persist/treebook.h>
+#include <wx/persist.h>
+#include <wx/persist/toplevel.h>
+#include <wx/persist/bookctrl.h>
+#include <wx/persist/treebook.h>
 #endif
 
 #ifdef WXC_FROM_DIP
-    #undef WXC_FROM_DIP
+#undef WXC_FROM_DIP
 #endif
 #if wxVERSION_NUMBER >= 3100
-    #define WXC_FROM_DIP(x) wxWindow::FromDIP(x, NULL)
+#define WXC_FROM_DIP(x) wxWindow::FromDIP(x, NULL)
 #else
-    #define WXC_FROM_DIP(x) x
+#define WXC_FROM_DIP(x) x
 #endif
 
 // clang-format on
 
-class Ui_FileCopySettingsDialog : public wxDialog {
-    protected:
-        wxPanel *panelDefaultUserNumber;
-        wxStaticText *textDefaultUserNumber;
-        wxSpinCtrl *spinCtrlDefaultUserNumber;
-        wxPanel *panelTextfileEndings;
-        wxStaticText *labelTextFileEndings;
-        wxTextCtrl *editTextFileEndings;
+class Ui_FileCopySettingsDialog : public wxDialog
+{
+protected:
+    wxPanel* panelDefaultUserNumber;
+    wxStaticText* textDefaultUserNumber;
+    wxSpinCtrl* spinCtrlDefaultUserNumber;
+    wxPanel* panelTextfileEndings;
+    wxStaticText* labelTextFileEndings;
+    wxTextCtrl* editTextFileEndings;
 
-    protected:
+protected:
 
-    public:
-        wxStaticText *GetTextDefaultUserNumber() {
-            return textDefaultUserNumber;
-        }
-        wxSpinCtrl *GetSpinCtrlDefaultUserNumber() {
-            return spinCtrlDefaultUserNumber;
-        }
-        wxPanel *GetPanelDefaultUserNumber() {
-            return panelDefaultUserNumber;
-        }
-        wxStaticText *GetLabelTextFileEndings() {
-            return labelTextFileEndings;
-        }
-        wxTextCtrl *GetEditTextFileEndings() {
-            return editTextFileEndings;
-        }
-        wxPanel *GetPanelTextfileEndings() {
-            return panelTextfileEndings;
-        }
-        Ui_FileCopySettingsDialog(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("File Copy Settings"), const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxSize(-1, -1), long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxBORDER_THEME);
-        virtual ~Ui_FileCopySettingsDialog();
+public:
+    wxStaticText* GetTextDefaultUserNumber() { return textDefaultUserNumber; }
+    wxSpinCtrl* GetSpinCtrlDefaultUserNumber() { return spinCtrlDefaultUserNumber; }
+    wxPanel* GetPanelDefaultUserNumber() { return panelDefaultUserNumber; }
+    wxStaticText* GetLabelTextFileEndings() { return labelTextFileEndings; }
+    wxTextCtrl* GetEditTextFileEndings() { return editTextFileEndings; }
+    wxPanel* GetPanelTextfileEndings() { return panelTextfileEndings; }
+    Ui_FileCopySettingsDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("File Copy Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(-1,-1), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxBORDER_THEME);
+    virtual ~Ui_FileCopySettingsDialog();
 };
 
 #endif

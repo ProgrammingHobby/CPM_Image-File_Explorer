@@ -4,8 +4,8 @@
 // Do not modify this file by hand!
 //////////////////////////////////////////////////////////////////////
 
-#ifndef _CPM_IMAGE_FILE_EXPLORER_CIFE_UI_FILEPROTECTIONSDIALOG_BASE_CLASSES_H
-#define _CPM_IMAGE_FILE_EXPLORER_CIFE_UI_FILEPROTECTIONSDIALOG_BASE_CLASSES_H
+#ifndef _CIFE_GUI_DESIGNS_UI_FILEPROTECTIONSDIALOG_BASE_CLASSES_HPP
+#define _CIFE_GUI_DESIGNS_UI_FILEPROTECTIONSDIALOG_BASE_CLASSES_HPP
 
 // clang-format off
 #include <wx/settings.h>
@@ -19,68 +19,52 @@
 #include <wx/checkbox.h>
 #include <wx/button.h>
 #if wxVERSION_NUMBER >= 2900
-    #include <wx/persist.h>
-    #include <wx/persist/toplevel.h>
-    #include <wx/persist/bookctrl.h>
-    #include <wx/persist/treebook.h>
+#include <wx/persist.h>
+#include <wx/persist/toplevel.h>
+#include <wx/persist/bookctrl.h>
+#include <wx/persist/treebook.h>
 #endif
 
 #ifdef WXC_FROM_DIP
-    #undef WXC_FROM_DIP
+#undef WXC_FROM_DIP
 #endif
 #if wxVERSION_NUMBER >= 3100
-    #define WXC_FROM_DIP(x) wxWindow::FromDIP(x, NULL)
+#define WXC_FROM_DIP(x) wxWindow::FromDIP(x, NULL)
 #else
-    #define WXC_FROM_DIP(x) x
+#define WXC_FROM_DIP(x) x
 #endif
 
 // clang-format on
 
-class Ui_FileProtectionsDialog : public wxDialog {
-    public:
-        enum {
-            wxID_DELETE_PROTECT = 10001,
-            wxID_WRITE_PROTECT = 10002,
-            wxID_READ_PROTECT = 10003,
-        };
-    protected:
-        wxBoxSizer *sizerFileProtectionsDialog;
-        wxPanel *panelFileProtections;
-        wxBoxSizer *sizerFileProtections;
-        wxCheckBox *checkboxReadProtect;
-        wxCheckBox *checkboxWriteProtect;
-        wxCheckBox *checkboxDeleteProtect;
-        wxPanel *panelDialogButtons;
-        wxBoxSizer *sizerDialogButtons;
-        wxButton *buttonCancel;
-        wxButton *buttonOk;
+class Ui_FileProtectionsDialog : public wxDialog
+{
+public:
+    enum {
+        wxID_DELETE_PROTECT = 10001,
+        wxID_WRITE_PROTECT = 10002,
+        wxID_READ_PROTECT = 10003,
+    };
+protected:
+    wxPanel* panelFileProtections;
+    wxCheckBox* checkboxReadProtect;
+    wxCheckBox* checkboxWriteProtect;
+    wxCheckBox* checkboxDeleteProtect;
+    wxPanel* panelDialogButtons;
+    wxButton* buttonCancel;
+    wxButton* buttonOk;
 
-    protected:
+protected:
 
-    public:
-        wxCheckBox *GetCheckboxReadProtect() {
-            return checkboxReadProtect;
-        }
-        wxCheckBox *GetCheckboxWriteProtect() {
-            return checkboxWriteProtect;
-        }
-        wxCheckBox *GetCheckboxDeleteProtect() {
-            return checkboxDeleteProtect;
-        }
-        wxPanel *GetPanelFileProtections() {
-            return panelFileProtections;
-        }
-        wxButton *GetButtonCancel() {
-            return buttonCancel;
-        }
-        wxButton *GetButtonOk() {
-            return buttonOk;
-        }
-        wxPanel *GetPanelDialogButtons() {
-            return panelDialogButtons;
-        }
-        Ui_FileProtectionsDialog(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("File Protections"), const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxSize(-1, -1), long style = wxDEFAULT_DIALOG_STYLE);
-        virtual ~Ui_FileProtectionsDialog();
+public:
+    wxCheckBox* GetCheckboxReadProtect() { return checkboxReadProtect; }
+    wxCheckBox* GetCheckboxWriteProtect() { return checkboxWriteProtect; }
+    wxCheckBox* GetCheckboxDeleteProtect() { return checkboxDeleteProtect; }
+    wxPanel* GetPanelFileProtections() { return panelFileProtections; }
+    wxButton* GetButtonCancel() { return buttonCancel; }
+    wxButton* GetButtonOk() { return buttonOk; }
+    wxPanel* GetPanelDialogButtons() { return panelDialogButtons; }
+    Ui_FileProtectionsDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("File Protections"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(-1,-1), long style = wxDEFAULT_DIALOG_STYLE);
+    virtual ~Ui_FileProtectionsDialog();
 };
 
 #endif

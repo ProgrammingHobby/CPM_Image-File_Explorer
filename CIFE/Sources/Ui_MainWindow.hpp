@@ -4,8 +4,8 @@
 // Do not modify this file by hand!
 //////////////////////////////////////////////////////////////////////
 
-#ifndef _CPM_IMAGE_FILE_EXPLORER_CIFE_UI_MAINWINDOW_BASE_CLASSES_H
-#define _CPM_IMAGE_FILE_EXPLORER_CIFE_UI_MAINWINDOW_BASE_CLASSES_H
+#ifndef _CIFE_GUI_DESIGNS_UI_MAINWINDOW_BASE_CLASSES_HPP
+#define _CIFE_GUI_DESIGNS_UI_MAINWINDOW_BASE_CLASSES_HPP
 
 // clang-format off
 #include <wx/settings.h>
@@ -28,151 +28,110 @@
 #include <CifeListView.h>
 #include <wx/statline.h>
 #if wxVERSION_NUMBER >= 2900
-    #include <wx/persist.h>
-    #include <wx/persist/toplevel.h>
-    #include <wx/persist/bookctrl.h>
-    #include <wx/persist/treebook.h>
+#include <wx/persist.h>
+#include <wx/persist/toplevel.h>
+#include <wx/persist/bookctrl.h>
+#include <wx/persist/treebook.h>
 #endif
 
 #ifdef WXC_FROM_DIP
-    #undef WXC_FROM_DIP
+#undef WXC_FROM_DIP
 #endif
 #if wxVERSION_NUMBER >= 3100
-    #define WXC_FROM_DIP(x) wxWindow::FromDIP(x, NULL)
+#define WXC_FROM_DIP(x) wxWindow::FromDIP(x, NULL)
 #else
-    #define WXC_FROM_DIP(x) x
+#define WXC_FROM_DIP(x) x
 #endif
 
 // clang-format on
 
-class Ui_MainWindow : public wxFrame {
-    public:
-        enum {
-            wxID_BUTTON_SAVE_MESSAGES = 10001,
-            wxID_BUTTON_CLEAR_MESSAGES = 10002,
-            wxID_IMAGE_CONTENTS = 10003,
-            wxID_BUTTON_IMAGE_FILE = 10004,
-            wxID_IMAGE_TYPE = 10005,
-            wxID_COPY_SETTINGS = 10006,
-            wxID_CHECK_IMAGE = 10007,
-            wxID_CREATE_NEW = 10008,
-            wxID_PROTECTIONS = 10009,
-            wxID_ATTRIBUTES = 10010,
-        };
-    protected:
-        wxMenuBar *menuMainWindow;
-        wxMenu *menuFile;
-        wxMenuItem *menuItemClose;
-        wxMenu *menuEdit;
-        wxMenuItem *menuItemCut;
-        wxMenuItem *menuItemCopy;
-        wxMenuItem *menuItemPaste;
-        wxMenuItem *menuItemSelectAll;
-        wxMenuItem *menuItemSeparator2;
-        wxMenuItem *menuItemRename;
-        wxMenuItem *menuItemDelete;
-        wxMenuItem *menuItemSeparator3;
-        wxMenuItem *menuItemAttributes;
-        wxMenuItem *menuItemProtections;
-        wxMenuItem *menuItemSeparator4;
-        wxMenuItem *menuItemCreateNew;
-        wxMenu *menuView;
-        wxMenuItem *menuItemRefresh;
-        wxMenu *menuTools;
-        wxMenuItem *menuItemCheckImage;
-        wxMenu *menuOptions;
-        wxMenuItem *menuItemCopySettings;
-        wxMenu *menuHelp;
-        wxMenuItem *menuItemAbout;
-        wxStatusBar *statusMainWindow;
-        wxPanel *panelImageFile;
-        wxStaticText *textImageType;
-        wxComboBox *comboboxImageType;
-        wxStaticText *textDiskdefsCount;
-        wxStaticText *textImageFile;
-        wxTextCtrl *editImageFile;
-        wxButton *buttonImageFile;
-        wxPanel *panelImageViews;
-        wxSplitterWindow *splitterImageViews;
-        wxPanel *splitterPageImageContents;
-        CifeListView *listImageContents;
-        wxStaticLine *lineImageContents;
-        wxTextCtrl *textContentsInfo;
-        wxPanel *splitterPageMessages;
-        wxButton *buttonClearMessages;
-        wxButton *buttonSaveMessages;
-        wxStaticLine *lineTextMessages;
-        wxPanel *panelTextMessages;
-        wxTextCtrl *textMessages;
+class Ui_MainWindow : public wxFrame
+{
+public:
+    enum {
+        wxID_BUTTON_CLEAR_MESSAGES = 10001,
+        wxID_BUTTON_IMAGE_FILE = 10002,
+        wxID_IMAGE_TYPE = 10003,
+        wxID_COPY_SETTINGS = 10004,
+        wxID_CHECK_IMAGE = 10005,
+        wxID_CREATE_NEW = 10006,
+        wxID_BUTTON_SAVE_MESSAGES = 10007,
+        wxID_IMAGE_CONTENTS = 10008,
+        wxID_PROTECTIONS = 10009,
+        wxID_ATTRIBUTES = 10010,
+    };
+protected:
+    wxMenuBar* menuMainWindow;
+    wxMenu* menuFile;
+    wxMenuItem* menuItemClose;
+    wxMenu* menuEdit;
+    wxMenuItem* menuItemCut;
+    wxMenuItem* menuItemCopy;
+    wxMenuItem* menuItemPaste;
+    wxMenuItem* menuItemSelectAll;
+    wxMenuItem* menuItemSeparator2;
+    wxMenuItem* menuItemRename;
+    wxMenuItem* menuItemDelete;
+    wxMenuItem* menuItemSeparator3;
+    wxMenuItem* menuItemAttributes;
+    wxMenuItem* menuItemProtections;
+    wxMenuItem* menuItemSeparator4;
+    wxMenuItem* menuItemCreateNew;
+    wxMenu* menuView;
+    wxMenuItem* menuItemRefresh;
+    wxMenu* menuTools;
+    wxMenuItem* menuItemCheckImage;
+    wxMenu* menuOptions;
+    wxMenuItem* menuItemCopySettings;
+    wxMenu* menuHelp;
+    wxMenuItem* menuItemAbout;
+    wxStatusBar* statusMainWindow;
+    wxPanel* panelImageFile;
+    wxStaticText* textImageType;
+    wxComboBox* comboboxImageType;
+    wxStaticText* textDiskdefsCount;
+    wxStaticText* textImageFile;
+    wxTextCtrl* editImageFile;
+    wxButton* buttonImageFile;
+    wxPanel* panelImageViews;
+    wxSplitterWindow* splitterImageViews;
+    wxPanel* splitterPageImageContents;
+    CifeListView* listImageContents;
+    wxStaticLine* lineImageContents;
+    wxTextCtrl* textContentsInfo;
+    wxPanel* splitterPageMessages;
+    wxButton* buttonClearMessages;
+    wxButton* buttonSaveMessages;
+    wxStaticLine* lineTextMessages;
+    wxPanel* panelTextMessages;
+    wxTextCtrl* textMessages;
 
-    protected:
+protected:
 
-    public:
-        wxMenuBar *GetMenuMainWindow() {
-            return menuMainWindow;
-        }
-        wxStatusBar *GetStatusMainWindow() {
-            return statusMainWindow;
-        }
-        wxStaticText *GetTextImageType() {
-            return textImageType;
-        }
-        wxComboBox *GetComboboxImageType() {
-            return comboboxImageType;
-        }
-        wxStaticText *GetTextDiskdefsCount() {
-            return textDiskdefsCount;
-        }
-        wxStaticText *GetTextImageFile() {
-            return textImageFile;
-        }
-        wxTextCtrl *GetEditImageFile() {
-            return editImageFile;
-        }
-        wxButton *GetButtonImageFile() {
-            return buttonImageFile;
-        }
-        wxPanel *GetPanelImageFile() {
-            return panelImageFile;
-        }
-        CifeListView *GetListImageContents() {
-            return listImageContents;
-        }
-        wxStaticLine *GetLineImageContents() {
-            return lineImageContents;
-        }
-        wxTextCtrl *GetTextContentsInfo() {
-            return textContentsInfo;
-        }
-        wxPanel *GetSplitterPageImageContents() {
-            return splitterPageImageContents;
-        }
-        wxButton *GetButtonClearMessages() {
-            return buttonClearMessages;
-        }
-        wxButton *GetButtonSaveMessages() {
-            return buttonSaveMessages;
-        }
-        wxStaticLine *GetLineTextMessages() {
-            return lineTextMessages;
-        }
-        wxTextCtrl *GetTextMessages() {
-            return textMessages;
-        }
-        wxPanel *GetPanelTextMessages() {
-            return panelTextMessages;
-        }
-        wxPanel *GetSplitterPageMessages() {
-            return splitterPageMessages;
-        }
-        wxSplitterWindow *GetSplitterImageViews() {
-            return splitterImageViews;
-        }
-        wxPanel *GetPanelImageViews() {
-            return panelImageViews;
-        }
-        Ui_MainWindow(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("CP/M Image File Explorer"), const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxSize(640, 480), long style = wxDEFAULT_FRAME_STYLE);
-        virtual ~Ui_MainWindow();
+public:
+    wxMenuBar* GetMenuMainWindow() { return menuMainWindow; }
+    wxStatusBar* GetStatusMainWindow() { return statusMainWindow; }
+    wxStaticText* GetTextImageType() { return textImageType; }
+    wxComboBox* GetComboboxImageType() { return comboboxImageType; }
+    wxStaticText* GetTextDiskdefsCount() { return textDiskdefsCount; }
+    wxStaticText* GetTextImageFile() { return textImageFile; }
+    wxTextCtrl* GetEditImageFile() { return editImageFile; }
+    wxButton* GetButtonImageFile() { return buttonImageFile; }
+    wxPanel* GetPanelImageFile() { return panelImageFile; }
+    CifeListView* GetListImageContents() { return listImageContents; }
+    wxStaticLine* GetLineImageContents() { return lineImageContents; }
+    wxTextCtrl* GetTextContentsInfo() { return textContentsInfo; }
+    wxPanel* GetSplitterPageImageContents() { return splitterPageImageContents; }
+    wxButton* GetButtonClearMessages() { return buttonClearMessages; }
+    wxButton* GetButtonSaveMessages() { return buttonSaveMessages; }
+    wxStaticLine* GetLineTextMessages() { return lineTextMessages; }
+    wxTextCtrl* GetTextMessages() { return textMessages; }
+    wxPanel* GetPanelTextMessages() { return panelTextMessages; }
+    wxPanel* GetSplitterPageMessages() { return splitterPageMessages; }
+    wxSplitterWindow* GetSplitterImageViews() { return splitterImageViews; }
+    wxPanel* GetPanelImageViews() { return panelImageViews; }
+    Ui_MainWindow(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("CP/M Image File Explorer"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(640,480), long style = wxDEFAULT_FRAME_STYLE);
+    virtual ~Ui_MainWindow();
 };
 
 #endif
