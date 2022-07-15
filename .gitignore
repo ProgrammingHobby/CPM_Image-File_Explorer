@@ -1,11 +1,11 @@
 .directory
 .metadata
-*gtk-build*
-*gtk-debug*
-*gtk-release*
-*msw-build*
-*msw-debug*
-*msw-release*
+*GTK-Build*
+*GTK-Debug*
+*GTK-Release*
+*MSW-Build*
+*MSW-Debug*
+*MSW-Release*
 *makefile*
 Test_Disk-Images
 TODO.txt
