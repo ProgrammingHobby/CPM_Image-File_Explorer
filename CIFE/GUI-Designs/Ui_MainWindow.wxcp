@@ -12,7 +12,7 @@
 		"m_useUnderscoreMacro":	true,
 		"m_addHandlers":	true,
 		"m_templateClasses":	[{
-				"m_includeFile":	"#include <CifeListView.h>",
+				"m_includeFile":	"#include \"CifeListView.h\"",
 				"m_allocationLine":	"$name = new CifeListView($parent, $id, wxDefaultPosition, wxDLG_UNIT(splitterPageImageContents, wxSize(-1, -1)), wxLC_VRULES | wxLC_REPORT | wxBORDER_NONE)",
 				"m_className":	"CifeListView",
 				"m_xrcPreviewClass":	"",
