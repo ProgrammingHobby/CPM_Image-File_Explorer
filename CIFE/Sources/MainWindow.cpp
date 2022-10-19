@@ -197,7 +197,7 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
     wxVersionInfo versionInfo("", wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER);
     aboutInfo.SetName("CP/M Image-File Explorer");
     aboutInfo.SetVersion(VERSION_STRING);
-    aboutInfo.SetDescription(_("Written in C/C++ with CodeLite-IDE\n"
+    aboutInfo.SetDescription(_("Written in C/C++ with Eclipse CDT.\n"
                                "Using wxWidgets GUI - Framework Version ") + versionInfo.GetVersionString() +
                              wxString::Format(" - %dbit", (sizeof(nullptr) * 8)) +
                              _("\n\nCP/M Images Functionality based on CP/M-Tools\n"

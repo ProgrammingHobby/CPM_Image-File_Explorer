@@ -8,6 +8,7 @@ Der CP/M Image File Explorer basiert auf dem Source-Code der CP/M-Tools von Mich
 
 http://www.moria.de/~michael/cpmtools
 
-Entwickelt wird der CP/M Image File Explorer in C/C++ mit den wxWidgets Version 3.1.5 als GUI-Framework. Als Entwicklungsumgebung dient die CodeLite-IDE von Eran Ifrah.
+Entwickelt wird der CP/M Image File Explorer in C/C++ mit den wxWidgets GUI-Framework.
+Als Entwicklungsumgebung dient Eclipse CDT.
 
 https://codelite.org
