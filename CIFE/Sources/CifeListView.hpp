@@ -28,7 +28,9 @@ class CifeListView : public wxListView {
         void enableSizing(bool enable = false);
 
     public:     // Constructor & Destructor
-        CifeListView(wxWindow *parent, wxWindowID id = wxID_ANY, const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize, long style = wxTAB_TRAVERSAL);
+        CifeListView(wxWindow *parent, wxWindowID id = wxID_ANY,
+                     const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+                     long style = wxTAB_TRAVERSAL);
         virtual ~CifeListView();
 
     protected:  // Event Methods

@@ -123,7 +123,8 @@ void Settings::writeBoolean(wxString section, wxString key, bool data) {
         keyNode->AddAttribute("bool", wxString::Format(wxT("%s"), ((data) ? "true" : "false")));
     }
     else {
-        wxXmlAttribute *attr = new wxXmlAttribute("bool", wxString::Format(wxT("%s"), ((data) ? "true" : "false")));
+        wxXmlAttribute *attr = new wxXmlAttribute("bool", wxString::Format(wxT("%s"),
+                ((data) ? "true" : "false")));
         keyNode->SetAttributes(attr);
     }
 
@@ -141,7 +142,8 @@ int Settings::readInteger(wxString section, wxString key, int defaultData) {
     }
 
     if (keyNode) {
-        wxString nodeData = keyNode->GetAttribute("int", wxString::Format(wxT("%d"), defaultData));
+        wxString nodeData = keyNode->GetAttribute("int", wxString::Format(wxT("%d"),
+                            defaultData));
 
         if (!nodeData.IsEmpty() && nodeData.IsNumber()) {
             data = wxAtoi(nodeData);
@@ -162,7 +164,8 @@ wxString Settings::readString(wxString section, wxString key, wxString defaultDa
     }
 
     if (keyNode) {
-        wxString nodeData = keyNode->GetAttribute("data", wxString::Format(wxT("%s"), defaultData));
+        wxString nodeData = keyNode->GetAttribute("data", wxString::Format(wxT("%s"),
+                            defaultData));
 
         if (!nodeData.IsEmpty() && nodeData.IsAscii()) {
             data = nodeData;
@@ -183,7 +186,8 @@ bool Settings::readBoolean(wxString section, wxString key, bool defaultData) {
     }
 
     if (keyNode) {
-        wxString nodeData = keyNode->GetAttribute("bool", wxString::Format(wxT("%s"), ((defaultData) ? "true" : "false")));
+        wxString nodeData = keyNode->GetAttribute("bool", wxString::Format(wxT("%s"),
+                            ((defaultData) ? "true" : "false")));
 
         if (!nodeData.IsEmpty() && !nodeData.IsNumber()) {
             if (nodeData == "true") {

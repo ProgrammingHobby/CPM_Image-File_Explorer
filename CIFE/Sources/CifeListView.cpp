@@ -21,7 +21,8 @@ BEGIN_EVENT_TABLE(CifeListView, wxListView)
     EVT_SIZE(CifeListView::OnSize)
 END_EVENT_TABLE()
 // --------------------------------------------------------------------------------
-CifeListView::CifeListView(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long style) : wxListView(parent, id, pos, size, style) {
+CifeListView::CifeListView(wxWindow *parent, wxWindowID id, const wxPoint &pos,
+                           const wxSize &size, long style) : wxListView(parent, id, pos, size, style) {
     this->SetBackgroundColour(wxColour(wxT("rgb(203,230,162)")));
     sizingEnabled = false;
 }

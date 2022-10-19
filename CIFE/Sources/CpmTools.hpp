@@ -41,7 +41,8 @@ class CpmTools {
         bool getBootTracksEnabled();
         void createNewImage(wxString label, bool useTimeStamps, wxString bootTrackFile);
         void checkImage(bool doRepair);
-        void writeFileToImage(wxString filename, int userNumber, bool isTextFile, bool preserveTimeStamps);
+        void writeFileToImage(wxString filename, int userNumber, bool isTextFile,
+                              bool preserveTimeStamps);
 
     public:     // Constructor & Destructor
         CpmTools(CpmGuiInterface *intf, wxString appPath);
@@ -184,7 +185,8 @@ class CpmTools {
         // --------------------------------------------------------------------------------
         void memcpy7(char *dest, const char *src, int count);
         int splitFilename(const char *fullname, int type, char *name, char *ext, int *user);
-        int isMatching(int user1, const char *name1, const char *ext1, int user2, const char *name2, const char *ext2);
+        int isMatching(int user1, const char *name1, const char *ext1, int user2,
+                       const char *name2, const char *ext2);
         time_t cpm2unix_time(int days, int hour, int min);
         void unix2cpm_time(time_t now, int *days, int *hour, int *min);
         time_t ds2unix_time(const DsEntry_t *entry);

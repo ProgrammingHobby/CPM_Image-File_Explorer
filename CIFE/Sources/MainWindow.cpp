@@ -76,7 +76,8 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     editImageFile->SetFocus();
 
     wxSize fontSize = this->GetFont().GetPixelSize();
-    wxFont listFont = wxFont(fontSize, wxFontFamily::wxFONTFAMILY_TELETYPE, wxFontStyle::wxFONTSTYLE_NORMAL, wxFontWeight::wxFONTWEIGHT_NORMAL);
+    wxFont listFont = wxFont(fontSize, wxFontFamily::wxFONTFAMILY_TELETYPE,
+                             wxFontStyle::wxFONTSTYLE_NORMAL, wxFontWeight::wxFONTWEIGHT_NORMAL);
     listImageContents->SetFont(listFont);
     textContentsInfo->SetFont(listFont);
     textMessages->SetFont(listFont);
@@ -114,38 +115,48 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
 // --------------------------------------------------------------------------------
 void MainWindow::createPopupMenu() {
     popupMenu = new wxMenu();
-    wxMenuItem *popupItemRefresh = new wxMenuItem(popupMenu, wxID_REFRESH, _("Refresh\tF5"), wxT(""), wxITEM_NORMAL);
+    wxMenuItem *popupItemRefresh = new wxMenuItem(popupMenu, wxID_REFRESH, _("Refresh\tF5"),
+            wxT(""), wxITEM_NORMAL);
     popupItemRefresh->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("refresh")));
     popupMenu->Append(popupItemRefresh);
     popupMenu->AppendSeparator();
-    wxMenuItem *popupItemCut = new wxMenuItem(popupMenu, wxID_CUT, _("Cut\tCtrl+X"), wxT(""), wxITEM_NORMAL);
+    wxMenuItem *popupItemCut = new wxMenuItem(popupMenu, wxID_CUT, _("Cut\tCtrl+X"), wxT(""),
+            wxITEM_NORMAL);
     popupItemCut->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("cut")));
     popupMenu->Append(popupItemCut);
-    wxMenuItem *popupItemCopy = new wxMenuItem(popupMenu, wxID_COPY, _("Copy\tCtrl+C"), wxT(""), wxITEM_NORMAL);
+    wxMenuItem *popupItemCopy = new wxMenuItem(popupMenu, wxID_COPY, _("Copy\tCtrl+C"),
+            wxT(""), wxITEM_NORMAL);
     popupItemCopy->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("copy")));
     popupMenu->Append(popupItemCopy);
-    wxMenuItem *popupItemPaste = new wxMenuItem(popupMenu, wxID_PASTE, _("Paste\tCtrl+V"), wxT(""), wxITEM_NORMAL);
+    wxMenuItem *popupItemPaste = new wxMenuItem(popupMenu, wxID_PASTE, _("Paste\tCtrl+V"),
+            wxT(""), wxITEM_NORMAL);
     popupItemPaste->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("paste")));
     popupMenu->Append(popupItemPaste);
-    wxMenuItem *popupItemSelectAll = new wxMenuItem(popupMenu, wxID_SELECTALL, _("Select all\tCtrl+A"), wxT(""), wxITEM_NORMAL);
+    wxMenuItem *popupItemSelectAll = new wxMenuItem(popupMenu, wxID_SELECTALL,
+            _("Select all\tCtrl+A"), wxT(""), wxITEM_NORMAL);
     popupItemSelectAll->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("select_all")));
     popupMenu->Append(popupItemSelectAll);
     popupMenu->AppendSeparator();
-    wxMenuItem *popupItemRename = new wxMenuItem(popupMenu, wxID_EDIT, _("Rename\tF2"), wxT(""), wxITEM_NORMAL);
+    wxMenuItem *popupItemRename = new wxMenuItem(popupMenu, wxID_EDIT, _("Rename\tF2"),
+            wxT(""), wxITEM_NORMAL);
     popupItemRename->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("edit")));
     popupMenu->Append(popupItemRename);
-    wxMenuItem *popupItemDelete = new wxMenuItem(popupMenu, wxID_DELETE, _("Delete\tDel"), wxT(""), wxITEM_NORMAL);
+    wxMenuItem *popupItemDelete = new wxMenuItem(popupMenu, wxID_DELETE, _("Delete\tDel"),
+            wxT(""), wxITEM_NORMAL);
     popupItemDelete->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("delete")));
     popupMenu->Append(popupItemDelete);
     popupMenu->AppendSeparator();
-    wxMenuItem *popupItemAttributes = new wxMenuItem(popupMenu, wxID_ATTRIBUTES, _("Attributes\tF7"), wxT(""), wxITEM_NORMAL);
+    wxMenuItem *popupItemAttributes = new wxMenuItem(popupMenu, wxID_ATTRIBUTES,
+            _("Attributes\tF7"), wxT(""), wxITEM_NORMAL);
     popupItemAttributes->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("attributes")));
     popupMenu->Append(popupItemAttributes);
-    wxMenuItem *popupItemProtections = new wxMenuItem(popupMenu, wxID_PROTECTIONS, _("Protections\tF9"), wxT(""), wxITEM_NORMAL);
+    wxMenuItem *popupItemProtections = new wxMenuItem(popupMenu, wxID_PROTECTIONS,
+            _("Protections\tF9"), wxT(""), wxITEM_NORMAL);
     popupItemProtections->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("permissions")));
     popupMenu->Append(popupItemProtections);
     popupMenu->AppendSeparator();
-    wxMenuItem *popupItemCheckImage = new wxMenuItem(popupMenu, wxID_CHECK_IMAGE, _("Check Image\tF11"), wxT(""), wxITEM_NORMAL);
+    wxMenuItem *popupItemCheckImage = new wxMenuItem(popupMenu, wxID_CHECK_IMAGE,
+            _("Check Image\tF11"), wxT(""), wxITEM_NORMAL);
     popupItemCheckImage->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("check_image")));
     popupMenu->Append(popupItemCheckImage);
 }
@@ -218,7 +229,8 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
     WXUNUSED(event)
-    wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"), wxStandardPaths::Get().GetUserDataDir(),
+    wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"),
+                            wxStandardPaths::Get().GetUserDataDir(),
                             wxEmptyString, _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;*.fdd;*.FDD;*.dsk;*.DSK|"
                                     "all Files (*.*)|*.*"), wxFD_OPEN);
 
@@ -264,7 +276,8 @@ wxArrayString MainWindow::getImageTypes(wxString appPath) {
         }
     }
 
-    textDiskdefsCount->SetLabel(wxString::Format(_("%d Disk definitions found."), diskdefsCount));
+    textDiskdefsCount->SetLabel(wxString::Format(_("%d Disk definitions found."),
+                                diskdefsCount));
     return (imageTypes);
 }
 
@@ -275,7 +288,8 @@ void MainWindow::onButtonClearMessagesClicked(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onButtonSaveMessagesClicked(wxCommandEvent &event) {
-    wxFileDialog fileDialog(this, _("Save CIFE Messages"), wxStandardPaths::Get().GetUserDataDir(),
+    wxFileDialog fileDialog(this, _("Save CIFE Messages"),
+                            wxStandardPaths::Get().GetUserDataDir(),
                             "CIFE.msg", _("Text Files (*.txt,*.log)|*.txt;*.log|all Files (*.*)|*.*"),
                             wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
@@ -400,7 +414,8 @@ void MainWindow::onListItemRightClick(wxListEvent &event) {
         chkIndex = listImageContents->GetNextSelected(chkIndex);
     }
 
-    if (((index == firstIndex) && (nextIndex == lastIndex)) || ((index == lastIndex) && (nextIndex == -1) && (index == (firstIndex + 1)))) {
+    if (((index == firstIndex) && (nextIndex == lastIndex)) || ((index == lastIndex)
+            && (nextIndex == -1) && (index == (firstIndex + 1)))) {
         if (nextIndex == -1) {
             listImageContents->SetItemState(firstIndex, 0, wxLIST_STATE_SELECTED);
         }
@@ -468,7 +483,8 @@ void MainWindow::onCreateNew(wxCommandEvent &event) {
     dialog->setBootTracksUsed(cpmtools->getBootTracksEnabled());
 
     if (dialog->ShowModal() == wxID_OK) {
-        cpmtools->createNewImage(dialog->getFileSystemLabel(), dialog->getUseTimestamps(), dialog->getBootTrackFile());
+        cpmtools->createNewImage(dialog->getFileSystemLabel(), dialog->getUseTimestamps(),
+                                 dialog->getBootTrackFile());
         onViewRefresh(event);
     }
 
@@ -478,9 +494,11 @@ void MainWindow::onCreateNew(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onCheckImage(wxCommandEvent &event) {
 #ifdef _WINDOWS_
-    wxMessageDialog deleteDialog(NULL, "Repair Filesystem Errors ?", "Check CP/M Image", wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+    wxMessageDialog deleteDialog(NULL, "Repair Filesystem Errors ?", "Check CP/M Image",
+                                 wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
 #else
-    wxMessageDialog deleteDialog(NULL, "\nRepair Filesystem Errors ?", "Check CP/M Image", wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+    wxMessageDialog deleteDialog(NULL, "\nRepair Filesystem Errors ?", "Check CP/M Image",
+                                 wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
 #endif
 
     if (deleteDialog.ShowModal() == wxID_YES) {
@@ -511,7 +529,8 @@ void MainWindow::onPasteFile(wxCommandEvent &event) {
             wxFileDataObject data;
             cifeClipboard.GetData(data);
             int defaultUserNumber = cifeSettings->readInteger("CpmOptions", "DefaultUserNumber", 0);
-            wxString textFileEndings = cifeSettings->readString("CpmOptions", "TextfileEndings", "txt pip pas");
+            wxString textFileEndings = cifeSettings->readString("CpmOptions", "TextfileEndings",
+                                       "txt pip pas");
             wxArrayString files = data.GetFilenames();
 
             for (size_t i = 0; i < files.Count(); i++) {

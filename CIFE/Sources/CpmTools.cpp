@@ -92,7 +92,8 @@ void CpmTools::showDirectory() {
                     /*    user: name    */
                     guiintf->printDirEntry(0, row, wxString::Format("%2d: %s", user, (gargv[i] + 2)));
                     /*    bytes    */
-                    guiintf->printDirEntry(1, row, wxString::Format("%5.1ldK", (long)(statbuf.size + buf.f_bsize - 1) / buf.f_bsize * (buf.f_bsize / 1024)));
+                    guiintf->printDirEntry(1, row, wxString::Format("%5.1ldK",
+                                           (long)(statbuf.size + buf.f_bsize - 1) / buf.f_bsize * (buf.f_bsize / 1024)));
                     /*    records    */
                     guiintf->printDirEntry(2, row, wxString::Format("%6.1ld", (long)(statbuf.size / 128)));
                     /*    attributes    */
@@ -120,7 +121,8 @@ void CpmTools::showDirectory() {
                         tmp = localtime(&statbuf.mtime);
 
                         if (tmp) {
-                            guiintf->printDirEntry(5, row, wxString::Format("%02d-%s-%04d %02d:%02d", tmp->tm_mday, month[tmp->tm_mon], tmp->tm_year + 1900, tmp->tm_hour, tmp->tm_min));
+                            guiintf->printDirEntry(5, row, wxString::Format("%02d-%s-%04d %02d:%02d", tmp->tm_mday,
+                                                   month[tmp->tm_mon], tmp->tm_year + 1900, tmp->tm_hour, tmp->tm_min));
                         }
                     }
 
@@ -129,7 +131,8 @@ void CpmTools::showDirectory() {
                         tmp = localtime(&statbuf.ctime);
 
                         if (tmp) {
-                            guiintf->printDirEntry(6, row, wxString::Format("%02d-%s-%04d %02d:%02d", tmp->tm_mday, month[tmp->tm_mon], tmp->tm_year + 1900, tmp->tm_hour, tmp->tm_min));
+                            guiintf->printDirEntry(6, row, wxString::Format("%02d-%s-%04d %02d:%02d", tmp->tm_mday,
+                                                   month[tmp->tm_mon], tmp->tm_year + 1900, tmp->tm_hour, tmp->tm_min));
                         }
                     }
 
@@ -138,7 +141,8 @@ void CpmTools::showDirectory() {
                         tmp = localtime(&statbuf.atime);
 
                         if (tmp) {
-                            guiintf->printDirEntry(7, row, wxString::Format("%02d-%s-%04d %02d:%02d", tmp->tm_mday, month[tmp->tm_mon], tmp->tm_year + 1900, tmp->tm_hour, tmp->tm_min));
+                            guiintf->printDirEntry(7, row, wxString::Format("%02d-%s-%04d %02d:%02d", tmp->tm_mday,
+                                                   month[tmp->tm_mon], tmp->tm_year + 1900, tmp->tm_hour, tmp->tm_min));
                         }
                     }
 
@@ -148,10 +152,11 @@ void CpmTools::showDirectory() {
             }
         }
 
-        guiintf->printDirInfo(wxString::Format(" Total Bytes = %5.1dk\t\t\tTotal Records = %5.1d\t\t\t\tFiles Found = %4.1d\n"
-                                               " Total 1k Blocks = %5.1ld\t\tUsed/Max Dir Entries: %4.1ld/%4.1ld",
-                                               ((totalBytes + 1023) / 1024), totalRecs, l,
-                                               ((buf.f_bused * buf.f_bsize) / 1024), (buf.f_files - buf.f_ffree), buf.f_files));
+        guiintf->printDirInfo(
+            wxString::Format(" Total Bytes = %5.1dk\t\t\tTotal Records = %5.1d\t\t\t\tFiles Found = %4.1d\n"
+                             " Total 1k Blocks = %5.1ld\t\tUsed/Max Dir Entries: %4.1ld/%4.1ld",
+                             ((totalBytes + 1023) / 1024), totalRecs, l,
+                             ((buf.f_bused * buf.f_bsize) / 1024), (buf.f_files - buf.f_ffree), buf.f_files));
     }
     else {
         guiintf->printDirInfo(" No files.");
@@ -171,12 +176,14 @@ void CpmTools::deleteFile(wxArrayString files) {
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
-        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 
     if (cpmReadSuper(imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -185,14 +192,16 @@ void CpmTools::deleteFile(wxArrayString files) {
         cpmglob(fileName.c_str(), &gargc, &gargv);
 
         if (cpmUnlink(gargv[0]) == -1) {
-            guiintf->printMsg(wxString::Format("%s: can not erase %s: %s\n", cmd, gargv[0], err), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("%s: can not erase %s: %s\n", cmd, gargv[0], err),
+                              CpmGuiInterface::msgColRed);
         }
     }
 
     cpmUmount();
 
     if ((err = deviceClose())) {
-        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err),
+                          CpmGuiInterface::msgColRed);
     }
 }
 
@@ -205,12 +214,14 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
-        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 
     if (cpmReadSuper(imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -218,13 +229,15 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     convertFilename(newName.c_str(), nName);
 
     if (cpmRename(gargv[0], nName) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not rename %s in %s:  %s\n", cmd, oldName, newName, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not rename %s in %s:  %s\n", cmd, oldName,
+                                           newName, err), CpmGuiInterface::msgColRed);
     }
 
     cpmUmount();
 
     if ((err = deviceClose())) {
-        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 }
@@ -237,12 +250,14 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
-        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 
     if (cpmReadSuper(imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -250,16 +265,19 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
     CpmInode_t ino;
 
     if (cpmNamei(gargv[0], &ino) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], err),
+                          CpmGuiInterface::msgColRed);
     }
     else if (cpmAttrSet(&ino, attributes) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not set attributes %s: %s\n", cmd, gargv[0], err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not set attributes %s: %s\n", cmd, gargv[0],
+                                           err), CpmGuiInterface::msgColRed);
     }
 
     cpmUmount();
 
     if ((err = deviceClose())) {
-        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err),
+                          CpmGuiInterface::msgColRed);
     }
 }
 
@@ -271,12 +289,14 @@ void CpmTools::setFileProtections(wxString name, int protections) {
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
-        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 
     if (cpmReadSuper(imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -284,21 +304,25 @@ void CpmTools::setFileProtections(wxString name, int protections) {
     CpmInode_t ino;
 
     if (cpmNamei(gargv[0], &ino) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0], err),
+                          CpmGuiInterface::msgColRed);
     }
     else if (cpmProtSet(&ino, protections) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not set protections %s: %s\n", cmd, gargv[0], err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not set protections %s: %s\n", cmd, gargv[0],
+                                           err), CpmGuiInterface::msgColRed);
     }
 
     cpmUmount();
 
     if ((err = deviceClose())) {
-        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err),
+                          CpmGuiInterface::msgColRed);
     }
 }
 
 // --------------------------------------------------------------------------------
-void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootTrackFile) {
+void CpmTools::createNewImage(wxString label, bool useTimeStamps,
+                              wxString bootTrackFile) {
     size_t bootTrackSize;
     char *bootTracks;
     cmd = "cpm.mkfs";
@@ -309,7 +333,8 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
     bootTrackSize = drive.boottrk * drive.secLength * drive.sectrk;
 
     if ((bootTracks = (char *)malloc(bootTrackSize)) == (char *)0) {
-        guiintf->printMsg(wxString::Format("%s: can not allocate boot track buffer: %s\n", cmd, strerror(errno)), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: can not allocate boot track buffer: %s\n", cmd,
+                                           strerror(errno)), CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -320,7 +345,8 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
         size_t filesize, readsize;
 
         if ((fd = fopen(bootTrackFile.c_str(), "rb")) == (FILE *)0) {
-            guiintf->printMsg(wxString::Format("%s: can not open %s: %s\n", cmd, bootImage.c_str(), strerror(errno)), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("%s: can not open %s: %s\n", cmd, bootImage.c_str(),
+                                               strerror(errno)), CpmGuiInterface::msgColRed);
             return;
         }
 
@@ -328,7 +354,8 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
         filesize = ftell(fd);
 
         if (filesize > bootTrackSize) {
-            guiintf->printMsg(wxString::Format("%s: boottrack file is bigger than boottracks size.\n", cmd), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("%s: boottrack file is bigger than boottracks size.\n",
+                                               cmd), CpmGuiInterface::msgColRed);
             return;
         }
 
@@ -336,17 +363,21 @@ void CpmTools::createNewImage(wxString label, bool useTimeStamps, wxString bootT
         readsize = fread(bootTracks, sizeof(char), filesize, fd);
 
         if (readsize < filesize) {
-            guiintf->printMsg(wxString::Format("%s: error reading boottrack file.\n", cmd), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("%s: error reading boottrack file.\n", cmd),
+                              CpmGuiInterface::msgColRed);
             return;
         }
     }
 
-    if (mkfs(imageTypeName.c_str(), label.c_str(), bootTracks, (useTimeStamps ? 1 : 0)) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not make new file system: %s\n", cmd, err), CpmGuiInterface::msgColRed);
+    if (mkfs(imageTypeName.c_str(), label.c_str(), bootTracks,
+             (useTimeStamps ? 1 : 0)) == -1) {
+        guiintf->printMsg(wxString::Format("%s: can not make new file system: %s\n", cmd, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 
-    guiintf->printMsg(wxString::Format("%s: new Image-File '%s' successful created.\n", cmd, image), CpmGuiInterface::msgColBlack);
+    guiintf->printMsg(wxString::Format("%s: new Image-File '%s' successful created.\n", cmd,
+                                       image), CpmGuiInterface::msgColBlack);
 }
 
 // --------------------------------------------------------------------------------
@@ -357,16 +388,19 @@ void CpmTools::checkImage(bool doRepair) {
 
     if ((err = deviceOpen(imageFileName.c_str(), (doRepair ? "r+b" : "rb")))) {
         if ((err = deviceOpen(imageFileName.c_str(), "rb"))) {
-            guiintf->printMsg(wxString::Format("%s: cannot open %s: %s\n", cmd, image.c_str(), err), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("%s: cannot open %s: %s\n", cmd, image.c_str(), err),
+                              CpmGuiInterface::msgColRed);
             return;
         }
         else {
-            guiintf->printMsg(wxString::Format("%s: cannot open %s for writing, no repair possible\n", cmd, image.c_str()), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("%s: cannot open %s for writing, no repair possible\n",
+                                               cmd, image.c_str()), CpmGuiInterface::msgColRed);
         }
     }
 
     if (cpmReadSuper(imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -374,11 +408,13 @@ void CpmTools::checkImage(bool doRepair) {
 
     if (ret & MODIFIED) {
         if (cpmSync() == -1) {
-            guiintf->printMsg(wxString::Format("%s: write error on %s: %s\n", cmd, image.c_str(), strerror(errno)), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("%s: write error on %s: %s\n", cmd, image.c_str(),
+                                               strerror(errno)), CpmGuiInterface::msgColRed);
             ret |= BROKEN;
         }
 
-        guiintf->printMsg(wxString::Format("%s: FILE SYSTEM ON %s MODIFIED", cmd, image.c_str()), CpmGuiInterface::msgColBlue);
+        guiintf->printMsg(wxString::Format("%s: FILE SYSTEM ON %s MODIFIED", cmd, image.c_str()),
+                          CpmGuiInterface::msgColBlue);
 
         if (ret & BROKEN) {
             guiintf->printMsg(wxString::Format(", PLEASE CHECK AGAIN"), CpmGuiInterface::msgColBlue);
@@ -391,20 +427,24 @@ void CpmTools::checkImage(bool doRepair) {
 }
 
 // --------------------------------------------------------------------------------
-void CpmTools::writeFileToImage(wxString filename, int userNumber, bool isTextFile, bool preserveTimeStamps) {
+void CpmTools::writeFileToImage(wxString filename, int userNumber, bool isTextFile,
+                                bool preserveTimeStamps) {
     char **gargv;
     int gargc;
     cmd = "cpm.cp";
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
-    wxString cpmfile = wxString::Format("%d:", userNumber) + filename.substr(filename.find_last_of("/\\") + 1);
+    wxString cpmfile = wxString::Format("%d:",
+                                        userNumber) + filename.substr(filename.find_last_of("/\\") + 1);
 
     if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
-        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, image, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 
     if (cpmReadSuper(imageTypeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot read superblock (%s)\n", cmd, err),
+                          CpmGuiInterface::msgColRed);
         return;
     }
 
@@ -413,7 +453,8 @@ void CpmTools::writeFileToImage(wxString filename, int userNumber, bool isTextFi
     cpmUmount();
 
     if ((err = deviceClose())) {
-        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("%s: cannot close %s (%s)\n", cmd, image, err),
+                          CpmGuiInterface::msgColRed);
     }
 }
 
@@ -444,14 +485,16 @@ const char *CpmTools::deviceClose() {
 
 // --------------------------------------------------------------------------------
 const char *CpmTools::deviceReadSector(int track, int sector, char *buffer) {
-    if (fseek(device.file, (((sector + (track * device.sectrk)) * device.secLength) + device.offset), SEEK_SET) != 0) {
+    if (fseek(device.file, (((sector + (track * device.sectrk)) * device.secLength) +
+                            device.offset), SEEK_SET) != 0) {
         return (strerror(errno));
     }
 
     int readCount = fread(buffer, sizeof(char), device.secLength, device.file);
 
     if (readCount != device.secLength) {
-        guiintf->printMsg(wxString::Format("Read Sector: %d bytes lost.\n", (device.secLength - readCount)), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("Read Sector: %d bytes lost.\n",
+                                           (device.secLength - readCount)), CpmGuiInterface::msgColRed);
         memset((buffer + readCount), 0, device.secLength - readCount);
         return (strerror(errno));
     }
@@ -461,14 +504,16 @@ const char *CpmTools::deviceReadSector(int track, int sector, char *buffer) {
 
 // --------------------------------------------------------------------------------
 const char *CpmTools::deviceWriteSector(int track, int sector, const char *buffer) {
-    if (fseek(device.file, (((sector + (track * device.sectrk)) * device.secLength) + device.offset), SEEK_SET) != 0) {
+    if (fseek(device.file, (((sector + (track * device.sectrk)) * device.secLength) +
+                            device.offset), SEEK_SET) != 0) {
         return (strerror(errno));
     }
 
     int writeCount = fwrite(buffer, sizeof(char), device.secLength, device.file);
 
     if (writeCount != device.secLength) {
-        guiintf->printMsg(wxString::Format("Write Sector: %d bytes lost.\n", (device.secLength - writeCount)), CpmGuiInterface::msgColRed);
+        guiintf->printMsg(wxString::Format("Write Sector: %d bytes lost.\n",
+                                           (device.secLength - writeCount)), CpmGuiInterface::msgColRed);
         return (strerror(errno));
     }
 
@@ -493,7 +538,8 @@ void CpmTools::memcpy7(char *dest, const char *src, int count) {
 // --------------------------------------------------------------------------------
 //  -- split file name into name and extension
 // --------------------------------------------------------------------------------
-int CpmTools::splitFilename(const char *fullname, int type, char *name, char *ext, int *user) {
+int CpmTools::splitFilename(const char *fullname, int type, char *name, char *ext,
+                            int *user) {
     int i, j;
     memset(name, ' ', 8);
     memset(ext, ' ', 3);
@@ -546,7 +592,8 @@ int CpmTools::splitFilename(const char *fullname, int type, char *name, char *ex
 // --------------------------------------------------------------------------------
 //  -- do two file names match?
 // --------------------------------------------------------------------------------
-int CpmTools::isMatching(int user1, const char *name1, const char *ext1, int user2, const char *name2, const char *ext2) {
+int CpmTools::isMatching(int user1, const char *name1, const char *ext1, int user2,
+                         const char *name2, const char *ext2) {
     int i;
 
     if (user1 != user2) {
@@ -718,7 +765,8 @@ void CpmTools::alvInit() {
     }
 
     for (i = 0; i < drive.maxdir; ++i) { /* mark file blocks as used */
-        if (drive.dir[i].status >= 0 && drive.dir[i].status <= (drive.type & CPMFS_HI_USER ? 31 : 15)) {
+        if (drive.dir[i].status >= 0
+                && drive.dir[i].status <= (drive.type & CPMFS_HI_USER ? 31 : 15)) {
             for (j = 0; j < 16; ++j) {
                 block = (unsigned char)drive.dir[i].pointers[j];
 
@@ -778,12 +826,15 @@ int CpmTools::readBlock(int blockno, char *buffer, int start, int end) {
         end = drive.blksiz / drive.secLength - 1;
     }
 
-    sect = (blockno * (drive.blksiz / drive.secLength) + drive.sectrk * drive.boottrk) % drive.sectrk;
-    track = (blockno * (drive.blksiz / drive.secLength) + drive.sectrk * drive.boottrk) / drive.sectrk;
+    sect = (blockno * (drive.blksiz / drive.secLength) + drive.sectrk * drive.boottrk) %
+           drive.sectrk;
+    track = (blockno * (drive.blksiz / drive.secLength) + drive.sectrk * drive.boottrk) /
+            drive.sectrk;
 
     for (counter = 0; counter <= end; ++counter) {
         if (counter >= start) {
-            if ((err = deviceReadSector(track, drive.skewtab[sect], buffer + (drive.secLength * counter)))) {
+            if ((err = deviceReadSector(track, drive.skewtab[sect],
+                                        buffer + (drive.secLength * counter)))) {
                 return (-1);
             }
         }
@@ -813,7 +864,9 @@ int CpmTools::writeBlock(int blockno, const char *buffer, int start, int end) {
     track = (blockno * (drive.blksiz / drive.secLength)) / drive.sectrk + drive.boottrk;
 
     for (counter = 0; counter <= end; ++counter) {
-        if (counter >= start && (err = deviceWriteSector(track, drive.skewtab[sect], buffer + (drive.secLength * counter)))) {
+        if (counter >= start
+                && (err = deviceWriteSector(track, drive.skewtab[sect],
+                                            buffer + (drive.secLength * counter)))) {
             return (-1);
         }
 
@@ -831,13 +884,17 @@ int CpmTools::writeBlock(int blockno, const char *buffer, int start, int end) {
 // --------------------------------------------------------------------------------
 //  -- find first/next extent for a file
 // --------------------------------------------------------------------------------
-int CpmTools::findFileExtent(int user, const char *name, const char *ext, int start, int extno) {
+int CpmTools::findFileExtent(int user, const char *name, const char *ext, int start,
+                             int extno) {
     err = "file already exists";
 
     for (; start < drive.maxdir; ++start) {
         if (((unsigned char)drive.dir[start].status) <= (drive.type & CPMFS_HI_USER ? 31 : 15)
-                && (extno == -1 || (EXTENT(drive.dir[start].extnol, drive.dir[start].extnoh) / drive.extents) == (extno / drive.extents))
-                && isMatching(user, name, ext, drive.dir[start].status, drive.dir[start].name, drive.dir[start].ext)) {
+                && (extno == -1
+                    || (EXTENT(drive.dir[start].extnol,
+                               drive.dir[start].extnoh) / drive.extents) == (extno / drive.extents))
+                && isMatching(user, name, ext, drive.dir[start].status, drive.dir[start].name,
+                              drive.dir[start].ext)) {
             return (start);
         }
     }
@@ -874,7 +931,8 @@ void CpmTools::updateTimeStamps(const CpmInode_t *ino, int extent) {
     unix2cpm_time(drive.cnotatime ? ino->ctime : ino->atime, &ca_days, &ca_hour, &ca_min);
     unix2cpm_time(ino->mtime, &u_days, &u_hour, &u_min);
 
-    if ((drive.type & CPMFS_CPM3_DATES) && (date = drive.dir + (extent | 3))->status == 0x21) {
+    if ((drive.type & CPMFS_CPM3_DATES)
+            && (date = drive.dir + (extent | 3))->status == 0x21) {
         drive.dirtyDirectory = 1;
 
         switch (extent & 3) {
@@ -949,7 +1007,8 @@ int CpmTools::readTimeStamps(CpmInode_t *i, int lowestExt) {
     int ca_days = 0, ca_hour = 0, ca_min = 0;
     int protectMode = 0;
 
-    if ((drive.type & CPMFS_CPM3_DATES) && (date = drive.dir + (lowestExt | 3))->status == 0x21) {
+    if ((drive.type & CPMFS_CPM3_DATES)
+            && (date = drive.dir + (lowestExt | 3))->status == 0x21) {
         switch (lowestExt & 3) {
             case 0: { /* first entry of the four */
                     ca_days = ((unsigned char)date->name[0]) + (((unsigned char)date->name[1]) << 8);
@@ -1131,7 +1190,8 @@ void CpmTools::cpmglob(const char *argv, int *gargc, char ***gargv) {
     for (j = 0, found = 0; j < entries; ++j) {
         if (match(dirent[j].name, argv)) {
             if (*gargc == gargcap) {
-                *gargv = (char **)realloc(*gargv, sizeof(char *) * (gargcap ? (gargcap *= 2) : (gargcap = 16)));
+                *gargv = (char **)realloc(*gargv,
+                                          sizeof(char *) * (gargcap ? (gargcap *= 2) : (gargcap = 16)));
             }
 
             (*gargv)[*gargc] = strcpy((char *)malloc(strlen(dirent[j].name) + 1), dirent[j].name);
@@ -1177,7 +1237,8 @@ int CpmTools::diskdefReadSuper(const char *format) {
             strcpy(s, "\n");
         }
 
-        for (argc = 0; argc < 1 && (argv[argc] = strtok(argc ? (char *)0 : line, " \t\n")); ++argc);
+        for (argc = 0; argc < 1
+                && (argv[argc] = strtok(argc ? (char *)0 : line, " \t\n")); ++argc);
 
         if ((argv[argc] = strtok((char *)0, "\n")) != (char *)0) {
             ++argc;
@@ -1186,7 +1247,8 @@ int CpmTools::diskdefReadSuper(const char *format) {
         if (insideDef) {
             if (argc == 1 && strcmp(argv[0], "end") == 0) {
                 insideDef = 0;
-                drive.size = (drive.secLength * drive.sectrk * (drive.tracks - drive.boottrk)) / drive.blksiz;
+                drive.size = (drive.secLength * drive.sectrk * (drive.tracks - drive.boottrk)) /
+                             drive.blksiz;
 
                 if (drive.extents == 0) {
                     drive.extents = ((drive.size >= 256 ? 8 : 16) * drive.blksiz) / 16384;
@@ -1214,7 +1276,8 @@ int CpmTools::diskdefReadSuper(const char *format) {
                     drive.blksiz = strtol(argv[1], (char **)0, 0);
 
                     if (drive.blksiz <= 0) {
-                        guiintf->printMsg(wxString::Format("%s: invalid blocksize `%s' in line %d\n", cmd, argv[1], ln));
+                        guiintf->printMsg(wxString::Format("%s: invalid blocksize `%s' in line %d\n", cmd,
+                                                           argv[1], ln));
                         return (1);
                     }
                 }
@@ -1240,7 +1303,8 @@ int CpmTools::diskdefReadSuper(const char *format) {
                             }
 
                             if (end == s) {
-                                guiintf->printMsg(wxString::Format("%s: invalid skewtab `%s' at `%s' in line %d\n", cmd, argv[1], s, ln));
+                                guiintf->printMsg(wxString::Format("%s: invalid skewtab `%s' at `%s' in line %d\n", cmd,
+                                                                   argv[1], s, ln));
                                 return (1);
                             }
 
@@ -1269,12 +1333,14 @@ int CpmTools::diskdefReadSuper(const char *format) {
                     val = strtol(argv[1], &endptr, 10);
 
                     if ((errno == ERANGE && val == LONG_MAX) || (errno != 0 && val <= 0)) {
-                        guiintf->printMsg(wxString::Format("%s: invalid offset value `%s' (%s) in line %d\n", cmd, argv[1], strerror(errno), ln));
+                        guiintf->printMsg(wxString::Format("%s: invalid offset value `%s' (%s) in line %d\n", cmd,
+                                                           argv[1], strerror(errno), ln));
                         return (1);
                     }
 
                     if (endptr == argv[1]) {
-                        guiintf->printMsg(wxString::Format("%s: offset value `%s' is not a number in line %d\n", cmd, argv[1], ln));
+                        guiintf->printMsg(wxString::Format("%s: offset value `%s' is not a number in line %d\n",
+                                                           cmd, argv[1], ln));
                         return (1);
                     }
 
@@ -1291,7 +1357,9 @@ int CpmTools::diskdefReadSuper(const char *format) {
 
                             case 'T':
                                 if (drive.sectrk < 0 || drive.tracks < 0 || drive.secLength < 0) {
-                                    guiintf->printMsg(wxString::Format("%s: offset must be specified after sectrk, tracks and secLength in line %d\n", cmd, ln));
+                                    guiintf->printMsg(
+                                        wxString::Format("%s: offset must be specified after sectrk, tracks and secLength in line %d\n",
+                                                         cmd, ln));
                                     return (1);
                                 }
 
@@ -1300,7 +1368,9 @@ int CpmTools::diskdefReadSuper(const char *format) {
 
                             case 'S':
                                 if (drive.sectrk < 0 || drive.tracks < 0 || drive.secLength < 0) {
-                                    guiintf->printMsg(wxString::Format("%s: offset must be specified after sectrk, tracks and secLength in line %d\n", cmd, ln));
+                                    guiintf->printMsg(
+                                        wxString::Format("%s: offset must be specified after sectrk, tracks and secLength in line %d\n",
+                                                         cmd, ln));
                                     return (1);
                                 }
 
@@ -1308,13 +1378,15 @@ int CpmTools::diskdefReadSuper(const char *format) {
                                 break;
 
                             default:
-                                guiintf->printMsg(wxString::Format("%s: unknown unit specifier `%c' in line %d\n", cmd, *endptr, ln));
+                                guiintf->printMsg(wxString::Format("%s: unknown unit specifier `%c' in line %d\n", cmd,
+                                                                   *endptr, ln));
                                 return (1);
                         }
                     }
 
                     if (val * multiplier > INT_MAX) {
-                        guiintf->printMsg(wxString::Format("%s: effective offset is out of range in line %d\n", cmd, ln));
+                        guiintf->printMsg(wxString::Format("%s: effective offset is out of range in line %d\n",
+                                                           cmd, ln));
                         return (1);
                     }
 
@@ -1340,13 +1412,15 @@ int CpmTools::diskdefReadSuper(const char *format) {
                         drive.type |= CPMFS_ZSYS;
                     }
                     else {
-                        guiintf->printMsg(wxString::Format("%s: invalid OS type `%s' in line %d\n", cmd, argv[1], ln));
+                        guiintf->printMsg(wxString::Format("%s: invalid OS type `%s' in line %d\n", cmd, argv[1],
+                                                           ln));
                         return (1);
                     }
                 }
             }
             else if (argc > 0 && argv[0][0] != '#' && argv[0][0] != ';') {
-                guiintf->printMsg(wxString::Format("%s: invalid keyword `%s' in line %d\n", cmd, argv[0], ln));
+                guiintf->printMsg(wxString::Format("%s: invalid keyword `%s' in line %d\n", cmd, argv[0],
+                                                   ln));
                 return (1);
             }
         }
@@ -1375,27 +1449,32 @@ int CpmTools::diskdefReadSuper(const char *format) {
     }
 
     if (drive.boottrk < 0) {
-        guiintf->printMsg(wxString::Format("%s: boottrk parameter invalid or missing from diskdef\n", cmd));
+        guiintf->printMsg(
+            wxString::Format("%s: boottrk parameter invalid or missing from diskdef\n", cmd));
         return (1);
     }
 
     if (drive.secLength < 0) {
-        guiintf->printMsg(wxString::Format("%s: secLength parameter invalid or missing from diskdef\n", cmd));
+        guiintf->printMsg(
+            wxString::Format("%s: secLength parameter invalid or missing from diskdef\n", cmd));
         return (1);
     }
 
     if (drive.sectrk < 0) {
-        guiintf->printMsg(wxString::Format("%s: sectrk parameter invalid or missing from diskdef\n", cmd));
+        guiintf->printMsg(
+            wxString::Format("%s: sectrk parameter invalid or missing from diskdef\n", cmd));
         return (1);
     }
 
     if (drive.tracks < 0) {
-        guiintf->printMsg(wxString::Format("%s: tracks parameter invalid or missing from diskdef\n", cmd));
+        guiintf->printMsg(
+            wxString::Format("%s: tracks parameter invalid or missing from diskdef\n", cmd));
         return (1);
     }
 
     if (drive.blksiz < 0) {
-        guiintf->printMsg(wxString::Format("%s: blocksize parameter invalid or missing from diskdef\n", cmd));
+        guiintf->printMsg(
+            wxString::Format("%s: blocksize parameter invalid or missing from diskdef\n", cmd));
         return (1);
     }
 
@@ -1410,11 +1489,13 @@ int CpmTools::amsReadSuper(const char *format) {
     deviceSetGeometry(512, 9, 40, 0);
 
     if ((err = deviceReadSector(0, 0, (char *)boot_sector))) {
-        guiintf->printMsg(wxString::Format("%s: Failed to read Amstrad superblock (%s)\n", cmd, err));
+        guiintf->printMsg(wxString::Format("%s: Failed to read Amstrad superblock (%s)\n", cmd,
+                                           err));
         return (1);
     }
 
-    boot_spec = (boot_sector[0] == 0 || boot_sector[0] == 3) ? boot_sector : (unsigned char *)0;
+    boot_spec = (boot_sector[0] == 0
+                 || boot_sector[0] == 3) ? boot_sector : (unsigned char *)0;
 
     /* Check for JCE's extension to allow Amstrad and MSDOS superblocks
      * in the same sector (for the PCW16)
@@ -1459,7 +1540,8 @@ int CpmTools::amsReadSuper(const char *format) {
     drive.skewtab = (int *)0;
     drive.boottrk = boot_spec[5];
     drive.offset = 0;
-    drive.size = (drive.secLength * drive.sectrk * (drive.tracks - drive.boottrk)) / drive.blksiz;
+    drive.size = (drive.secLength * drive.sectrk * (drive.tracks - drive.boottrk)) /
+                 drive.blksiz;
     drive.extents = ((drive.size >= 256 ? 8 : 16) * drive.blksiz) / 16384;
     return (0);
 }
@@ -1471,7 +1553,8 @@ int CpmTools::cpmCheckDs() {
     int dsoffset, dsblks, dsrecs, off, i;
     unsigned char *buf;
 
-    if (!isMatching(0, "!!!TIME&", "DAT", drive.dir->status, drive.dir->name, drive.dir->ext)) {
+    if (!isMatching(0, "!!!TIME&", "DAT", drive.dir->status, drive.dir->name,
+                    drive.dir->ext)) {
         return (-1);
     }
 
@@ -1564,7 +1647,8 @@ int CpmTools::cpmReadSuper(const char *format) {
 
     /* initialise allocation vector bitmap */
     {
-        drive.alvSize = ((drive.secLength * drive.sectrk * (drive.tracks - drive.boottrk)) / drive.blksiz + INTBITS - 1) / INTBITS;
+        drive.alvSize = ((drive.secLength * drive.sectrk * (drive.tracks - drive.boottrk)) /
+                         drive.blksiz + INTBITS - 1) / INTBITS;
 
         if ((drive.alv = (int *)malloc(drive.alvSize * sizeof(int))) == (int *)0) {
             err = strerror(errno);
@@ -1573,7 +1657,8 @@ int CpmTools::cpmReadSuper(const char *format) {
     }
 
     /* allocate directory buffer */
-    if ((drive.dir = (PhysDirectoryEntry_t *) malloc(((drive.maxdir * 32 + drive.blksiz - 1) / drive.blksiz) * drive.blksiz)) == (PhysDirectoryEntry_t *)0) {
+    if ((drive.dir = (PhysDirectoryEntry_t *) malloc(((drive.maxdir * 32 + drive.blksiz - 1) /
+                     drive.blksiz) * drive.blksiz)) == (PhysDirectoryEntry_t *)0) {
         err = strerror(errno);
         return (-1);
     }
@@ -1603,7 +1688,8 @@ int CpmTools::cpmReadSuper(const char *format) {
         {
             int passwords = 0;
 
-            for (i = 0; i < drive.maxdir; ++i) if (drive.dir[i].status >= 16 && drive.dir[i].status <= 31) {
+            for (i = 0; i < drive.maxdir; ++i) if (drive.dir[i].status >= 16
+                                                       && drive.dir[i].status <= 31) {
                     ++passwords;
                 }
 
@@ -1613,7 +1699,8 @@ int CpmTools::cpmReadSuper(const char *format) {
                     return (-1);
                 }
 
-                for (i = 0, passwords = 0; i < drive.maxdir; ++i) if (drive.dir[i].status >= 16 && drive.dir[i].status <= 31) {
+                for (i = 0, passwords = 0; i < drive.maxdir; ++i) if (drive.dir[i].status >= 16
+                            && drive.dir[i].status <= 31) {
                         int j, pb;
                         char *p = drive.passwd + (passwords++*PASSWD_RECLEN);
                         p[0] = '0' + (drive.dir[i].status - 16) / 10;
@@ -1865,7 +1952,8 @@ int CpmTools::cpmNamei(const char *filename, CpmInode_t *i) {
                 }
             }
         else for (block = 7; block >= 0; --block) {
-                if (drive.dir[highestExt].pointers[2 * block] || drive.dir[highestExt].pointers[2 * block + 1]) {
+                if (drive.dir[highestExt].pointers[2 * block]
+                        || drive.dir[highestExt].pointers[2 * block + 1]) {
                     break;
                 }
             }
@@ -2129,13 +2217,17 @@ int CpmTools::cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent) {
                 return (1);
             }
         }
-        else if (dir->pos >= RESERVED_ENTRIES && dir->pos < (int)drive.maxdir + RESERVED_ENTRIES) {
+        else if (dir->pos >= RESERVED_ENTRIES
+                 && dir->pos < (int)drive.maxdir + RESERVED_ENTRIES) {
             int first = dir->pos - RESERVED_ENTRIES;
 
-            if ((cur = drive.dir + (dir->pos - RESERVED_ENTRIES))->status >= 0 && cur->status <= (drive.type & CPMFS_HI_USER ? 31 : 15)) {
+            if ((cur = drive.dir + (dir->pos - RESERVED_ENTRIES))->status >= 0
+                    && cur->status <= (drive.type & CPMFS_HI_USER ? 31 : 15)) {
                 /* determine first extent for the current file */
                 for (i = 0; i < drive.maxdir; ++i) if (i != (dir->pos - RESERVED_ENTRIES)) {
-                        if (isMatching(cur->status, cur->name, cur->ext, drive.dir[i].status, drive.dir[i].name, drive.dir[i].ext) && EXTENT(cur->extnol, cur->extnoh) > EXTENT(drive.dir[i].extnol, drive.dir[i].extnoh)) {
+                        if (isMatching(cur->status, cur->name, cur->ext, drive.dir[i].status, drive.dir[i].name,
+                                       drive.dir[i].ext)
+                                && EXTENT(cur->extnol, cur->extnoh) > EXTENT(drive.dir[i].extnol, drive.dir[i].extnoh)) {
                             first = i;
                         }
                     }
@@ -2213,7 +2305,8 @@ int CpmTools::cpmOpen(CpmInode_t *ino, CpmFile_t *file, mode_t mode) {
 //  -- read
 // --------------------------------------------------------------------------------
 int CpmTools::cpmRead(CpmFile_t *file, char *buf, int count) {
-    int findext = 1, findblock = 1, extent = -1, block = -1, extentno = -1, got = 0, nextblockpos = -1, nextextpos = -1;
+    int findext = 1, findblock = 1, extent = -1, block = -1, extentno = -1, got = 0,
+        nextblockpos = -1, nextextpos = -1;
     int blocksize = drive.blksiz;
     int extcap;
     extcap = (drive.size < 256 ? 16 : 8) * blocksize;
@@ -2251,7 +2344,8 @@ int CpmTools::cpmRead(CpmFile_t *file, char *buf, int count) {
 
             if (findext) {
                 extentno = file->pos / 16384;
-                extent = findFileExtent(drive.dir[file->ino->ino].status, drive.dir[file->ino->ino].name, drive.dir[file->ino->ino].ext, 0, extentno);
+                extent = findFileExtent(drive.dir[file->ino->ino].status, drive.dir[file->ino->ino].name,
+                                        drive.dir[file->ino->ino].ext, 0, extentno);
                 nextextpos = (file->pos / extcap) * extcap + extcap;
                 findext = 0;
                 findblock = 1;
@@ -2277,7 +2371,8 @@ int CpmTools::cpmRead(CpmFile_t *file, char *buf, int count) {
                     }
                     else {
                         start = (file->pos % blocksize) / drive.secLength;
-                        end = ((file->pos % blocksize + count) > blocksize ? blocksize - 1 : (file->pos % blocksize + count - 1)) / drive.secLength;
+                        end = ((file->pos % blocksize + count) > blocksize ? blocksize - 1 :
+                               (file->pos % blocksize + count - 1)) / drive.secLength;
 
                         if (readBlock(block, buffer, start, end) == -1) {
                             if (got == 0) {
@@ -2320,7 +2415,8 @@ int CpmTools::cpmRead(CpmFile_t *file, char *buf, int count) {
 //  -- write
 // --------------------------------------------------------------------------------
 int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
-    int findext = 1, findblock = -1, extent = -1, extentno = -1, got = 0, nextblockpos = -1, nextextpos = -1;
+    int findext = 1, findblock = -1, extent = -1, extentno = -1, got = 0, nextblockpos = -1,
+        nextextpos = -1;
     int blocksize = drive.blksiz;
     int extcap = (drive.size < 256 ? 16 : 8) * blocksize;
     int block = -1, start = -1, end = -1, ptr = -1, last = -1;
@@ -2329,7 +2425,8 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
     while (count > 0) {
         if (findext) {
             extentno = file->pos / 16384;
-            extent = findFileExtent(drive.dir[file->ino->ino].status, drive.dir[file->ino->ino].name, drive.dir[file->ino->ino].ext, 0, extentno);
+            extent = findFileExtent(drive.dir[file->ino->ino].status, drive.dir[file->ino->ino].name,
+                                    drive.dir[file->ino->ino].ext, 0, extentno);
             nextextpos = (file->pos / extcap) * extcap + extcap;
 
             if (extent == -1) {
@@ -2390,7 +2487,8 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
             }
             else  { /* read existing block and set start/end to cover modified parts */
                 start = (file->pos % blocksize) / drive.secLength;
-                end = ((file->pos % blocksize + count) >= blocksize ? blocksize - 1 : (file->pos % blocksize + count - 1)) / drive.secLength;
+                end = ((file->pos % blocksize + count) >= blocksize ? blocksize - 1 :
+                       (file->pos % blocksize + count - 1)) / drive.secLength;
 
                 if (file->pos % drive.secLength) {
                     if (readBlock(block, buffer, start, start) == -1) {
@@ -2402,7 +2500,8 @@ int CpmTools::cpmWrite(CpmFile_t *file, const char *buf, int count) {
                     }
                 }
 
-                if (end != start && file->pos % blocksize + count < blocksize && (file->pos + count) % drive.secLength) {
+                if (end != start && file->pos % blocksize + count < blocksize
+                        && (file->pos + count) % drive.secLength) {
                     if (readBlock(block, buffer, end, end) == -1) {
                         if (got == 0) {
                             got = -1;
@@ -2621,7 +2720,8 @@ int CpmTools::cpmProtSet(CpmInode_t *ino, mode_t pmode) {
         protectMode |= 0x80;
     }
 
-    if ((drive.type & CPMFS_CPM3_DATES) && (date = drive.dir + (lowestExt | 3))->status == 0x21) {
+    if ((drive.type & CPMFS_CPM3_DATES)
+            && (date = drive.dir + (lowestExt | 3))->status == 0x21) {
         drive.dirtyDirectory = 1;
 
         switch (lowestExt & 3) {
@@ -2697,7 +2797,8 @@ void CpmTools::convertFilename(const char *filename, char *cpmname) {
 // --------------------------------------------------------------------------------
 //  -- create new empty binary Image-File
 // --------------------------------------------------------------------------------
-int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int timeStamps) {
+int CpmTools::mkfs(const char *format, const char *label, char *bootTracks,
+                   int timeStamps) {
     /* variables */
     unsigned int i;
     char buf[128];
@@ -2722,7 +2823,8 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
     trkbytes = drive.secLength * drive.sectrk;
 
     for (i = 0; i < trkbytes * drive.boottrk; i += drive.secLength) {
-        if (fwrite(bootTracks + i, sizeof(char), drive.secLength, fd) != (size_t)drive.secLength) {
+        if (fwrite(bootTracks + i, sizeof(char), drive.secLength,
+                   fd) != (size_t)drive.secLength) {
             err = strerror(errno);
             fclose(fd);
             return -1;
@@ -2757,7 +2859,8 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
             firstbuf[1 + i++] = ' ';
         }
 
-        firstbuf[12] = timeStamps ? 0x11 : 0x01; /* label set and first time stamp is creation date */
+        firstbuf[12] = timeStamps ? 0x11 :
+                       0x01; /* label set and first time stamp is creation date */
         memset(&firstbuf[13], 0, 1 + 2 + 8);
 
         if (timeStamps) {
@@ -2818,7 +2921,8 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
         DsDate_t *ds;
 
         if ((err = deviceOpen(imageFileName.c_str(), "r+b"))) {
-            guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("%s: cannot open %s (%s)\n", cmd, imageFileName, err),
+                              CpmGuiInterface::msgColRed);
             exit(1);
         }
 
@@ -2844,7 +2948,8 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
 
         /* Set things up so cpmSync will generate checksums and write the * file. */
         if (cpmCreat(&root, "00!!!TIME&.DAT", &ino, 0) == -1) {
-            guiintf->printMsg(wxString::Format("%s: Unable to create DateStamper file: %s\n", cmd, err), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(wxString::Format("%s: Unable to create DateStamper file: %s\n", cmd,
+                                               err), CpmGuiInterface::msgColRed);
             return -1;
         }
 
@@ -2858,9 +2963,12 @@ int CpmTools::mkfs(const char *format, const char *label, char *bootTracks, int 
 // --------------------------------------------------------------------------------
 //  -- check format and range of BCD digit
 // --------------------------------------------------------------------------------
-int CpmTools::bcdCheck(int n, int max, const char *msg, const char *unit, int extent1, int extent2) {
-    if (((n >> 4) & 0xf) > 10 || (n & 0xf) > 10 || (((n >> 4) & 0xf) * 10 + (n & 0xf)) >= max) {
-        guiintf->printMsg(wxString::Format("    Bad %s %s (extent=%d/%d, %s=%02x)\n", msg, unit, extent1, extent2, unit, (n & 0xff)), CpmGuiInterface::msgColRed);
+int CpmTools::bcdCheck(int n, int max, const char *msg, const char *unit, int extent1,
+                       int extent2) {
+    if (((n >> 4) & 0xf) > 10 || (n & 0xf) > 10
+            || (((n >> 4) & 0xf) * 10 + (n & 0xf)) >= max) {
+        guiintf->printMsg(wxString::Format("    Bad %s %s (extent=%d/%d, %s=%02x)\n", msg, unit,
+                                           extent1, extent2, unit, (n & 0xff)), CpmGuiInterface::msgColRed);
         return -1;
     }
     else {
@@ -2892,7 +3000,9 @@ int CpmTools::pwdCheck(int extent, const char *pwd, char decode) {
                 }
             }
 
-            guiintf->printMsg(wxString::Format("    Non-printable character in password (extent=%d, password=%s)\n", extent, passwd), CpmGuiInterface::msgColRed);
+            guiintf->printMsg(
+                wxString::Format("    Non-printable character in password (extent=%d, password=%s)\n",
+                                 extent, passwd), CpmGuiInterface::msgColRed);
             return -1;
         }
 
@@ -2966,7 +3076,8 @@ int CpmTools::fsck(const char *image, bool repair) {
     int extent, extent2;
     PhysDirectoryEntry_t *dir, *dir2;
     /* Phase 1: check extent fields */
-    guiintf->printMsg("====================================================================================================\n", CpmGuiInterface::msgColGreen);
+    guiintf->printMsg("====================================================================================================\n",
+                      CpmGuiInterface::msgColGreen);
     guiintf->printMsg("  Phase 1: check extent fields\n", CpmGuiInterface::msgColGreen);
 
     for (extent = 0; extent < drive.maxdir; ++extent) {
@@ -2975,7 +3086,8 @@ int CpmTools::fsck(const char *image, bool repair) {
         dir = drive.dir + extent;
         status = &dir->status;
 
-        if (*status >= 0 && *status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) { /* directory entry */
+        if (*status >= 0
+                && *status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) { /* directory entry */
             /* check name and extension */
             {
                 int i;
@@ -2985,7 +3097,9 @@ int CpmTools::fsck(const char *image, bool repair) {
                     c = &(dir->name[i]);
 
                     if (!ISFILECHAR(i, *c & 0x7f) || islower(*c & 0x7f)) {
-                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(extent), i), CpmGuiInterface::msgColGreen);
+                        guiintf->printMsg(
+                            wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent,
+                                             prfile(extent), i), CpmGuiInterface::msgColGreen);
 
                         if (repair && ask("Remove file")) {
                             *status = (char)0xE5;
@@ -3006,7 +3120,9 @@ int CpmTools::fsck(const char *image, bool repair) {
                     c = &(dir->ext[i]);
 
                     if (!ISFILECHAR(1, *c & 0x7f) || islower(*c & 0x7f)) {
-                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(extent), i), CpmGuiInterface::msgColGreen);
+                        guiintf->printMsg(
+                            wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent,
+                                             prfile(extent), i), CpmGuiInterface::msgColGreen);
 
                         if (repair && ask("Remove file")) {
                             *status = (char)0xE5;
@@ -3026,7 +3142,9 @@ int CpmTools::fsck(const char *image, bool repair) {
 
             /* check extent number */
             if ((dir->extnol & 0xff) > 0x1f) {
-                guiintf->printMsg(wxString::Format("    Error: Bad lower bits of extent number (extent=%d, name=\"%s\", low bits=%d)\n", extent, prfile(extent), dir->extnol & 0xff), CpmGuiInterface::msgColGreen);
+                guiintf->printMsg(
+                    wxString::Format("    Error: Bad lower bits of extent number (extent=%d, name=\"%s\", low bits=%d)\n",
+                                     extent, prfile(extent), dir->extnol & 0xff), CpmGuiInterface::msgColGreen);
 
                 if (repair && ask("Remove file")) {
                     *status = (char)0xE5;
@@ -3042,7 +3160,9 @@ int CpmTools::fsck(const char *image, bool repair) {
             }
 
             if ((dir->extnoh & 0xff) > 0x3f) {
-                guiintf->printMsg(wxString::Format("    Error: Bad higher bits of extent number (extent=%d, name=\"%s\", high bits=%d)\n", extent, prfile(extent), dir->extnoh & 0xff), CpmGuiInterface::msgColGreen);
+                guiintf->printMsg(
+                    wxString::Format("    Error: Bad higher bits of extent number (extent=%d, name=\"%s\", high bits=%d)\n",
+                                     extent, prfile(extent), dir->extnoh & 0xff), CpmGuiInterface::msgColGreen);
 
                 if (repair && ask("Remove file")) {
                     *status = (char)0xE5;
@@ -3059,7 +3179,9 @@ int CpmTools::fsck(const char *image, bool repair) {
 
             /* check last record byte count */
             if ((dir->lrc & 0xff) > 128) {
-                guiintf->printMsg(wxString::Format("    Error: Bad last record byte count (extent=%d, name=\"%s\", lrc=%d)\n", extent, prfile(extent), dir->lrc & 0xff), CpmGuiInterface::msgColGreen);
+                guiintf->printMsg(
+                    wxString::Format("    Error: Bad last record byte count (extent=%d, name=\"%s\", lrc=%d)\n",
+                                     extent, prfile(extent), dir->lrc & 0xff), CpmGuiInterface::msgColGreen);
 
                 if (repair && ask("Clear last record byte count")) {
                     dir->lrc = (char)0;
@@ -3091,7 +3213,9 @@ int CpmTools::fsck(const char *image, bool repair) {
                         ++usedBlocks;
 
                         if (block < min || block >= max) {
-                            guiintf->printMsg(wxString::Format("    Error: Bad block number (extent=%d, name=\"%s\", block=%d)\n", extent, prfile(extent), block), CpmGuiInterface::msgColGreen);
+                            guiintf->printMsg(
+                                wxString::Format("    Error: Bad block number (extent=%d, name=\"%s\", block=%d)\n",
+                                                 extent, prfile(extent), block), CpmGuiInterface::msgColGreen);
 
                             if (repair && ask("Remove file")) {
                                 *status = (char)0xE5;
@@ -3132,7 +3256,9 @@ int CpmTools::fsck(const char *image, bool repair) {
                 recordsInBlocks = (((unsigned char)dir->blkcnt) * 128 + drive.blksiz - 1) / drive.blksiz;
 
                 if (recordsInBlocks != used) {
-                    guiintf->printMsg(wxString::Format("    Error: Bad record count (extent=%d, name=\"%s\", record count=%d)\n", extent, prfile(extent), dir->blkcnt & 0xff), CpmGuiInterface::msgColGreen);
+                    guiintf->printMsg(
+                        wxString::Format("    Error: Bad record count (extent=%d, name=\"%s\", record count=%d)\n",
+                                         extent, prfile(extent), dir->blkcnt & 0xff), CpmGuiInterface::msgColGreen);
 
                     if (repair && ask("Remove file")) {
                         *status = (char)0xE5;
@@ -3149,68 +3275,103 @@ int CpmTools::fsck(const char *image, bool repair) {
             }
 
             /* check for too large .com files */
-            if (((EXTENT(dir->extnol, dir->extnoh) == 3 && dir->blkcnt >= 126) || EXTENT(dir->extnol, dir->extnoh) >= 4) && (dir->ext[0] & 0x7f) == 'C' && (dir->ext[1] & 0x7f) == 'O' && (dir->ext[2] & 0x7f) == 'M') {
-                guiintf->printMsg(wxString::Format("    Warning: Oversized .COM file (extent=%d, name=\"%s\")\n", extent, prfile(extent)), CpmGuiInterface::msgColGreen);
+            if (((EXTENT(dir->extnol, dir->extnoh) == 3 && dir->blkcnt >= 126)
+                    || EXTENT(dir->extnol, dir->extnoh) >= 4) && (dir->ext[0] & 0x7f) == 'C'
+                    && (dir->ext[1] & 0x7f) == 'O' && (dir->ext[2] & 0x7f) == 'M') {
+                guiintf->printMsg(
+                    wxString::Format("    Warning: Oversized .COM file (extent=%d, name=\"%s\")\n", extent,
+                                     prfile(extent)), CpmGuiInterface::msgColGreen);
             }
         }
-        else if ((drive.type == CPMFS_P2DOS || drive.type == CPMFS_DR3) && *status == 33) { /* check time stamps ? */
+        else if ((drive.type == CPMFS_P2DOS || drive.type == CPMFS_DR3)
+                 && *status == 33) { /* check time stamps ? */
             unsigned long created, modified;
             char s;
 
-            if ((s = drive.dir[extent2 = (extent & ~3)].status) >= 0 && s <= (drive.type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for first of the three extents */
-                bcdCheck(dir->name[2], 24, drive.cnotatime ? "creation date" : "access date", "hour", extent, extent2);
-                bcdCheck(dir->name[3], 60, drive.cnotatime ? "creation date" : "access date", "minute", extent, extent2);
+            if ((s = drive.dir[extent2 = (extent & ~3)].status) >= 0
+                    && s <= (drive.type == CPMFS_P2DOS ? 31 :
+                             15)) { /* time stamps for first of the three extents */
+                bcdCheck(dir->name[2], 24, drive.cnotatime ? "creation date" : "access date", "hour",
+                         extent, extent2);
+                bcdCheck(dir->name[3], 60, drive.cnotatime ? "creation date" : "access date", "minute",
+                         extent, extent2);
                 bcdCheck(dir->name[6], 24, "modification date", "hour", extent, extent2);
                 bcdCheck(dir->name[7], 60, "modification date", "minute", extent, extent2);
-                created = (dir->name[4] + (dir->name[1] << 8)) * (0x60 * 0x60) + dir->name[2] * 0x60 + dir->name[3];
-                modified = (dir->name[0] + (dir->name[5] << 8)) * (0x60 * 0x60) + dir->name[6] * 0x60 + dir->name[7];
+                created = (dir->name[4] + (dir->name[1] << 8)) * (0x60 * 0x60) + dir->name[2] * 0x60 +
+                          dir->name[3];
+                modified = (dir->name[0] + (dir->name[5] << 8)) * (0x60 * 0x60) + dir->name[6] * 0x60 +
+                           dir->name[7];
 
                 if (drive.cnotatime && modified < created) {
-                    guiintf->printMsg(wxString::Format("    Warning: Modification date earlier than creation date (extent=%d/%d)\n", extent, extent2), CpmGuiInterface::msgColGreen);
+                    guiintf->printMsg(
+                        wxString::Format("    Warning: Modification date earlier than creation date (extent=%d/%d)\n",
+                                         extent, extent2), CpmGuiInterface::msgColGreen);
                 }
             }
 
-            if ((s = drive.dir[extent2 = (extent & ~3) + 1].status) >= 0 && s <= (drive.type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for second */
-                bcdCheck(dir->lrc, 24, drive.cnotatime ? "creation date" : "access date", "hour", extent, extent2);
-                bcdCheck(dir->extnoh, 60, drive.cnotatime ? "creation date" : "access date", "minute", extent, extent2);
+            if ((s = drive.dir[extent2 = (extent & ~3) + 1].status) >= 0
+                    && s <= (drive.type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for second */
+                bcdCheck(dir->lrc, 24, drive.cnotatime ? "creation date" : "access date", "hour", extent,
+                         extent2);
+                bcdCheck(dir->extnoh, 60, drive.cnotatime ? "creation date" : "access date", "minute",
+                         extent, extent2);
                 bcdCheck(dir->pointers[1], 24, "modification date", "hour", extent, extent2);
                 bcdCheck(dir->pointers[2], 60, "modification date", "minute", extent, extent2);
-                created = (dir->ext[2] + (dir->extnol << 8)) * (0x60 * 0x60) + dir->lrc * 0x60 + dir->extnoh;
-                modified = (dir->blkcnt + (dir->pointers[0] << 8)) * (0x60 * 0x60) + dir->pointers[1] * 0x60 + dir->pointers[2];
+                created = (dir->ext[2] + (dir->extnol << 8)) * (0x60 * 0x60) + dir->lrc * 0x60 +
+                          dir->extnoh;
+                modified = (dir->blkcnt + (dir->pointers[0] << 8)) * (0x60 * 0x60) + dir->pointers[1] *
+                           0x60 + dir->pointers[2];
 
                 if (drive.cnotatime && modified < created) {
-                    guiintf->printMsg(wxString::Format("    Warning: Modification date earlier than creation date (extent=%d/%d)\n", extent, extent2), CpmGuiInterface::msgColGreen);
+                    guiintf->printMsg(
+                        wxString::Format("    Warning: Modification date earlier than creation date (extent=%d/%d)\n",
+                                         extent, extent2), CpmGuiInterface::msgColGreen);
                 }
             }
 
-            if ((s = drive.dir[extent2 = (extent & ~3) + 2].status) >= 0 && s <= (drive.type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for third */
-                bcdCheck(dir->pointers[7], 24, drive.cnotatime ? "creation date" : "access date", "hour", extent, extent2);
-                bcdCheck(dir->pointers[8], 60, drive.cnotatime ? "creation date" : "access date", "minute", extent, extent2);
+            if ((s = drive.dir[extent2 = (extent & ~3) + 2].status) >= 0
+                    && s <= (drive.type == CPMFS_P2DOS ? 31 : 15)) { /* time stamps for third */
+                bcdCheck(dir->pointers[7], 24, drive.cnotatime ? "creation date" : "access date", "hour",
+                         extent, extent2);
+                bcdCheck(dir->pointers[8], 60, drive.cnotatime ? "creation date" : "access date",
+                         "minute", extent, extent2);
                 bcdCheck(dir->pointers[11], 24, "modification date", "hour", extent, extent2);
                 bcdCheck(dir->pointers[12], 60, "modification date", "minute", extent, extent2);
-                created = (dir->pointers[5] + (dir->pointers[6] << 8)) * (0x60 * 0x60) + dir->pointers[7] * 0x60 + dir->pointers[8];
-                modified = (dir->pointers[9] + (dir->pointers[10] << 8)) * (0x60 * 0x60) + dir->pointers[11] * 0x60 + dir->pointers[12];
+                created = (dir->pointers[5] + (dir->pointers[6] << 8)) * (0x60 * 0x60) + dir->pointers[7]
+                          * 0x60 + dir->pointers[8];
+                modified = (dir->pointers[9] + (dir->pointers[10] << 8)) * (0x60 * 0x60) +
+                           dir->pointers[11] * 0x60 + dir->pointers[12];
 
                 if (drive.cnotatime && modified < created) {
-                    guiintf->printMsg(wxString::Format("    Warning: Modification date earlier than creation date (extent=%d/%d)\n", extent, extent2), CpmGuiInterface::msgColGreen);
+                    guiintf->printMsg(
+                        wxString::Format("    Warning: Modification date earlier than creation date (extent=%d/%d)\n",
+                                         extent, extent2), CpmGuiInterface::msgColGreen);
                 }
             }
         }
         else if (drive.type == CPMFS_DR3 && *status == 32) { /* disc label */
             unsigned long created, modified;
-            bcdCheck(dir->pointers[10], 24, drive.cnotatime ? "creation date" : "access date", "hour", extent, extent);
-            bcdCheck(dir->pointers[11], 60, drive.cnotatime ? "creation date" : "access date", "minute", extent, extent);
+            bcdCheck(dir->pointers[10], 24, drive.cnotatime ? "creation date" : "access date", "hour",
+                     extent, extent);
+            bcdCheck(dir->pointers[11], 60, drive.cnotatime ? "creation date" : "access date",
+                     "minute", extent, extent);
             bcdCheck(dir->pointers[14], 24, "modification date", "hour", extent, extent);
             bcdCheck(dir->pointers[15], 60, "modification date", "minute", extent, extent);
-            created = (dir->pointers[8] + (dir->pointers[9] << 8)) * (0x60 * 0x60) + dir->pointers[10] * 0x60 + dir->pointers[11];
-            modified = (dir->pointers[12] + (dir->pointers[13] << 8)) * (0x60 * 0x60) + dir->pointers[14] * 0x60 + dir->pointers[15];
+            created = (dir->pointers[8] + (dir->pointers[9] << 8)) * (0x60 * 0x60) + dir->pointers[10]
+                      * 0x60 + dir->pointers[11];
+            modified = (dir->pointers[12] + (dir->pointers[13] << 8)) * (0x60 * 0x60) +
+                       dir->pointers[14] * 0x60 + dir->pointers[15];
 
             if (drive.cnotatime && modified < created) {
-                guiintf->printMsg(wxString::Format("    Warning: Label modification date earlier than creation date (extent=%d)\n", extent), CpmGuiInterface::msgColGreen);
+                guiintf->printMsg(
+                    wxString::Format("    Warning: Label modification date earlier than creation date (extent=%d)\n",
+                                     extent), CpmGuiInterface::msgColGreen);
             }
 
             if (dir->extnol & 0x40 && dir->extnol & 0x10) {
-                guiintf->printMsg(wxString::Format("    Error: Bit 4 and 6 can only be exclusively be set (extent=%d, label byte=0x%02x)\n", extent, (unsigned char)dir->extnol), CpmGuiInterface::msgColGreen);
+                guiintf->printMsg(
+                    wxString::Format("    Error: Bit 4 and 6 can only be exclusively be set (extent=%d, label byte=0x%02x)\n",
+                                     extent, (unsigned char)dir->extnol), CpmGuiInterface::msgColGreen);
 
                 if (repair && ask("Time stamp on creation")) {
                     dir->extnol &= ~0x40;
@@ -3256,7 +3417,9 @@ int CpmTools::fsck(const char *image, bool repair) {
                     c = &(dir->name[i]);
 
                     if (!ISFILECHAR(i, *c & 0x7f) || islower(*c & 0x7f)) {
-                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(extent), i), CpmGuiInterface::msgColGreen);
+                        guiintf->printMsg(
+                            wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent,
+                                             prfile(extent), i), CpmGuiInterface::msgColGreen);
 
                         if (repair && ask("Clear password entry")) {
                             *status = (char)0xE5;
@@ -3277,7 +3440,9 @@ int CpmTools::fsck(const char *image, bool repair) {
                     c = &(dir->ext[i]);
 
                     if (!ISFILECHAR(1, *c & 0x7f) || islower(*c & 0x7f)) {
-                        guiintf->printMsg(wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent, prfile(extent), i), CpmGuiInterface::msgColGreen);
+                        guiintf->printMsg(
+                            wxString::Format("    Error: Bad name (extent=%d, name=\"%s\", position=%d)\n", extent,
+                                             prfile(extent), i), CpmGuiInterface::msgColGreen);
 
                         if (repair && ask("Clear password entry")) {
                             *status = (char)0xE5;
@@ -3318,7 +3483,9 @@ int CpmTools::fsck(const char *image, bool repair) {
             }
         }
         else if (*status != (char)0xe5) { /* bad status */
-            guiintf->printMsg(wxString::Format("    Error: Bad status (extent=%d, name=\"%s\", status=0x%02x)\n", extent, prfile(extent), *status & 0xff), CpmGuiInterface::msgColGreen);
+            guiintf->printMsg(
+                wxString::Format("    Error: Bad status (extent=%d, name=\"%s\", status=0x%02x)\n",
+                                 extent, prfile(extent), *status & 0xff), CpmGuiInterface::msgColGreen);
 
             if (repair && ask("Clear entry")) {
                 *status = (char)0xE5;
@@ -3336,7 +3503,9 @@ int CpmTools::fsck(const char *image, bool repair) {
     guiintf->printMsg("  Phase 2: check extent connectivity\n", CpmGuiInterface::msgColGreen);
 
     /* check multiple allocated blocks */
-    for (extent = 0; extent < drive.maxdir; ++extent) if ((dir = drive.dir + extent)->status >= 0 && dir->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
+    for (extent = 0; extent < drive.maxdir;
+            ++extent) if ((dir = drive.dir + extent)->status >= 0
+                              && dir->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
             int i, j, block, block2;
 
             for (i = 0; i < 16; ++i) {
@@ -3346,7 +3515,9 @@ int CpmTools::fsck(const char *image, bool repair) {
                     block += (dir->pointers[++i] & 0xff) << 8;
                 }
 
-                for (extent2 = 0; extent2 < drive.maxdir; ++extent2) if ((dir2 = drive.dir + extent2)->status >= 0 && dir2->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
+                for (extent2 = 0; extent2 < drive.maxdir;
+                        ++extent2) if ((dir2 = drive.dir + extent2)->status >= 0
+                                           && dir2->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
                         for (j = 0; j < 16; ++j) {
                             block2 = dir2->pointers[j] & 0xff;
 
@@ -3355,8 +3526,11 @@ int CpmTools::fsck(const char *image, bool repair) {
                             }
 
                             if (block != 0 && block2 != 0 && block == block2 && !(extent == extent2 && i == j)) {
-                                guiintf->printMsg(wxString::Format("    Error: Multiple allocated block (extent=%d,%d, name=\"%s\"", extent, extent2, prfile(extent)), CpmGuiInterface::msgColGreen);
-                                guiintf->printMsg(wxString::Format(",\"%s\" block=%d)\n", prfile(extent2), block), CpmGuiInterface::msgColGreen);
+                                guiintf->printMsg(
+                                    wxString::Format("    Error: Multiple allocated block (extent=%d,%d, name=\"%s\"", extent,
+                                                     extent2, prfile(extent)), CpmGuiInterface::msgColGreen);
+                                guiintf->printMsg(wxString::Format(",\"%s\" block=%d)\n", prfile(extent2), block),
+                                                  CpmGuiInterface::msgColGreen);
                                 ret |= BROKEN;
                             }
                         }
@@ -3365,9 +3539,15 @@ int CpmTools::fsck(const char *image, bool repair) {
         }
 
     /* check multiple extents */
-    for (extent = 0; extent < drive.maxdir; ++extent) if ((dir = drive.dir + extent)->status >= 0 && dir->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
-            for (extent2 = 0; extent2 < drive.maxdir; ++extent2) if ((dir2 = drive.dir + extent2)->status >= 0 && dir2->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
-                    if (extent != extent2 && EXTENT(dir->extnol, dir->extnoh) == EXTENT(dir2->extnol, dir2->extnoh) && dir->status == dir2->status) {
+    for (extent = 0; extent < drive.maxdir;
+            ++extent) if ((dir = drive.dir + extent)->status >= 0
+                              && dir->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
+            for (extent2 = 0; extent2 < drive.maxdir;
+                    ++extent2) if ((dir2 = drive.dir + extent2)->status >= 0
+                                       && dir2->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
+                    if (extent != extent2
+                            && EXTENT(dir->extnol, dir->extnoh) == EXTENT(dir2->extnol, dir2->extnoh)
+                            && dir->status == dir2->status) {
                         int i;
 
                         for (i = 0; i < 8 && (dir->name[i] & 0x7f) == (dir2->name[i] & 0x7f); ++i);
@@ -3376,7 +3556,8 @@ int CpmTools::fsck(const char *image, bool repair) {
                             for (i = 0; i < 3 && (dir->ext[i] & 0x7f) == (dir2->ext[i] & 0x7f); ++i);
 
                             if (i == 3) {
-                                guiintf->printMsg(wxString::Format("    Error: Duplicate extent (extent=%d,%d)\n", extent, extent2), CpmGuiInterface::msgColGreen);
+                                guiintf->printMsg(wxString::Format("    Error: Duplicate extent (extent=%d,%d)\n", extent,
+                                                                   extent2), CpmGuiInterface::msgColGreen);
                                 ret |= BROKEN;
                             }
                         }
@@ -3389,7 +3570,9 @@ int CpmTools::fsck(const char *image, bool repair) {
         int fragmented = 0, borders = 0;
         cpmStatFS(&statfsbuf);
 
-        for (extent = 0; extent < drive.maxdir; ++extent) if ((dir = drive.dir + extent)->status >= 0 && dir->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
+        for (extent = 0; extent < drive.maxdir;
+                ++extent) if ((dir = drive.dir + extent)->status >= 0
+                                  && dir->status <= (drive.type == CPMFS_P2DOS ? 31 : 15)) {
                 int i, block, previous = -1;
 
                 for (i = 0; i < 16; ++i) {
@@ -3412,22 +3595,29 @@ int CpmTools::fsck(const char *image, bool repair) {
             }
 
         fragmented = (borders ? (1000 * fragmented) / borders : 0);
-        guiintf->printMsg(wxString::Format("  %s: %ld/%ld files (%d.%d%% non-contigous), %ld/%ld blocks\n", image, statfsbuf.f_files - statfsbuf.f_ffree, statfsbuf.f_files, fragmented / 10, fragmented % 10, statfsbuf.f_blocks - statfsbuf.f_bfree, statfsbuf.f_blocks), CpmGuiInterface::msgColGreen);
+        guiintf->printMsg(
+            wxString::Format("  %s: %ld/%ld files (%d.%d%% non-contigous), %ld/%ld blocks\n", image,
+                             statfsbuf.f_files - statfsbuf.f_ffree, statfsbuf.f_files, fragmented / 10,
+                             fragmented % 10, statfsbuf.f_blocks - statfsbuf.f_bfree, statfsbuf.f_blocks),
+            CpmGuiInterface::msgColGreen);
     }
 
-    guiintf->printMsg("====================================================================================================\n", CpmGuiInterface::msgColGreen);
+    guiintf->printMsg("====================================================================================================\n",
+                      CpmGuiInterface::msgColGreen);
     return ret;
 }
 
 // --------------------------------------------------------------------------------
-int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool text, bool preserve) {
+int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool text,
+                       bool preserve) {
     int c, exitcode = 0;
     FILE *ufp;
     wxString unixfile = unixfilename;
     unixfile = unixfile.substr(unixfile.find_last_of("/\\") + 1);
 
     if ((ufp = fopen(unixfilename, "rb")) == (FILE *)0) {
-        guiintf->printMsg(wxString::Format("%s: can not open %s: %s\n", cmd, unixfile, strerror(errno)));
+        guiintf->printMsg(wxString::Format("%s: can not open %s: %s\n", cmd, unixfile,
+                                           strerror(errno)));
         exitcode = 1;
     }
     else {
@@ -3435,7 +3625,8 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
         char cpmname[2 + 8 + 1 + 3 + 1];
         struct stat st;
         stat(unixfilename, &st);
-        snprintf(cpmname, sizeof(cpmname), "%02d%s", getUserNumber(cpmfilename), strchr(cpmfilename, ':') + 1);
+        snprintf(cpmname, sizeof(cpmname), "%02d%s", getUserNumber(cpmfilename),
+                 strchr(cpmfilename, ':') + 1);
 
         if (cpmCreat(&root, cpmname, &ino, 0666) == -1) {
             guiintf->printMsg(wxString::Format("%s: can not create %s: %s\n", cmd, cpmfilename, err));

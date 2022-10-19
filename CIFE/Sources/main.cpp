@@ -49,7 +49,9 @@ bool wxCifeApp::OnInit() {
     }
     else {
         wxMessageBox(_("Diskdefinitions File not found.\n"
-                       "Please copy 'diskdefs' into Application directory."), _("CP/M Image-File Explorer"), wxICON_EXCLAMATION);
+                       "Please copy 'diskdefs' into Application directory."),
+                     _("CP/M Image-File Explorer"),
+                     wxICON_EXCLAMATION);
         return (false);
     }
 }

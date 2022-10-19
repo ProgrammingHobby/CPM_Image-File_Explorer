@@ -19,7 +19,8 @@
 
 #include <wx/tokenzr.h>
 // --------------------------------------------------------------------------------
-FileProtectionsDialog::FileProtectionsDialog(wxWindow *parent) : Ui_FileProtectionsDialog(parent) {
+FileProtectionsDialog::FileProtectionsDialog(wxWindow *parent) :
+    Ui_FileProtectionsDialog(parent) {
 }
 
 // --------------------------------------------------------------------------------

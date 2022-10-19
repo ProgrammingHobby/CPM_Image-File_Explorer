@@ -23,7 +23,8 @@
 #include <wx/colour.h>
 #include <wx/msgdlg.h>
 // --------------------------------------------------------------------------------
-CpmGuiInterface::CpmGuiInterface(wxListView *listView, wxTextCtrl *textCtrl, wxTextCtrl *statText) {
+CpmGuiInterface::CpmGuiInterface(wxListView *listView, wxTextCtrl *textCtrl,
+                                 wxTextCtrl *statText) {
     textMessages = textCtrl;
     listContents = listView;
     textDirInfo = statText;
@@ -94,9 +95,11 @@ void CpmGuiInterface::printDirEntry(int col, int row, wxString data) {
 // --------------------------------------------------------------------------------
 bool CpmGuiInterface::askBox(const wxString Message, const wxString title) {
 #ifdef _WINDOWS_
-    wxMessageDialog deleteDialog(NULL, Message + " ?", title, wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
+    wxMessageDialog deleteDialog(NULL, Message + " ?", title,
+                                 wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
 #else
-    wxMessageDialog deleteDialog(NULL, "\n" + Message + " ?", title, wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
+    wxMessageDialog deleteDialog(NULL, "\n" + Message + " ?", title,
+                                 wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
 #endif
 
     if (deleteDialog.ShowModal() == wxID_YES) {

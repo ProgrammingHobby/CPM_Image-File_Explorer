@@ -35,7 +35,7 @@ class CreateFileDialog : public Ui_CreateFileDialog {
         virtual ~CreateFileDialog();
 
     protected:  // Event Methods
-    void onButtonBootFileClicked(wxCommandEvent &event);
+        void onButtonBootFileClicked(wxCommandEvent &event);
 
     private:    // Attributes
 

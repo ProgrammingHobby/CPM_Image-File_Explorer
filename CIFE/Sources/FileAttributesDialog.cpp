@@ -17,7 +17,8 @@
 
 #include "FileAttributesDialog.hpp"
 // --------------------------------------------------------------------------------
-FileAttributesDialog::FileAttributesDialog(wxWindow *parent) : Ui_FileAttributesDialog(parent) {
+FileAttributesDialog::FileAttributesDialog(wxWindow *parent) :
+    Ui_FileAttributesDialog(parent) {
     checkBoxes[0] = checkboxF1;
     checkBoxes[1] = checkboxF2;
     checkBoxes[2] = checkboxF3;

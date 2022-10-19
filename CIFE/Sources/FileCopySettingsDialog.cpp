@@ -18,11 +18,14 @@
 #include "FileCopySettingsDialog.hpp"
 #include "Settings.hpp"
 // --------------------------------------------------------------------------------
-FileCopySettingsDialog::FileCopySettingsDialog(wxWindow *parent, Settings *settings) : Ui_FileCopySettingsDialog(parent) {
+FileCopySettingsDialog::FileCopySettingsDialog(wxWindow *parent,
+        Settings *settings) : Ui_FileCopySettingsDialog(parent) {
     dialogSettings = settings;
 
-    spinCtrlDefaultUserNumber->SetValue(dialogSettings->readInteger("CpmOptions", "DefaultUserNumber", 0));
-    editTextFileEndings->SetValue(dialogSettings->readString("CpmOptions", "TextfileEndings", "txt pip pas"));
+    spinCtrlDefaultUserNumber->SetValue(dialogSettings->readInteger("CpmOptions",
+                                        "DefaultUserNumber", 0));
+    editTextFileEndings->SetValue(dialogSettings->readString("CpmOptions", "TextfileEndings",
+                                  "txt pip pas"));
 
     correctDialogSize();
 
@@ -35,8 +38,10 @@ FileCopySettingsDialog::~FileCopySettingsDialog() {
     dialogSettings->writeInteger("CopySettingsDialog", "SizeX", this->GetSize().x);
     dialogSettings->writeInteger("CopySettingsDialog", "SizeY", this->GetSize().y);
 
-    dialogSettings->writeInteger("CpmOptions", "DefaultUserNumber", spinCtrlDefaultUserNumber->GetValue());
-    dialogSettings->writeString("CpmOptions", "TextfileEndings", editTextFileEndings->GetValue());
+    dialogSettings->writeInteger("CpmOptions", "DefaultUserNumber",
+                                 spinCtrlDefaultUserNumber->GetValue());
+    dialogSettings->writeString("CpmOptions", "TextfileEndings",
+                                editTextFileEndings->GetValue());
 }
 
 // --------------------------------------------------------------------------------

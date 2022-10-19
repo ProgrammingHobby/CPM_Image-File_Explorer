@@ -52,7 +52,8 @@ bool CreateFileDialog::getUseTimestamps() {
 // --------------------------------------------------------------------------------
 void CreateFileDialog::onButtonBootFileClicked(wxCommandEvent &event) {
     WXUNUSED(event)
-    wxFileDialog fileDialog(this, _("Open CP/M Boot-Track Image File"), wxStandardPaths::Get().GetUserDataDir(),
+    wxFileDialog fileDialog(this, _("Open CP/M Boot-Track Image File"),
+                            wxStandardPaths::Get().GetUserDataDir(),
                             wxEmptyString, _("Binary Files (*.bin,*.cpm,*.sys)|*.bin;*.BIN;*.cpm;*.CPM;*.sys;*.SYS|"
                                     "Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;*.fdd;*.FDD;*.dsk;*.DSK|"
                                     "all Files (*.*)|*.*"),
