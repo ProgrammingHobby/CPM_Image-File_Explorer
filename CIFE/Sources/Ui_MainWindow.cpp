@@ -227,7 +227,7 @@ Ui_MainWindow::Ui_MainWindow(wxWindow* parent, wxWindowID id, const wxString& ti
     wxBoxSizer* sizerTextMessages = new wxBoxSizer(wxVERTICAL);
     panelTextMessages->SetSizer(sizerTextMessages);
     
-    textMessages = new wxTextCtrl(panelTextMessages, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelTextMessages, wxSize(-1,-1)), wxTE_RICH|wxTE_READONLY|wxTE_MULTILINE|wxTE_DONTWRAP|wxBORDER_NONE|wxBORDER_THEME);
+    textMessages = new wxTextCtrl(panelTextMessages, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelTextMessages, wxSize(-1,-1)), wxTE_RICH|wxTE_READONLY|wxTE_MULTILINE|wxTE_DONTWRAP|wxBORDER_NONE);
     
     sizerTextMessages->Add(textMessages, 1, wxALL|wxEXPAND, WXC_FROM_DIP(4));
     

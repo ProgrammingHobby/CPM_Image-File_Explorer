@@ -12,7 +12,7 @@
 		"m_useUnderscoreMacro":	true,
 		"m_addHandlers":	true,
 		"m_templateClasses":	[{
-				"m_includeFile":	"#include \"CifeListView.h\"",
+				"m_includeFile":	"#include \"CifeListView.hpp\"",
 				"m_allocationLine":	"$name = new CifeListView($parent, $id, wxDefaultPosition, wxDLG_UNIT(splitterPageImageContents, wxSize(-1, -1)), wxLC_VRULES | wxLC_REPORT | wxBORDER_NONE)",
 				"m_className":	"CifeListView",
 				"m_xrcPreviewClass":	"",
@@ -2805,7 +2805,7 @@
 																					"border":	4,
 																					"gbSpan":	"1,1",
 																					"gbPosition":	"0,0",
-																					"m_styles":	["wxTE_RICH", "wxTE_READONLY", "wxTE_MULTILINE", "wxTE_DONTWRAP", "wxBORDER_NONE", "wxBORDER_THEME"],
+																					"m_styles":	["wxTE_RICH", "wxTE_READONLY", "wxTE_MULTILINE", "wxTE_DONTWRAP", "wxBORDER_NONE"],
 																					"m_sizerFlags":	["wxALL", "wxLEFT", "wxRIGHT", "wxTOP", "wxBOTTOM", "wxEXPAND"],
 																					"m_properties":	[{
 																							"type":	"winid",
