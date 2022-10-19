@@ -18,7 +18,8 @@
 **	Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
 **
 ***********************************************************************************/
-#include "CpmTools.h"
+
+#include "CpmTools.hpp"
 #include "CpmDefs.h"
 // --------------------------------------------------------------------------------
 #include <cstdio>

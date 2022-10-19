@@ -20,7 +20,7 @@
 ***********************************************************************************/
 
 #include "FileCopySettingsDialog.hpp"
-#include "Settings.h"
+#include "Settings.hpp"
 // --------------------------------------------------------------------------------
 FileCopySettingsDialog::FileCopySettingsDialog(wxWindow *parent, Settings *settings) : Ui_FileCopySettingsDialog(parent) {
     dialogSettings = settings;

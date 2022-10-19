@@ -20,11 +20,15 @@
 ***********************************************************************************/
 
 #include "MainWindow.hpp"
-
+#include "CpmGuiInterface.hpp"
+#include "CpmTools.hpp"
+#include "CreateFileDialog.hpp"
+#include "FileAttributesDialog.hpp"
+#include "FileProtectionsDialog.hpp"
+#include "RenameFileDialog.hpp"
+#include "Settings.hpp"
 #include "Version.h"
-#include "CpmTools.h"
 #include "FileCopySettingsDialog.hpp"
-#include "Settings.h"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/versioninfo.h>
@@ -39,12 +43,6 @@
 #include <wx/datetime.h>
 #include <wx/clipbrd.h>
 #include <wx/filename.h>
-
-#include "CpmGuiInterface.hpp"
-#include "CreateFileDialog.hpp"
-#include "FileAttributesDialog.hpp"
-#include "FileProtectionsDialog.hpp"
-#include "RenameFileDialog.hpp"
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_ENTER_WINDOW(MainWindow::onEnterWindow)
