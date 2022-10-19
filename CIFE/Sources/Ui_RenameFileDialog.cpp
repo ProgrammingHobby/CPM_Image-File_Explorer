@@ -32,7 +32,7 @@ Ui_RenameFileDialog::Ui_RenameFileDialog(wxWindow* parent, wxWindowID id, const 
     
     textOldFileName = new wxStaticText(this, wxID_ANY, _("Old File Name:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
     
-    gridBagSizer14->Add(textOldFileName, wxGBPosition(0,0), wxGBSpan(0,0), wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+    gridBagSizer14->Add(textOldFileName, wxGBPosition(0,0), wxGBSpan(1,1), wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
     
     editOldUser = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTE_RIGHT);
     editOldUser->Enable(false);
@@ -48,11 +48,11 @@ Ui_RenameFileDialog::Ui_RenameFileDialog(wxWindow* parent, wxWindowID id, const 
     editOldFileName->SetHint(wxT(""));
     #endif
     
-    gridBagSizer14->Add(editOldFileName, wxGBPosition(0,2), wxGBSpan(0,1), wxLEFT|wxRIGHT|wxTOP|wxEXPAND|wxALIGN_LEFT, WXC_FROM_DIP(4));
+    gridBagSizer14->Add(editOldFileName, wxGBPosition(0,2), wxGBSpan(1,1), wxLEFT|wxRIGHT|wxTOP|wxEXPAND|wxALIGN_LEFT, WXC_FROM_DIP(4));
     
     textNewFileName = new wxStaticText(this, wxID_ANY, _("New File Name:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
     
-    gridBagSizer14->Add(textNewFileName, wxGBPosition(1,0), wxGBSpan(1,0), wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+    gridBagSizer14->Add(textNewFileName, wxGBPosition(1,0), wxGBSpan(1,1), wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
     
     editNewUser = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTE_RIGHT);
     editNewUser->Enable(false);
