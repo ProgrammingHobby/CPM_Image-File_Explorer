@@ -17,9 +17,45 @@
 
 #ifndef CPMDEVICE_HPP_
 #define CPMDEVICE_HPP_
+// --------------------------------------------------------------------------------
+#include <string>
+// --------------------------------------------------------------------------------
+class CpmDevice {
+    public:    // Attributes
 
-class CpmDevice
-    {
-    };
+    public:    // Methods
+        bool Open(const char *filename, const char *mode);
+        void SetGeometry(int secLength, int sectrk, int tracks, long offset);
+        bool Close();
+        bool ReadSector(int track, int sector, char *buffer);
+        bool WriteSector(int track, int sector, const char *buffer);
+        bool isOpen();
+        std::string getErrorMsg();
 
+    public:    // Constructor & Destructor
+        CpmDevice();
+        virtual ~CpmDevice();
+
+    protected:    // Attributes
+
+    protected:    // Methods
+
+    private:    // Attributes
+        typedef struct {
+            bool opened;
+            int secLength;
+            int tracks;
+            int sectrk;
+            off_t offset;
+            FILE *file;
+        } Device_t;
+
+        Device_t device;
+        std::string deverr;
+
+    private:    // Methods
+        std::string msgFormat(const std::string fmt_str, ...);
+};
+
+// --------------------------------------------------------------------------------
 #endif /* CPMDEVICE_HPP_ */
