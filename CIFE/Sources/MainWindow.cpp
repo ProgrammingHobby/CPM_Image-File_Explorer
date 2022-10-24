@@ -183,6 +183,8 @@ MainWindow::~MainWindow() {
 
     wxDELETE(cpmguiinterface);
     wxDELETE(cpmtools);
+    wxDELETE(cpmfs);
+    wxDELETE(cpmdevice);
     wxDELETE(cifeSettings);
     wxDELETE(popupMenu);
 }
