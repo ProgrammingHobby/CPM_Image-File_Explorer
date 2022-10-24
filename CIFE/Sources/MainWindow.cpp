@@ -63,32 +63,27 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
 END_EVENT_TABLE()
 // --------------------------------------------------------------------------------
 MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(parent) {
-
     cpmguiinterface = new CpmGuiInterface(listImageContents, textMessages, textContentsInfo);
-    cpmtools = new CpmTools(cpmguiinterface, appPath);
+    cpmdevice = new CpmDevice();
+    cpmfs = new CpmFs(cpmdevice, appPath.ToStdString());
+    cpmtools = new CpmTools(cpmdevice, cpmfs, cpmguiinterface, appPath);
     cifeSettings = new Settings("cife.conf");
-
     int size = editImageFile->GetSize().GetHeight();
     buttonImageFile->SetMinSize(wxSize(size, size));
     buttonImageFile->SetMaxSize(wxSize(size, size));
     comboboxImageType->Append(getImageTypes(appPath));
     comboboxImageType->SetSelection(0);
     editImageFile->SetFocus();
-
     wxSize fontSize = this->GetFont().GetPixelSize();
     wxFont listFont = wxFont(fontSize, wxFontFamily::wxFONTFAMILY_TELETYPE,
                              wxFontStyle::wxFONTSTYLE_NORMAL, wxFontWeight::wxFONTWEIGHT_NORMAL);
     listImageContents->SetFont(listFont);
     textContentsInfo->SetFont(listFont);
     textMessages->SetFont(listFont);
-
     listImageContents->Bind(wxEVT_CONTEXT_MENU, &MainWindow::onShowContextMenu, this);
-
     comboboxImageType->SetSelection(cifeSettings->readInteger("CpmSettings", "ImageType", 0));
     cpmtools->setImageType(comboboxImageType->GetValue());
-
     wxString filePath = cifeSettings->readString("CpmSettings", "ImageFile", "");
-
     presetMenues();
     createPopupMenu();
     listImageContents->enableSizing(true);
@@ -97,7 +92,8 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     if (wxFileExists(filePath)) {
         editImageFile->SetValue(filePath);
         editImageFile->SetInsertionPoint(filePath.length());
-        cpmtools->setImageFile(filePath);
+        cpmtools->setImageType(comboboxImageType->GetValue());
+        cpmtools->openImage(filePath);
         isImageLoaded = true;
         showDirectory();
     }
@@ -108,8 +104,6 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     if (listImageContents->GetItemCount() > 0) {
         menuMainWindow->Enable(wxID_SELECTALL, true);
     }
-
-
 }
 
 // --------------------------------------------------------------------------------
@@ -238,7 +232,7 @@ void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
         wxString filePath = fileDialog.GetPath();
         editImageFile->SetValue(filePath);
         editImageFile->SetInsertionPoint(filePath.length());
-        cpmtools->setImageFile(filePath);
+        cpmtools->openImage(filePath);
         isImageLoaded = true;
         showDirectory();
     }
@@ -480,11 +474,11 @@ void MainWindow::onRename(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onCreateNew(wxCommandEvent &event) {
     CreateFileDialog *dialog = new CreateFileDialog(this);
-    dialog->setBootTracksUsed(cpmtools->getBootTracksEnabled());
+    dialog->setBootTracksUsed(cpmfs->getBootTracksEnabled());
 
     if (dialog->ShowModal() == wxID_OK) {
-        cpmtools->createNewImage(dialog->getFileSystemLabel(), dialog->getUseTimestamps(),
-                                 dialog->getBootTrackFile());
+        cpmtools->createNewImage(editImageFile->GetValue(), dialog->getFileSystemLabel(),
+                                 dialog->getUseTimestamps(), dialog->getBootTrackFile());
         onViewRefresh(event);
     }
 

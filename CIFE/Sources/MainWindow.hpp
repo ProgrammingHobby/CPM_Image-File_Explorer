@@ -23,6 +23,8 @@
 #include "Ui_MainWindow.hpp"
 // --------------------------------------------------------------------------------
 class wxMenu;
+class CpmDevice;
+class CpmFs;
 class CpmTools;
 class CpmGuiInterface;
 class Settings;
@@ -61,6 +63,8 @@ class MainWindow : public Ui_MainWindow {
     private:    // Attributes
         wxMenu *popupMenu;
         Settings *cifeSettings;
+        CpmDevice *cpmdevice;
+        CpmFs *cpmfs;
         CpmTools *cpmtools;
         CpmGuiInterface *cpmguiinterface;
         bool isImageLoaded;
