@@ -42,6 +42,9 @@
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_ENTER_WINDOW(MainWindow::onEnterWindow)
+    EVT_MENU(wxID_FILE_OPEN, MainWindow::onMenuImageFileOpen)
+    EVT_MENU(wxID_FILE_CLOSE, MainWindow::onMenuImageFileClose)
+    EVT_MENU(wxID_FILE_NEW, MainWindow::onMenuNewImageFile)
     EVT_MENU(wxID_QUIT, MainWindow::onMenuCloseClicked)
     EVT_MENU(wxID_ABOUT, MainWindow::onMenuAboutClicked)
     EVT_MENU(wxID_REFRESH, MainWindow::onViewRefresh)
@@ -182,6 +185,18 @@ MainWindow::~MainWindow() {
     wxDELETE(cpmtools);
     wxDELETE(cifeSettings);
     wxDELETE(popupMenu);
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onMenuImageFileOpen(wxCommandEvent &event) {
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onMenuImageFileClose(wxCommandEvent &event) {
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onMenuNewImageFile(wxCommandEvent &event) {
 }
 
 // --------------------------------------------------------------------------------
