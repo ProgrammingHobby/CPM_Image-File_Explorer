@@ -42,7 +42,7 @@
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_ENTER_WINDOW(MainWindow::onEnterWindow)
-    EVT_MENU(wxID_CLOSE, MainWindow::onMenuCloseClicked)
+    EVT_MENU(wxID_QUIT, MainWindow::onMenuCloseClicked)
     EVT_MENU(wxID_ABOUT, MainWindow::onMenuAboutClicked)
     EVT_MENU(wxID_REFRESH, MainWindow::onViewRefresh)
     EVT_MENU(wxID_SELECTALL, MainWindow::onSelectAll)
@@ -54,7 +54,6 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CHECK_IMAGE, MainWindow::onCheckImage)
     EVT_MENU(wxID_COPY_SETTINGS, MainWindow::onCopySettings)
     EVT_MENU(wxID_PASTE, MainWindow::onPasteFile)
-    EVT_BUTTON(wxID_BUTTON_IMAGE_FILE, MainWindow::onButtonImageFileClicked)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
     EVT_COMBOBOX(wxID_IMAGE_TYPE, MainWindow::onImageTypeChanged)
@@ -68,9 +67,6 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     cpmfs = new CpmFs(cpmdevice, appPath.ToStdString());
     cpmtools = new CpmTools(cpmdevice, cpmfs, cpmguiinterface, appPath);
     cifeSettings = new Settings("cife.conf");
-    int size = editImageFile->GetSize().GetHeight();
-    buttonImageFile->SetMinSize(wxSize(size, size));
-    buttonImageFile->SetMaxSize(wxSize(size, size));
     comboboxImageType->Append(getImageTypes(appPath));
     comboboxImageType->SetSelection(0);
     editImageFile->SetFocus();
@@ -218,24 +214,6 @@ void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
     }
 
     wxAboutBox(aboutInfo, this);
-}
-
-// --------------------------------------------------------------------------------
-void MainWindow::onButtonImageFileClicked(wxCommandEvent &event) {
-    WXUNUSED(event)
-    wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"),
-                            wxStandardPaths::Get().GetUserDataDir(),
-                            wxEmptyString, _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;*.fdd;*.FDD;*.dsk;*.DSK|"
-                                    "all Files (*.*)|*.*"), wxFD_OPEN);
-
-    if (fileDialog.ShowModal() == wxID_OK) {
-        wxString filePath = fileDialog.GetPath();
-        editImageFile->SetValue(filePath);
-        editImageFile->SetInsertionPoint(filePath.length());
-        cpmtools->openImage(filePath);
-        isImageLoaded = true;
-        showDirectory();
-    }
 }
 
 // --------------------------------------------------------------------------------
