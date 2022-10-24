@@ -191,10 +191,29 @@ MainWindow::~MainWindow() {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onMenuImageFileOpen(wxCommandEvent &event) {
+    WXUNUSED(event) wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"),
+                                            wxStandardPaths::Get().GetUserDataDir(), wxEmptyString,
+                                            _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;"
+                                                    "*.fdd;*.FDD;*.dsk;*.DSK|all Files (*.*)|*.*"),
+                                            wxFD_OPEN);
+
+    if (fileDialog.ShowModal() == wxID_OK) {
+        wxString filePath = fileDialog.GetPath();
+        editImageFile->SetValue(filePath);
+        editImageFile->SetInsertionPoint(filePath.length());
+        cpmtools->openImage(filePath);
+        isImageLoaded = true;
+        showDirectory();
+    }
 }
 
 // --------------------------------------------------------------------------------
 void MainWindow::onMenuImageFileClose(wxCommandEvent &event) {
+    cpmtools->closeImage();
+    editImageFile->SetValue("");
+    listImageContents->DeleteAllItems();
+    presetMenues();
+    isImageLoaded = false;
 }
 
 // --------------------------------------------------------------------------------
