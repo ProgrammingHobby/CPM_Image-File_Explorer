@@ -23,10 +23,10 @@
 #include <wx/combobox.h>
 #include <wx/arrstr.h>
 #include <wx/textctrl.h>
-#include <wx/button.h>
 #include <wx/splitter.h>
 #include "CifeListView.hpp"
 #include <wx/statline.h>
+#include <wx/button.h>
 #if wxVERSION_NUMBER >= 2900
 #include <wx/persist.h>
 #include <wx/persist/toplevel.h>
@@ -50,20 +50,28 @@ class Ui_MainWindow : public wxFrame
 public:
     enum {
         wxID_BUTTON_CLEAR_MESSAGES = 10001,
-        wxID_BUTTON_IMAGE_FILE = 10002,
-        wxID_IMAGE_TYPE = 10003,
-        wxID_COPY_SETTINGS = 10004,
-        wxID_CHECK_IMAGE = 10005,
-        wxID_CREATE_NEW = 10006,
-        wxID_BUTTON_SAVE_MESSAGES = 10007,
-        wxID_IMAGE_CONTENTS = 10008,
-        wxID_PROTECTIONS = 10009,
-        wxID_ATTRIBUTES = 10010,
+        wxID_IMAGE_TYPE = 10002,
+        wxID_CHECK_IMAGE = 10003,
+        wxID_CREATE_NEW = 10004,
+        wxID_BUTTON_SAVE_MESSAGES = 10005,
+        wxID_IMAGE_CONTENTS = 10006,
+        wxID_PROTECTIONS = 10007,
+        wxID_QUIT = 10008,
+        wxID_ATTRIBUTES = 10009,
+        wxID_FILE_CLOSE = 10010,
+        wxID_COPY_SETTINGS = 10011,
+        wxID_FILE_OPEN = 10012,
+        wxID_FILE_NEW = 10013,
     };
 protected:
     wxMenuBar* menuMainWindow;
     wxMenu* menuFile;
-    wxMenuItem* menuItemClose;
+    wxMenuItem* menuItemNew;
+    wxMenuItem* menuItemOpen;
+    wxMenuItem* menuItemSeparator;
+    wxMenuItem* menuItemFileClose;
+    wxMenuItem* menuItemSeparator1;
+    wxMenuItem* menuItemQuit;
     wxMenu* menuEdit;
     wxMenuItem* menuItemCut;
     wxMenuItem* menuItemCopy;
@@ -76,7 +84,7 @@ protected:
     wxMenuItem* menuItemAttributes;
     wxMenuItem* menuItemProtections;
     wxMenuItem* menuItemSeparator4;
-    wxMenuItem* menuItemCreateNew;
+    wxMenuItem* menuItemFormatCurrent;
     wxMenu* menuView;
     wxMenuItem* menuItemRefresh;
     wxMenu* menuTools;
@@ -92,7 +100,6 @@ protected:
     wxStaticText* textDiskdefsCount;
     wxStaticText* textImageFile;
     wxTextCtrl* editImageFile;
-    wxButton* buttonImageFile;
     wxPanel* panelImageViews;
     wxSplitterWindow* splitterImageViews;
     wxPanel* splitterPageImageContents;
@@ -116,7 +123,6 @@ public:
     wxStaticText* GetTextDiskdefsCount() { return textDiskdefsCount; }
     wxStaticText* GetTextImageFile() { return textImageFile; }
     wxTextCtrl* GetEditImageFile() { return editImageFile; }
-    wxButton* GetButtonImageFile() { return buttonImageFile; }
     wxPanel* GetPanelImageFile() { return panelImageFile; }
     CifeListView* GetListImageContents() { return listImageContents; }
     wxStaticLine* GetLineImageContents() { return lineImageContents; }

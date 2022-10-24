@@ -40,9 +40,25 @@ Ui_MainWindow::Ui_MainWindow(wxWindow* parent, wxWindowID id, const wxString& ti
     menuFile = new wxMenu();
     menuMainWindow->Append(menuFile, _("File"));
     
-    menuItemClose = new wxMenuItem(menuFile, wxID_CLOSE, _("Close\tCtrl+W"), wxT(""), wxITEM_NORMAL);
-    menuItemClose->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("close")));
-    menuFile->Append(menuItemClose);
+    menuItemNew = new wxMenuItem(menuFile, wxID_FILE_NEW, _("New\tCtrl+N"), wxT(""), wxITEM_NORMAL);
+    menuItemNew->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("create_new")));
+    menuFile->Append(menuItemNew);
+    
+    menuItemOpen = new wxMenuItem(menuFile, wxID_FILE_OPEN, _("Open\tCtrl+O"), wxT(""), wxITEM_NORMAL);
+    menuItemOpen->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("datei")));
+    menuFile->Append(menuItemOpen);
+    
+    menuFile->AppendSeparator();
+    
+    menuItemFileClose = new wxMenuItem(menuFile, wxID_FILE_CLOSE, _("Close\tCtrl+W"), wxT(""), wxITEM_NORMAL);
+    menuItemFileClose->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("close")));
+    menuFile->Append(menuItemFileClose);
+    
+    menuFile->AppendSeparator();
+    
+    menuItemQuit = new wxMenuItem(menuFile, wxID_QUIT, _("Quit\tCtrl+Q"), wxT(""), wxITEM_NORMAL);
+    menuItemQuit->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("quit")));
+    menuFile->Append(menuItemQuit);
     
     menuEdit = new wxMenu();
     menuMainWindow->Append(menuEdit, _("Edit"));
@@ -85,9 +101,9 @@ Ui_MainWindow::Ui_MainWindow(wxWindow* parent, wxWindowID id, const wxString& ti
     
     menuEdit->AppendSeparator();
     
-    menuItemCreateNew = new wxMenuItem(menuEdit, wxID_CREATE_NEW, _("Create New Image"), wxT(""), wxITEM_NORMAL);
-    menuItemCreateNew->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("create_new")));
-    menuEdit->Append(menuItemCreateNew);
+    menuItemFormatCurrent = new wxMenuItem(menuEdit, wxID_CREATE_NEW, _("Format Current Image"), wxT(""), wxITEM_NORMAL);
+    menuItemFormatCurrent->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("create_new")));
+    menuEdit->Append(menuItemFormatCurrent);
     
     menuView = new wxMenu();
     menuMainWindow->Append(menuView, _("View"));
@@ -159,10 +175,6 @@ Ui_MainWindow::Ui_MainWindow(wxWindow* parent, wxWindowID id, const wxString& ti
     #endif
     
     sizerImage->Add(editImageFile, wxGBPosition(1,1), wxGBSpan(1,1), wxRIGHT|wxEXPAND, WXC_FROM_DIP(2));
-    
-    buttonImageFile = new wxButton(panelImageFile, wxID_BUTTON_IMAGE_FILE, _("..."), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1,-1)), 0);
-    
-    sizerImage->Add(buttonImageFile, wxGBPosition(1,2), wxGBSpan(1,1), wxRIGHT|wxEXPAND, WXC_FROM_DIP(4));
     sizerImage->AddGrowableCol(1);
     panelImageViews = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxBORDER_NONE);
     
