@@ -90,7 +90,7 @@ bool CreateFileDialog::useTimestamps() {
 void CreateFileDialog::onButtonImageFileClicked(wxCommandEvent &event) {
     WXUNUSED(event)
     wxFileDialog fileDialog(this, _("Open CP/M Boot-Track Image File"),
-                            wxStandardPaths::Get().GetUserDataDir(), wxEmptyString,
+                            wxStandardPaths::Get().GetDocumentsDir(), wxEmptyString,
                             _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;*.fdd;*.FDD;*.dsk;*.DSK|"
                               "Binary Files (*.bin,*.cpm,*.sys)|*.bin;*.BIN;*.cpm;*.CPM;*.sys;*.SYS|"
                               "all Files (*.*)|*.*"), wxFD_SAVE);
@@ -106,7 +106,7 @@ void CreateFileDialog::onButtonImageFileClicked(wxCommandEvent &event) {
 void CreateFileDialog::onButtonBootFileClicked(wxCommandEvent &event) {
     WXUNUSED(event)
     wxFileDialog fileDialog(this, _("Open CP/M Boot-Track Image File"),
-                            wxStandardPaths::Get().GetUserDataDir(), wxEmptyString,
+                            wxStandardPaths::Get().GetDocumentsDir(), wxEmptyString,
                             _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;*.fdd;*.FDD;*.dsk;*.DSK|"
                               "Binary Files (*.bin,*.cpm,*.sys)|*.bin;*.BIN;*.cpm;*.CPM;*.sys;*.SYS|"
                               "all Files (*.*)|*.*"), wxFD_OPEN);

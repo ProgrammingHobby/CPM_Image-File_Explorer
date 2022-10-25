@@ -194,11 +194,12 @@ MainWindow::~MainWindow() {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onMenuImageFileOpen(wxCommandEvent &event) {
-    WXUNUSED(event) wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"),
-                                            wxStandardPaths::Get().GetUserDataDir(), wxEmptyString,
-                                            _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;"
-                                                    "*.fdd;*.FDD;*.dsk;*.DSK|all Files (*.*)|*.*"),
-                                            wxFD_OPEN);
+    WXUNUSED(event)
+    wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"),
+                            wxStandardPaths::Get().GetDocumentsDir(), wxEmptyString,
+                            _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;"
+                              "*.fdd;*.FDD;*.dsk;*.DSK|all Files (*.*)|*.*"),
+                            wxFD_OPEN);
 
     if (fileDialog.ShowModal() == wxID_OK) {
         wxString filePath = fileDialog.GetPath();
@@ -224,15 +225,18 @@ void MainWindow::onMenuImageFileClose(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onMenuNewImageFile(wxCommandEvent &event) {
-    CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs->getBootTracksEnabled(),true);
-            if (dialog->ShowModal() == wxID_OK) {
-                editImageFile->SetValue(dialog->getImageFileName());
-                cpmtools->createNewImage(editImageFile->GetValue(), dialog->getFileSystemLabel(), dialog->useTimestamps(), dialog->getBootTrackFile());
-                cpmtools->openImage(editImageFile->GetValue());
-                onViewRefresh(event);
-            }
+    CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs->getBootTracksEnabled(),
+            true);
 
-            wxDELETE(dialog);
+    if (dialog->ShowModal() == wxID_OK) {
+        editImageFile->SetValue(dialog->getImageFileName());
+        cpmtools->createNewImage(editImageFile->GetValue(), dialog->getFileSystemLabel(),
+                                 dialog->useTimestamps(), dialog->getBootTrackFile());
+        cpmtools->openImage(editImageFile->GetValue());
+        onViewRefresh(event);
+    }
+
+    wxDELETE(dialog);
 }
 
 // --------------------------------------------------------------------------------
