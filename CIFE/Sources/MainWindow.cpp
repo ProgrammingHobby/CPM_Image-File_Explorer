@@ -224,6 +224,15 @@ void MainWindow::onMenuImageFileClose(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onMenuNewImageFile(wxCommandEvent &event) {
+    CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs->getBootTracksEnabled(),true);
+            if (dialog->ShowModal() == wxID_OK) {
+                editImageFile->SetValue(dialog->getImageFileName());
+                cpmtools->createNewImage(editImageFile->GetValue(), dialog->getFileSystemLabel(), dialog->useTimestamps(), dialog->getBootTrackFile());
+                cpmtools->openImage(editImageFile->GetValue());
+                onViewRefresh(event);
+            }
+
+            wxDELETE(dialog);
 }
 
 // --------------------------------------------------------------------------------
