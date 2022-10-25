@@ -1106,7 +1106,6 @@ int CpmFs::cpmCheckDs() {
 //  -- get DPB
 // --------------------------------------------------------------------------------
 int CpmFs::cpmReadDiskdefData(const char *format) {
-    //TODO: Aufspalten in 'Read Image Definition' und 'Reset Superblock'
     while (s_ifdir && !S_ISDIR(s_ifdir)) {
         s_ifdir <<= 1;
     }
@@ -1371,18 +1370,24 @@ void CpmFs::cpmUmount() {
 
     if (drive.type & CPMFS_DS_DATES) {
         free(drive.ds);
+        drive.ds = nullptr;
     }
 
     free(drive.alv);
+    drive.alv = nullptr;
     free(drive.skewtab);
+    drive.skewtab = nullptr;
     free(drive.dir);
+    drive.dir = nullptr;
 
     if (drive.passwdLength) {
         free(drive.passwd);
+        drive.passwd = nullptr;
     }
 
     if (drive.labelLength) {
         free(drive.label);
+        drive.label = nullptr;
     }
 }
 
