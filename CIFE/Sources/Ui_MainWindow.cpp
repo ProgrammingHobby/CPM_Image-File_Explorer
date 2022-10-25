@@ -155,7 +155,7 @@ Ui_MainWindow::Ui_MainWindow(wxWindow* parent, wxWindowID id, const wxString& ti
     sizerImage->Add(sizerImageType, wxGBPosition(0,1), wxGBSpan(1,1), wxTOP|wxBOTTOM, WXC_FROM_DIP(4));
     
     wxArrayString comboboxImageTypeArr;
-    comboboxImageType = new wxComboBox(panelImageFile, wxID_IMAGE_TYPE, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1,-1)), comboboxImageTypeArr, wxCB_READONLY);
+    comboboxImageType = new wxComboBox(panelImageFile, wxID_IMAGE_TYPE, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1,-1)), comboboxImageTypeArr, wxCB_SORT|wxCB_READONLY);
     
     sizerImageType->Add(comboboxImageType, 0, 0, WXC_FROM_DIP(4));
     
