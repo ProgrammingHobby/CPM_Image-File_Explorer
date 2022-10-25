@@ -95,6 +95,9 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
         cpmtools->openImage(filePath);
         isImageLoaded = true;
         showDirectory();
+        menuMainWindow->Enable(wxID_FILE_CLOSE, true);
+        menuMainWindow->Enable(wxID_FILE_NEW, false);
+        menuMainWindow->Enable(wxID_FILE_OPEN, false);
     }
     else {
         isImageLoaded = false;
@@ -204,6 +207,9 @@ void MainWindow::onMenuImageFileOpen(wxCommandEvent &event) {
         cpmtools->openImage(filePath);
         isImageLoaded = true;
         showDirectory();
+        menuMainWindow->Enable(wxID_FILE_CLOSE, true);
+        menuMainWindow->Enable(wxID_FILE_NEW, false);
+        menuMainWindow->Enable(wxID_FILE_OPEN, false);
     }
 }
 
@@ -356,6 +362,9 @@ void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::presetMenues() {
+    menuMainWindow->Enable(wxID_FILE_CLOSE, false);
+    menuMainWindow->Enable(wxID_FILE_NEW, true);
+    menuMainWindow->Enable(wxID_FILE_OPEN, true);
     menuMainWindow->Enable(wxID_CUT, false);
     menuMainWindow->Enable(wxID_COPY, false);
     menuMainWindow->Enable(wxID_PASTE, false);
