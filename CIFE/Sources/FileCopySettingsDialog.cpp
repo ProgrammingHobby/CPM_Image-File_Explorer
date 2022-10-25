@@ -26,6 +26,8 @@ FileCopySettingsDialog::FileCopySettingsDialog(wxWindow *parent,
                                         "DefaultUserNumber", 0));
     editTextFileEndings->SetValue(dialogSettings->readString("CpmOptions", "TextfileEndings",
                                   "txt pip pas"));
+    checkboxKeepLastUpdated->SetValue(dialogSettings->readBoolean("CpmOptions",
+                                      "KeepLastUpdatedTimestamp", false));
 
     correctDialogSize();
 

@@ -565,13 +565,16 @@ void MainWindow::onPasteFile(wxCommandEvent &event) {
             int defaultUserNumber = cifeSettings->readInteger("CpmOptions", "DefaultUserNumber", 0);
             wxString textFileEndings = cifeSettings->readString("CpmOptions", "TextfileEndings",
                                        "txt pip pas");
+            bool keepLastUpdatedTimestamp = cifeSettings->readBoolean("CpmOptions",
+                                            "KeepLastUpdatedTimestamp", false);
             wxArrayString files = data.GetFilenames();
 
             for (size_t i = 0; i < files.Count(); i++) {
                 wxFileName fileName(files[i]);
                 wxString fileExt = fileName.GetExt();
                 bool isTextFile = textFileEndings.Matches("*" + fileExt + "*");
-                cpmtools->writeFileToImage(files[i], defaultUserNumber, isTextFile, true);
+                cpmtools->writeFileToImage(files[i], defaultUserNumber, isTextFile,
+                                           keepLastUpdatedTimestamp);
             }
 
             onViewRefresh(event);

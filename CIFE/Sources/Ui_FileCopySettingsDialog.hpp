@@ -18,6 +18,7 @@
 #include <wx/panel.h>
 #include <wx/stattext.h>
 #include <wx/spinctrl.h>
+#include <wx/checkbox.h>
 #include <wx/textctrl.h>
 #if wxVERSION_NUMBER >= 2900
 #include <wx/persist.h>
@@ -43,6 +44,8 @@ protected:
     wxPanel* panelDefaultUserNumber;
     wxStaticText* textDefaultUserNumber;
     wxSpinCtrl* spinCtrlDefaultUserNumber;
+    wxPanel* panelKeepLastUpdated;
+    wxCheckBox* checkboxKeepLastUpdated;
     wxPanel* panelTextfileEndings;
     wxStaticText* labelTextFileEndings;
     wxTextCtrl* editTextFileEndings;
@@ -53,6 +56,8 @@ public:
     wxStaticText* GetTextDefaultUserNumber() { return textDefaultUserNumber; }
     wxSpinCtrl* GetSpinCtrlDefaultUserNumber() { return spinCtrlDefaultUserNumber; }
     wxPanel* GetPanelDefaultUserNumber() { return panelDefaultUserNumber; }
+    wxCheckBox* GetCheckboxKeepLastUpdated() { return checkboxKeepLastUpdated; }
+    wxPanel* GetPanelKeepLastUpdated() { return panelKeepLastUpdated; }
     wxStaticText* GetLabelTextFileEndings() { return labelTextFileEndings; }
     wxTextCtrl* GetEditTextFileEndings() { return editTextFileEndings; }
     wxPanel* GetPanelTextfileEndings() { return panelTextfileEndings; }

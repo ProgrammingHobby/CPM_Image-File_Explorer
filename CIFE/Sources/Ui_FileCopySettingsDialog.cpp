@@ -43,6 +43,18 @@ Ui_FileCopySettingsDialog::Ui_FileCopySettingsDialog(wxWindow* parent, wxWindowI
     
     sizerDefaultUserNumber->Add(spinCtrlDefaultUserNumber, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
     
+    panelKeepLastUpdated = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL|wxBORDER_THEME);
+    
+    sizerFileCopySettingsDialog->Add(panelKeepLastUpdated, 0, wxALL|wxEXPAND, WXC_FROM_DIP(4));
+    
+    wxBoxSizer* sizerKeepLastUpdated = new wxBoxSizer(wxVERTICAL);
+    panelKeepLastUpdated->SetSizer(sizerKeepLastUpdated);
+    
+    checkboxKeepLastUpdated = new wxCheckBox(panelKeepLastUpdated, wxID_ANY, _("keep last updated timestamps"), wxDefaultPosition, wxDLG_UNIT(panelKeepLastUpdated, wxSize(-1,-1)), wxBORDER_THEME);
+    checkboxKeepLastUpdated->SetValue(false);
+    
+    sizerKeepLastUpdated->Add(checkboxKeepLastUpdated, 0, wxALL, WXC_FROM_DIP(4));
+    
     panelTextfileEndings = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL|wxBORDER_THEME);
     
     sizerFileCopySettingsDialog->Add(panelTextfileEndings, 1, wxALL|wxEXPAND, WXC_FROM_DIP(4));
