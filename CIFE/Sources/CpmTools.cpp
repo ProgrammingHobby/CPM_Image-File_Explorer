@@ -262,7 +262,7 @@ void CpmTools::createNewImage(wxString imageFile, wxString label, bool useTimeSt
     char *bootTracks;
     cmd = "cpm.mkfs";
     wxString bootImage = bootTrackFile.substr(bootTrackFile.find_last_of("/\\") + 1);
-    wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
+    wxString image = imageFile.substr(imageFile.find_last_of("/\\") + 1);
     size_t bootTrackSize = cpmfs->getBootTrackSize();
 
     if ((bootTracks = (char *)malloc(bootTrackSize)) == (char *)0) {
