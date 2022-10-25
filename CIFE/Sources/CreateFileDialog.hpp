@@ -25,16 +25,18 @@ class CreateFileDialog : public Ui_CreateFileDialog {
     public:     // Attributes
 
     public:     // Methods
+        void setImageFileName(wxString fileName);
+        wxString getImageFileName();
         wxString getBootTrackFile();
         wxString getFileSystemLabel();
-        bool getUseTimestamps();
-        void setBootTracksUsed(bool value);
+        bool useTimestamps();
 
     public:     // Constructor & Destructor
-        CreateFileDialog(wxWindow *parent);
+        CreateFileDialog(wxWindow *parent, bool isBoottrackUsed = false, bool isNewFile = false);
         virtual ~CreateFileDialog();
 
     protected:  // Event Methods
+        void onButtonImageFileClicked(wxCommandEvent &event);
         void onButtonBootFileClicked(wxCommandEvent &event);
 
     private:    // Attributes

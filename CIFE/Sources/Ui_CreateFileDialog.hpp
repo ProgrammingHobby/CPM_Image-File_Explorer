@@ -44,33 +44,42 @@ class Ui_CreateFileDialog : public wxDialog
 public:
     enum {
         wxID_BUTTON_BOOTFILE = 10001,
+        wxID_BUTTON_IMAGEFILE = 10002,
     };
 protected:
+    wxStaticText* textImageFile;
     wxStaticText* textBootTrackFile;
     wxStaticText* textFileSystemLabel;
     wxTextCtrl* editFileSystemLabel;
     wxCheckBox* checkboxUseTimeStamps;
+    wxPanel* panelImageFile;
+    wxTextCtrl* editImageFile;
+    wxButton* buttonImageFile;
     wxPanel* panelBootTrackFile;
     wxTextCtrl* editBootTrackFile;
     wxButton* buttonBootTrackFile;
     wxPanel* panelCreationWarning;
-    wxStaticText* m_staticText38;
-    wxStaticText* m_staticText40;
+    wxStaticText* textWarning1;
+    wxStaticText* textWarning2;
     wxButton* buttonCancel;
     wxButton* buttonOk;
 
 protected:
 
 public:
+    wxStaticText* GetTextImageFile() { return textImageFile; }
     wxStaticText* GetTextBootTrackFile() { return textBootTrackFile; }
     wxStaticText* GetTextFileSystemLabel() { return textFileSystemLabel; }
     wxTextCtrl* GetEditFileSystemLabel() { return editFileSystemLabel; }
     wxCheckBox* GetCheckboxUseTimeStamps() { return checkboxUseTimeStamps; }
+    wxTextCtrl* GetEditImageFile() { return editImageFile; }
+    wxButton* GetButtonImageFile() { return buttonImageFile; }
+    wxPanel* GetPanelImageFile() { return panelImageFile; }
     wxTextCtrl* GetEditBootTrackFile() { return editBootTrackFile; }
     wxButton* GetButtonBootTrackFile() { return buttonBootTrackFile; }
     wxPanel* GetPanelBootTrackFile() { return panelBootTrackFile; }
-    wxStaticText* GetStaticText38() { return m_staticText38; }
-    wxStaticText* GetStaticText40() { return m_staticText40; }
+    wxStaticText* GetTextWarning1() { return textWarning1; }
+    wxStaticText* GetTextWarning2() { return textWarning2; }
     wxPanel* GetPanelCreationWarning() { return panelCreationWarning; }
     wxButton* GetButtonCancel() { return buttonCancel; }
     wxButton* GetButtonOk() { return buttonOk; }
