@@ -172,6 +172,8 @@ void MainWindow::correctWindowSize() {
     point.x = cifeSettings->readInteger("MainWindow", "PosX", 10);
     point.y = cifeSettings->readInteger("MainWindow", "PosY", 10);
     this->SetPosition(point);
+    splitterImageViews->SetSashPosition(cifeSettings->readInteger("MainWindow", "SplitterPos",
+                                        466), true);
 }
 
 // --------------------------------------------------------------------------------
@@ -180,7 +182,8 @@ MainWindow::~MainWindow() {
     cifeSettings->writeInteger("MainWindow", "PosY", this->GetPosition().y);
     cifeSettings->writeInteger("MainWindow", "SizeX", this->GetSize().x);
     cifeSettings->writeInteger("MainWindow", "SizeY", this->GetSize().y);
-
+    cifeSettings->writeInteger("MainWindow", "SplitterPos",
+                               splitterImageViews->GetSashPosition());
     cifeSettings->writeInteger("CpmSettings", "ImageType", comboboxImageType->GetSelection());
     cifeSettings->writeString("CpmSettings", "ImageFile", editImageFile->GetValue());
 
