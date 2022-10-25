@@ -496,12 +496,13 @@ void MainWindow::onRename(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onCreateNew(wxCommandEvent &event) {
-    CreateFileDialog *dialog = new CreateFileDialog(this);
-    dialog->setBootTracksUsed(cpmfs->getBootTracksEnabled());
+    CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs->getBootTracksEnabled());
+    dialog->setImageFileName(editImageFile->GetValue());
 
     if (dialog->ShowModal() == wxID_OK) {
         cpmtools->createNewImage(editImageFile->GetValue(), dialog->getFileSystemLabel(),
-                                 dialog->getUseTimestamps(), dialog->getBootTrackFile());
+                                 dialog->useTimestamps(), dialog->getBootTrackFile());
+        cpmtools->openImage(editImageFile->GetValue());
         onViewRefresh(event);
     }
 
