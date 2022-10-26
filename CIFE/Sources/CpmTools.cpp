@@ -35,7 +35,7 @@ CpmTools::~CpmTools() {
 bool CpmTools::setImageType(wxString typeName) {
     imageTypeName = typeName;
 
-    if (cpmfs->cpmReadDiskdefData(typeName.c_str()) == -1) {
+    if (cpmfs->readDiskdefData(typeName.c_str()) == -1) {
         guiintf->printMsg(wxString::Format("cannot read superblock  (%s)\n",
                                            cpmfs->getErrorMsg()));
         return (false);
@@ -55,7 +55,7 @@ bool CpmTools::openImage(wxString fileName) {
         return (false);
     }
     else {
-        if (cpmfs->cpmInitDriveData() == -1) {
+        if (cpmfs->initDriveData() == -1) {
             guiintf->printMsg(wxString::Format("cannot init filesystem  (%s)\n",
                                                cpmfs->getErrorMsg()));
             return (false);
@@ -67,7 +67,7 @@ bool CpmTools::openImage(wxString fileName) {
 
 // --------------------------------------------------------------------------------
 bool CpmTools::closeImage() {
-    cpmfs->cpmUmount();
+    cpmfs->unmount();
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if (!cpmdevice->Close()) {
@@ -88,22 +88,22 @@ void CpmTools::showDirectory() {
     int gargc, row = 0;
     char **gargv;
     cmd = "cpm.directory";
-    cpmfs->cpmglob(files.c_str(), &gargc, &gargv);
+    cpmfs->glob(files.c_str(), &gargc, &gargv);
 
     if (gargc) {
         int i, l, user, attrib;
         int totalBytes = 0, totalRecs = 0;
         qsort(gargv, gargc, sizeof(char *), namecmp);
-        cpmfs->cpmStatFS(&buf);
+        cpmfs->statFs(&buf);
 
         for (l = user = 0; user < 32; ++user) {
             for (i = 0; i < gargc; ++i) {
                 tm *tmp;
 
                 if (gargv[i][0] == '0' + user / 10 && gargv[i][1] == '0' + user % 10) {
-                    cpmfs->cpmNamei(gargv[i], &file);
-                    cpmfs->cpmStat(&file, &statbuf);
-                    cpmfs->cpmAttrGet(&file, &attrib);
+                    cpmfs->namei(gargv[i], &file);
+                    cpmfs->stat(&file, &statbuf);
+                    cpmfs->attrGet(&file, &attrib);
                     totalBytes += statbuf.size;
                     totalRecs += (statbuf.size + 127) / 128;
                     /*    user: name    */
@@ -188,15 +188,15 @@ void CpmTools::deleteFile(wxArrayString files) {
 
     for (size_t count = 0; count < files.GetCount(); count++) {
         wxString fileName = files.Item(count);
-        cpmfs->cpmglob(fileName.c_str(), &gargc, &gargv);
+        cpmfs->glob(fileName.c_str(), &gargc, &gargv);
 
-        if (cpmfs->cpmUnlink(gargv[0]) == -1) {
+        if (cpmfs->unlink(gargv[0]) == -1) {
             guiintf->printMsg(wxString::Format("%s: can not erase %s  (%s)\n", cmd, gargv[0],
                                                cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
         }
     }
 
-    cpmfs->cpmSync();
+    cpmfs->sync();
 }
 
 // --------------------------------------------------------------------------------
@@ -205,15 +205,15 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     char **gargv;
     int gargc;
     cmd = "cpm.rename";
-    cpmfs->cpmglob(oldName.c_str(), &gargc, &gargv);
+    cpmfs->glob(oldName.c_str(), &gargc, &gargv);
     convertFilename(newName.c_str(), nName);
 
-    if (cpmfs->cpmRename(gargv[0], nName) == -1) {
+    if (cpmfs->rename(gargv[0], nName) == -1) {
         guiintf->printMsg(wxString::Format("%s: can not rename %s in %s  (%s)\n", cmd, oldName,
                                            newName, cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
     }
 
-    cpmfs->cpmSync();
+    cpmfs->sync();
 }
 
 // --------------------------------------------------------------------------------
@@ -222,18 +222,18 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
     int gargc;
     CpmFs::CpmInode_t ino;
     cmd = "cpm.chattr";
-    cpmfs->cpmglob(name.c_str(), &gargc, &gargv);
+    cpmfs->glob(name.c_str(), &gargc, &gargv);
 
-    if (cpmfs->cpmNamei(gargv[0], &ino) == -1) {
+    if (cpmfs->namei(gargv[0], &ino) == -1) {
         guiintf->printMsg(wxString::Format("%s: can not find %s  (%s)\n", cmd, gargv[0],
                                            cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
     }
-    else if (cpmfs->cpmAttrSet(&ino, attributes) == -1) {
+    else if (cpmfs->attrSet(&ino, attributes) == -1) {
         guiintf->printMsg(wxString::Format("%s: can not set attributes %s  (%s)\n", cmd, gargv[0],
                                            cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
     }
 
-    cpmfs->cpmSync();
+    cpmfs->sync();
 }
 
 // --------------------------------------------------------------------------------
@@ -242,19 +242,19 @@ void CpmTools::setFileProtections(wxString name, int protections) {
     int gargc;
     CpmFs::CpmInode_t ino;
     cmd = "cpm.chprot";
-    cpmfs->cpmglob(name.c_str(), &gargc, &gargv);
+    cpmfs->glob(name.c_str(), &gargc, &gargv);
 
-    if (cpmfs->cpmNamei(gargv[0], &ino) == -1) {
+    if (cpmfs->namei(gargv[0], &ino) == -1) {
         guiintf->printMsg(wxString::Format("%s: can not find %s  (%s)\n", cmd, gargv[0],
                                            cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
     }
-    else if (cpmfs->cpmProtSet(&ino, protections) == -1) {
+    else if (cpmfs->protSet(&ino, protections) == -1) {
         guiintf->printMsg(wxString::Format("%s: can not set protections %s  (%s)\n", cmd,
                                            gargv[0],
                                            cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
     }
 
-    cpmfs->cpmSync();
+    cpmfs->sync();
 }
 
 // --------------------------------------------------------------------------------
@@ -322,7 +322,7 @@ void CpmTools::checkImage(bool doRepair) {
     ret = fsck(image.c_str(), doRepair);
 
     if (ret & MODIFIED) {
-        if (cpmfs->cpmSync() == -1) {
+        if (cpmfs->sync() == -1) {
             guiintf->printMsg(wxString::Format("%s: write error on %s  (%s)\n", cmd, image.c_str(),
                                                strerror(errno)), CpmGuiInterface::msgColRed);
             ret |= BROKEN;
@@ -338,7 +338,7 @@ void CpmTools::checkImage(bool doRepair) {
         guiintf->printMsg(wxString::Format("\n"), CpmGuiInterface::msgColBlue);
     }
 
-    cpmfs->cpmSync();
+    cpmfs->sync();
 }
 
 // --------------------------------------------------------------------------------
@@ -350,9 +350,9 @@ void CpmTools::writeFileToImage(wxString filename, int userNumber, bool isTextFi
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
     wxString cpmfile = wxString::Format("%d:",
                                         userNumber) + filename.substr(filename.find_last_of("/\\") + 1);
-    cpmfs->cpmglob(cpmfile.c_str(), &gargc, &gargv);
+    cpmfs->glob(cpmfile.c_str(), &gargc, &gargv);
     unix2cpm(filename, cpmfile, isTextFile, preserveTimeStamps);
-    cpmfs->cpmSync();
+    cpmfs->sync();
 }
 
 // --------------------------------------------------------------------------------
@@ -1002,7 +1002,7 @@ int CpmTools::fsck(const char *image, bool repair) {
     if (ret == 0) { /* print statistics */
         CpmFs::CpmStatFS_t statfsbuf;
         int fragmented = 0, borders = 0;
-        cpmfs->cpmStatFS(&statfsbuf);
+        cpmfs->statFs(&statfsbuf);
 
         for (extent = 0; extent < drive.maxdir; ++extent) {
             if ((dir = drive.dir + extent)->status >= 0
@@ -1063,7 +1063,7 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
         snprintf(cpmname, sizeof(cpmname), "%02d%s", getUserNumber(cpmfilename),
                  strchr(cpmfilename, ':') + 1);
 
-        if (cpmfs->cpmCreat(&cpmfs->getDirectoryRoot(), cpmname, &ino, 0666) == -1) {
+        if (cpmfs->create(&cpmfs->getDirectoryRoot(), cpmname, &ino, 0666) == -1) {
             guiintf->printMsg(wxString::Format("%s: can not create %s  (%s)\n", cmd, cpmfilename,
                                                cpmfs->getErrorMsg()));
             exitcode = 1;
@@ -1072,7 +1072,7 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
             CpmFs::CpmFile_t file;
             int ohno = 0;
             char buf[4096 + 1];
-            cpmfs->cpmOpen(&ino, &file, O_WRONLY);
+            cpmfs->open(&ino, &file, O_WRONLY);
 
             do {
                 unsigned int j;
@@ -1089,7 +1089,7 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
                     buf[j++] = '\032';
                 }
 
-                if (cpmfs->cpmWrite(&file, buf, j) != (ssize_t)j) {
+                if (cpmfs->write(&file, buf, j) != (ssize_t)j) {
                     guiintf->printMsg(wxString::Format("%s: can not write %s  (%s)\n", cmd, cpmfilename,
                                                        cpmfs->getErrorMsg()));
                     ohno = 1;
@@ -1098,7 +1098,7 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
                 }
             } while (c != EOF);
 
-            if (cpmfs->cpmClose(&file) == EOF && !ohno) {
+            if (cpmfs->close(&file) == EOF && !ohno) {
                 guiintf->printMsg(wxString::Format("%s: can not close %s  (%s)\n", cmd, cpmfilename,
                                                    cpmfs->getErrorMsg()));
                 exitcode = 1;
@@ -1108,7 +1108,7 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
                 struct utimbuf times;
                 times.actime = st.st_atime;
                 times.modtime = st.st_mtime;
-                cpmfs->cpmUtime(&ino, &times);
+                cpmfs->utime(&ino, &times);
             }
         }
 

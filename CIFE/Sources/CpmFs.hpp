@@ -124,25 +124,25 @@ class CpmFs {
         } CpmDirent_t;
 
     public:    // Methods
-        int cpmReadDiskdefData(const char *format);
-        int cpmInitDriveData();
-        void cpmglob(const char *argv, int *gargc, char ***gargv);
-        void cpmStatFS(CpmStatFS_t *buf);
-        int cpmNamei(const char *filename, CpmInode_t *i);
-        void cpmStat(const CpmInode_t *ino, CpmStat_t *buf);
-        int cpmAttrGet(CpmInode_t *ino, cpm_attr_t *attrib);
-        void cpmUmount();
-        int cpmUnlink(const char *fname);
-        int cpmRename(const char *oldname, const char *newname);
-        int cpmAttrSet(CpmInode_t *ino, cpm_attr_t attrib);
-        int cpmProtSet(CpmInode_t *ino, mode_t pmode);
-        int cpmSync();
-        int cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode_t mode);
-        int cpmOpen(CpmInode_t *ino, CpmFile_t *file, mode_t mode);
-        int cpmRead(CpmFile_t *file, char *buf, int count);
-        int cpmWrite(CpmFile_t *file, const char *buf, int count);
-        int cpmClose(CpmFile_t *file);
-        void cpmUtime(CpmInode_t *ino, utimbuf *times);
+        int readDiskdefData(const char *format);
+        int initDriveData();
+        void glob(const char *argv, int *gargc, char ***gargv);
+        void statFs(CpmStatFS_t *buf);
+        int namei(const char *filename, CpmInode_t *i);
+        void stat(const CpmInode_t *ino, CpmStat_t *buf);
+        int attrGet(CpmInode_t *ino, cpm_attr_t *attrib);
+        void unmount();
+        int unlink(const char *fname);
+        int rename(const char *oldname, const char *newname);
+        int attrSet(CpmInode_t *ino, cpm_attr_t attrib);
+        int protSet(CpmInode_t *ino, mode_t pmode);
+        int sync();
+        int create(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode_t mode);
+        int open(CpmInode_t *ino, CpmFile_t *file, mode_t mode);
+        int read(CpmFile_t *file, char *buf, int count);
+        int write(CpmFile_t *file, const char *buf, int count);
+        int close(CpmFile_t *file);
+        void utime(CpmInode_t *ino, utimbuf *times);
         int mkfs(const char *filename, const char *format, const char *label, char *bootTracks,
                  int timeStamps);
         bool getBootTracksEnabled();

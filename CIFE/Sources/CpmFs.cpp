@@ -685,7 +685,7 @@ int CpmFs::match(const char *a, const char *pattern) {
 // --------------------------------------------------------------------------------
 //  -- expand CP/M style wildcards
 // --------------------------------------------------------------------------------
-void CpmFs::cpmglob(const char *argv, int *gargc, char ***gargv) {
+void CpmFs::glob(const char *argv, int *gargc, char ***gargv) {
     CpmFile_t dir;
     int entries, dirsize = 0;
     CpmDirent_t *dirent = (CpmDirent_t *) 0;
@@ -1105,7 +1105,7 @@ int CpmFs::cpmCheckDs() {
 // --------------------------------------------------------------------------------
 //  -- get DPB
 // --------------------------------------------------------------------------------
-int CpmFs::cpmReadDiskdefData(const char *format) {
+int CpmFs::readDiskdefData(const char *format) {
     while (s_ifdir && !S_ISDIR(s_ifdir)) {
         s_ifdir <<= 1;
     }
@@ -1124,7 +1124,7 @@ int CpmFs::cpmReadDiskdefData(const char *format) {
 // --------------------------------------------------------------------------------
 //  -- init in-core data for drive
 // --------------------------------------------------------------------------------
-int CpmFs::cpmInitDriveData() {
+int CpmFs::initDriveData() {
     cpmdevice->SetGeometry(drive.secLength, drive.sectrk, drive.tracks, drive.offset);
 
     if (drive.skewtab == (int *) 0) { /* generate skew table */
@@ -1338,7 +1338,7 @@ int CpmFs::syncDs() {
 // --------------------------------------------------------------------------------
 //  -- write directory back
 // --------------------------------------------------------------------------------
-int CpmFs::cpmSync() {
+int CpmFs::sync() {
     if (drive.dirtyDirectory) {
         int i, blocks, entry;
         blocks = (drive.maxdir * 32 + drive.blksiz - 1) / drive.blksiz;
@@ -1365,8 +1365,8 @@ int CpmFs::cpmSync() {
 // --------------------------------------------------------------------------------
 //  -- free actual drive
 // --------------------------------------------------------------------------------
-void CpmFs::cpmUmount() {
-    cpmSync();
+void CpmFs::unmount() {
+    sync();
 
     if (drive.type & CPMFS_DS_DATES) {
         free(drive.ds);
@@ -1394,7 +1394,7 @@ void CpmFs::cpmUmount() {
 // --------------------------------------------------------------------------------
 //  -- map name to inode
 // --------------------------------------------------------------------------------
-int CpmFs::cpmNamei(const char *filename, CpmInode_t *i) {
+int CpmFs::namei(const char *filename, CpmInode_t *i) {
     int user;
     char name[8], extension[3];
     int highestExtno, highestExt = -1, lowestExtno, lowestExt = -1;
@@ -1553,7 +1553,7 @@ int CpmFs::cpmNamei(const char *filename, CpmInode_t *i) {
 // --------------------------------------------------------------------------------
 //  -- statfs
 // --------------------------------------------------------------------------------
-void CpmFs::cpmStatFS(CpmStatFS_t *buf) {
+void CpmFs::statFs(CpmStatFS_t *buf) {
     int i;
     buf->f_bsize = drive.blksiz;
     buf->f_blocks = drive.size;
@@ -1594,7 +1594,7 @@ void CpmFs::cpmStatFS(CpmStatFS_t *buf) {
 // --------------------------------------------------------------------------------
 //  -- unlink
 // --------------------------------------------------------------------------------
-int CpmFs::cpmUnlink(const char *fname) {
+int CpmFs::unlink(const char *fname) {
     int user;
     char name[8], extension[3];
     int extent;
@@ -1626,7 +1626,7 @@ int CpmFs::cpmUnlink(const char *fname) {
 // --------------------------------------------------------------------------------
 //  -- rename
 // --------------------------------------------------------------------------------
-int CpmFs::cpmRename(const char *oldn, const char *newn) {
+int CpmFs::rename(const char *oldn, const char *newn) {
     int extent;
     int olduser;
     char oldname[8], oldext[3];
@@ -1788,7 +1788,7 @@ int CpmFs::cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent) {
 // --------------------------------------------------------------------------------
 //  -- stat
 // --------------------------------------------------------------------------------
-void CpmFs::cpmStat(const CpmInode_t *ino, CpmStat_t *buf) {
+void CpmFs::stat(const CpmInode_t *ino, CpmStat_t *buf) {
     buf->ino = ino->ino;
     buf->mode = ino->mode;
     buf->size = ino->size;
@@ -1800,7 +1800,7 @@ void CpmFs::cpmStat(const CpmInode_t *ino, CpmStat_t *buf) {
 // --------------------------------------------------------------------------------
 //  -- open
 // --------------------------------------------------------------------------------
-int CpmFs::cpmOpen(CpmInode_t *ino, CpmFile_t *file, mode_t mode) {
+int CpmFs::open(CpmInode_t *ino, CpmFile_t *file, mode_t mode) {
     if (S_ISREG(ino->mode)) {
         if ((mode & O_WRONLY) && (ino->mode & 0222) == 0) {
             fserr = "permission denied";
@@ -1821,7 +1821,7 @@ int CpmFs::cpmOpen(CpmInode_t *ino, CpmFile_t *file, mode_t mode) {
 // --------------------------------------------------------------------------------
 //  -- read a file from CP/M filesystem
 // --------------------------------------------------------------------------------
-int CpmFs::cpmRead(CpmFile_t *file, char *buf, int count) {
+int CpmFs::read(CpmFile_t *file, char *buf, int count) {
     int findext = 1, findblock = 1, extent = -1, block = -1,
         extentno = -1, got = 0, nextblockpos = -1, nextextpos = -1;
     int blocksize = drive.blksiz;
@@ -1933,7 +1933,7 @@ int CpmFs::cpmRead(CpmFile_t *file, char *buf, int count) {
 // --------------------------------------------------------------------------------
 //  -- write a file to CP/M filesystem
 // --------------------------------------------------------------------------------
-int CpmFs::cpmWrite(CpmFile_t *file, const char *buf, int count) {
+int CpmFs::write(CpmFile_t *file, const char *buf, int count) {
     int findext = 1, findblock = -1, extent = -1, extentno = -1, got = 0, nextblockpos = -1,
         nextextpos = -1;
     int blocksize = drive.blksiz;
@@ -2105,14 +2105,14 @@ int CpmFs::cpmWrite(CpmFile_t *file, const char *buf, int count) {
 // --------------------------------------------------------------------------------
 //  -- close
 // --------------------------------------------------------------------------------
-int CpmFs::cpmClose(CpmFile_t *file) {
+int CpmFs::close(CpmFile_t *file) {
     return (0);
 }
 
 // --------------------------------------------------------------------------------
 //  -- creat new CP/M file
 // --------------------------------------------------------------------------------
-int CpmFs::cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode_t mode) {
+int CpmFs::create(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode_t mode) {
     int user;
     char name[8], extension[3];
     int extent;
@@ -2155,7 +2155,7 @@ int CpmFs::cpmCreat(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode_t 
 // --------------------------------------------------------------------------------
 //  -- get CP/M attributes
 // --------------------------------------------------------------------------------
-int CpmFs::cpmAttrGet(CpmInode_t *ino, cpm_attr_t *attrib) {
+int CpmFs::attrGet(CpmInode_t *ino, cpm_attr_t *attrib) {
     *attrib = ino->attr;
     return (0);
 }
@@ -2163,7 +2163,7 @@ int CpmFs::cpmAttrGet(CpmInode_t *ino, cpm_attr_t *attrib) {
 // --------------------------------------------------------------------------------
 //  -- set CP/M attributes
 // --------------------------------------------------------------------------------
-int CpmFs::cpmAttrSet(CpmInode_t *ino, cpm_attr_t attrib) {
+int CpmFs::attrSet(CpmInode_t *ino, cpm_attr_t attrib) {
     int extent;
     int user;
     char name[8], extension[3];
@@ -2226,7 +2226,7 @@ int CpmFs::cpmAttrSet(CpmInode_t *ino, cpm_attr_t attrib) {
 // --------------------------------------------------------------------------------
 //  -- set CP/M file protection mode
 // --------------------------------------------------------------------------------
-int CpmFs::cpmProtSet(CpmInode_t *ino, mode_t pmode) {
+int CpmFs::protSet(CpmInode_t *ino, mode_t pmode) {
     PhysDirectoryEntry_t *date;
     int protectMode = 0;
     int lowestExt = ino->ino;
@@ -2271,7 +2271,7 @@ int CpmFs::cpmProtSet(CpmInode_t *ino, mode_t pmode) {
 // --------------------------------------------------------------------------------
 //  -- set timestamps
 // --------------------------------------------------------------------------------
-void CpmFs::cpmUtime(CpmInode_t *ino, utimbuf *times) {
+void CpmFs::utime(CpmInode_t *ino, utimbuf *times) {
     ino->atime = times->actime;
     ino->mtime = times->modtime;
     time(&ino->ctime);
@@ -2409,11 +2409,11 @@ int CpmFs::mkfs(const char *filename, const char *format, const char *label,
             return (-1);
         }
 
-        cpmInitDriveData();
+        initDriveData();
         records = drive.maxdir / 8;
 
         if (!(ds = (CpmFs::DsDate_t *) malloc(records * 128))) {
-            cpmSync();
+            sync();
             return -1;
         }
 
@@ -2430,14 +2430,14 @@ int CpmFs::mkfs(const char *filename, const char *format, const char *label,
         }
 
         /* Set things up so cpmSync will generate checksums and write the * file. */
-        if (cpmCreat(&root, "00!!!TIME&.DAT", &ino, 0) == -1) {
+        if (create(&root, "00!!!TIME&.DAT", &ino, 0) == -1) {
             fserr = msgFormat("Unable to create DateStamper file.  (%s)", fserr.c_str());
             return -1;
         }
 
         drive.ds = ds;
         drive.dirtyDs = 1;
-        cpmSync();
+        sync();
     }
 
     return 0;
