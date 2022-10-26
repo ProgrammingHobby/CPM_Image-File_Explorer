@@ -63,7 +63,7 @@ bool CpmDevice::ReadSector(int track, int sector, char *buffer) {
     int readCount = fread(buffer, sizeof(char), device.secLength, device.file);
 
     if (readCount != device.secLength) {
-        deverr = msgFormat("Read Sector: %d bytes lost. Error: %s\n",
+        deverr = msgFormat("Read Sector: %d bytes lost. Error: %s",
                            (device.secLength - readCount), strerror(errno));
         memset((buffer + readCount), 0, device.secLength - readCount);
         return (false);
@@ -83,7 +83,7 @@ bool CpmDevice::WriteSector(int track, int sector, const char *buffer) {
     int writeCount = fwrite(buffer, sizeof(char), device.secLength, device.file);
 
     if (writeCount != device.secLength) {
-        deverr = msgFormat("Write Sector: %d bytes lost. Error: %s\n",
+        deverr = msgFormat("Write Sector: %d bytes lost. Error: %s",
                            (device.secLength - writeCount), strerror(errno));
         return (false);
     }

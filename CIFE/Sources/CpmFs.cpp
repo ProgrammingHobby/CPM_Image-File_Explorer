@@ -734,7 +734,7 @@ int CpmFs::diskdefReadSuper(const char *format) {
     drive.type = 0;
 
     if ((fp = fopen(diskdefsPath.c_str(), "r")) == (FILE *) 0) {
-        fserr = "'diskdefs' couldn't be opened.\n";
+        fserr = "'diskdefs' couldn't be opened";
         return (1);
     }
 
@@ -796,7 +796,7 @@ int CpmFs::diskdefReadSuper(const char *format) {
                     drive.blksiz = strtol(argv[1], (char **) 0, 0);
 
                     if (drive.blksiz <= 0) {
-                        fserr = msgFormat("invalid blocksize '%s' in line %d\n", argv[1], ln);
+                        fserr = msgFormat("invalid blocksize '%s' in line %d", argv[1], ln);
                         return (1);
                     }
                 }
@@ -822,7 +822,7 @@ int CpmFs::diskdefReadSuper(const char *format) {
                             }
 
                             if (end == s) {
-                                fserr = msgFormat("invalid skewtab `%s' at `%s' in line %d\n",
+                                fserr = msgFormat("invalid skewtab `%s' at `%s' in line %d",
                                                   argv[1], s, ln);
                                 return (1);
                             }
@@ -852,13 +852,13 @@ int CpmFs::diskdefReadSuper(const char *format) {
                     val = strtol(argv[1], &endptr, 10);
 
                     if ((errno == ERANGE && val == LONG_MAX) || (errno != 0 && val <= 0)) {
-                        fserr = msgFormat("invalid offset value `%s' (%s) in line %d\n",
+                        fserr = msgFormat("invalid offset value `%s' (%s) in line %d",
                                           argv[1], strerror(errno), ln);
                         return (1);
                     }
 
                     if (endptr == argv[1]) {
-                        fserr = msgFormat("offset value `%s' is not a number in line %d\n",
+                        fserr = msgFormat("offset value `%s' is not a number in line %d",
                                           argv[1], ln);
                         return (1);
                     }
@@ -877,7 +877,7 @@ int CpmFs::diskdefReadSuper(const char *format) {
                             case 'T':
                                 if (drive.sectrk < 0 || drive.tracks < 0 || drive.secLength < 0) {
                                     fserr = msgFormat("offset must be specified after sectrk, "
-                                                      "tracks and secLength in line %d\n", ln);
+                                                      "tracks and secLength in line %d", ln);
                                     return (1);
                                 }
 
@@ -887,7 +887,7 @@ int CpmFs::diskdefReadSuper(const char *format) {
                             case 'S':
                                 if (drive.sectrk < 0 || drive.tracks < 0 || drive.secLength < 0) {
                                     fserr = msgFormat("offset must be specified after sectrk, "
-                                                      "tracks and secLength in line %d\n", ln);
+                                                      "tracks and secLength in line %d", ln);
                                     return (1);
                                 }
 
@@ -895,14 +895,14 @@ int CpmFs::diskdefReadSuper(const char *format) {
                                 break;
 
                             default:
-                                fserr = msgFormat("unknown unit specifier `%c' in line %d\n",
+                                fserr = msgFormat("unknown unit specifier `%c' in line %d",
                                                   *endptr, ln);
                                 return (1);
                         }
                     }
 
                     if (val * multiplier > INT_MAX) {
-                        fserr = msgFormat("effective offset is out of range in line %d\n", ln);
+                        fserr = msgFormat("effective offset is out of range in line %d", ln);
                         return (1);
                     }
 
@@ -928,13 +928,13 @@ int CpmFs::diskdefReadSuper(const char *format) {
                         drive.type |= CPMFS_ZSYS;
                     }
                     else {
-                        fserr = msgFormat("invalid OS type `%s' in line %d\n", argv[1], ln);
+                        fserr = msgFormat("invalid OS type `%s' in line %d", argv[1], ln);
                         return (1);
                     }
                 }
             }
             else if (argc > 0 && argv[0][0] != '#' && argv[0][0] != ';') {
-                fserr = msgFormat("invalid keyword `%s' in line %d\n", argv[0], ln);
+                fserr = msgFormat("invalid keyword `%s' in line %d", argv[0], ln);
                 return (1);
             }
         }
@@ -958,32 +958,32 @@ int CpmFs::diskdefReadSuper(const char *format) {
     fclose(fp);
 
     if (!found) {
-        fserr = msgFormat("unknown format %s\n", format);
+        fserr = msgFormat("unknown format %s", format);
         return (1);
     }
 
     if (drive.boottrk < 0) {
-        fserr = "boottrk parameter invalid or missing from diskdef\n";
+        fserr = "boottrk parameter invalid or missing from diskdef";
         return (1);
     }
 
     if (drive.secLength < 0) {
-        fserr = "secLength parameter invalid or missing from diskdef\n";
+        fserr = "secLength parameter invalid or missing from diskdef";
         return (1);
     }
 
     if (drive.sectrk < 0) {
-        fserr = "sectrk parameter invalid or missing from diskdef\n";
+        fserr = "sectrk parameter invalid or missing from diskdef";
         return (1);
     }
 
     if (drive.tracks < 0) {
-        fserr = "tracks parameter invalid or missing from diskdef\n";
+        fserr = "tracks parameter invalid or missing from diskdef";
         return (1);
     }
 
     if (drive.blksiz < 0) {
-        fserr = "blocksize parameter invalid or missing from diskdef\n";
+        fserr = "blocksize parameter invalid or missing from diskdef";
         return (1);
     }
 
@@ -998,7 +998,7 @@ int CpmFs::amsReadSuper(const char *format) {
     cpmdevice->SetGeometry(512, 9, 40, 0);
 
     if (cpmdevice->ReadSector(0, 0, (char *) boot_sector)) {
-        fserr = msgFormat("Failed to read Amstrad superblock (%s)\n", cpmdevice->getErrorMsg());
+        fserr = msgFormat("Failed to read Amstrad superblock  (%s)", cpmdevice->getErrorMsg());
         return (1);
     }
 
@@ -1015,7 +1015,7 @@ int CpmFs::amsReadSuper(const char *format) {
     }
 
     if (boot_spec == (unsigned char *) 0) {
-        fserr = "Amstrad superblock not present\n";
+        fserr = "Amstrad superblock not present";
         return (1);
     }
 
@@ -2405,7 +2405,7 @@ int CpmFs::mkfs(const char *filename, const char *format, const char *label,
         CpmFs::DsDate_t *ds;
 
         if (!cpmdevice->Open(filename, "r+b")) {
-            fserr = msgFormat("Cannot open %s (%s)\n", filename, cpmdevice->getErrorMsg().c_str());
+            fserr = msgFormat("Cannot open %s  (%s)", filename, cpmdevice->getErrorMsg().c_str());
             return (-1);
         }
 
@@ -2431,7 +2431,7 @@ int CpmFs::mkfs(const char *filename, const char *format, const char *label,
 
         /* Set things up so cpmSync will generate checksums and write the * file. */
         if (cpmCreat(&root, "00!!!TIME&.DAT", &ino, 0) == -1) {
-            fserr = msgFormat("Unable to create DateStamper file. (%s)\n", fserr.c_str());
+            fserr = msgFormat("Unable to create DateStamper file.  (%s)", fserr.c_str());
             return -1;
         }
 
