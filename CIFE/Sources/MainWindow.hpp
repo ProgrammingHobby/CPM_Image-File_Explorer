@@ -39,15 +39,15 @@ class MainWindow : public Ui_MainWindow {
         virtual ~MainWindow();
 
     protected:  // Event Methods
-        void onMenuCloseClicked(wxCommandEvent &event);
-        void onMenuAboutClicked(wxCommandEvent &event);
-        void onMenuImageFileOpen(wxCommandEvent &event);
-        void onMenuImageFileClose(wxCommandEvent &event);
-        void onMenuNewImageFile(wxCommandEvent &event);
-        void onButtonClearMessagesClicked(wxCommandEvent &event);
-        void onButtonSaveMessagesClicked(wxCommandEvent &event);
+        void onQuit(wxCommandEvent &event);
+        void onAbout(wxCommandEvent &event);
+        void onImageFileOpen(wxCommandEvent &event);
+        void onImageFileClose(wxCommandEvent &event);
+        void onImageFileNew(wxCommandEvent &event);
+        void onClearMessages(wxCommandEvent &event);
+        void onSaveMessages(wxCommandEvent &event);
         void onImageTypeChanged(wxCommandEvent &event);
-        void onViewRefresh(wxCommandEvent &event);
+        void onRefresh(wxCommandEvent &event);
         void onSelectAll(wxCommandEvent &event);
         void onDelete(wxCommandEvent &event);
         void onRename(wxCommandEvent &event);

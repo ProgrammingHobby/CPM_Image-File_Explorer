@@ -42,12 +42,12 @@
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_ENTER_WINDOW(MainWindow::onEnterWindow)
-    EVT_MENU(wxID_FILE_OPEN, MainWindow::onMenuImageFileOpen)
-    EVT_MENU(wxID_FILE_CLOSE, MainWindow::onMenuImageFileClose)
-    EVT_MENU(wxID_FILE_NEW, MainWindow::onMenuNewImageFile)
-    EVT_MENU(wxID_QUIT, MainWindow::onMenuCloseClicked)
-    EVT_MENU(wxID_ABOUT, MainWindow::onMenuAboutClicked)
-    EVT_MENU(wxID_REFRESH, MainWindow::onViewRefresh)
+    EVT_MENU(wxID_FILE_OPEN, MainWindow::onImageFileOpen)
+    EVT_MENU(wxID_FILE_CLOSE, MainWindow::onImageFileClose)
+    EVT_MENU(wxID_FILE_NEW, MainWindow::onImageFileNew)
+    EVT_MENU(wxID_QUIT, MainWindow::onQuit)
+    EVT_MENU(wxID_ABOUT, MainWindow::onAbout)
+    EVT_MENU(wxID_REFRESH, MainWindow::onRefresh)
     EVT_MENU(wxID_SELECTALL, MainWindow::onSelectAll)
     EVT_MENU(wxID_DELETE, MainWindow::onDelete)
     EVT_MENU(wxID_EDIT, MainWindow::onRename)
@@ -57,8 +57,8 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CHECK_IMAGE, MainWindow::onCheckImage)
     EVT_MENU(wxID_COPY_SETTINGS, MainWindow::onCopySettings)
     EVT_MENU(wxID_PASTE, MainWindow::onPasteFile)
-    EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onButtonClearMessagesClicked)
-    EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onButtonSaveMessagesClicked)
+    EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onClearMessages)
+    EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onSaveMessages)
     EVT_COMBOBOX(wxID_IMAGE_TYPE, MainWindow::onImageTypeChanged)
     EVT_LIST_ITEM_SELECTED(wxID_IMAGE_CONTENTS, MainWindow::onListItemSelected)
     EVT_LIST_ITEM_RIGHT_CLICK(wxID_IMAGE_CONTENTS, MainWindow::onListItemRightClick)
@@ -196,7 +196,7 @@ MainWindow::~MainWindow() {
 }
 
 // --------------------------------------------------------------------------------
-void MainWindow::onMenuImageFileOpen(wxCommandEvent &event) {
+void MainWindow::onImageFileOpen(wxCommandEvent &event) {
     WXUNUSED(event)
     wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"),
                             wxStandardPaths::Get().GetDocumentsDir(), wxEmptyString,
@@ -218,7 +218,7 @@ void MainWindow::onMenuImageFileOpen(wxCommandEvent &event) {
 }
 
 // --------------------------------------------------------------------------------
-void MainWindow::onMenuImageFileClose(wxCommandEvent &event) {
+void MainWindow::onImageFileClose(wxCommandEvent &event) {
     cpmtools->closeImage();
     editImageFile->SetValue("");
     listImageContents->DeleteAllItems();
@@ -227,7 +227,7 @@ void MainWindow::onMenuImageFileClose(wxCommandEvent &event) {
 }
 
 // --------------------------------------------------------------------------------
-void MainWindow::onMenuNewImageFile(wxCommandEvent &event) {
+void MainWindow::onImageFileNew(wxCommandEvent &event) {
     CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs->getBootTracksEnabled(),
             true);
 
@@ -236,20 +236,20 @@ void MainWindow::onMenuNewImageFile(wxCommandEvent &event) {
         cpmtools->createNewImage(editImageFile->GetValue(), dialog->getFileSystemLabel(),
                                  dialog->useTimestamps(), dialog->getBootTrackFile());
         cpmtools->openImage(editImageFile->GetValue());
-        onViewRefresh(event);
+        onRefresh(event);
     }
 
     wxDELETE(dialog);
 }
 
 // --------------------------------------------------------------------------------
-void MainWindow::onMenuCloseClicked(wxCommandEvent &event) {
+void MainWindow::onQuit(wxCommandEvent &event) {
     WXUNUSED(event)
     Close(true);
 }
 
 // --------------------------------------------------------------------------------
-void MainWindow::onMenuAboutClicked(wxCommandEvent &event) {
+void MainWindow::onAbout(wxCommandEvent &event) {
     WXUNUSED(event)
     wxAboutDialogInfo aboutInfo;
     wxDateTime datetime;
@@ -312,12 +312,12 @@ wxArrayString MainWindow::getImageTypes(wxString appPath) {
 }
 
 // --------------------------------------------------------------------------------
-void MainWindow::onButtonClearMessagesClicked(wxCommandEvent &event) {
+void MainWindow::onClearMessages(wxCommandEvent &event) {
     textMessages->Clear();
 }
 
 // --------------------------------------------------------------------------------
-void MainWindow::onButtonSaveMessagesClicked(wxCommandEvent &event) {
+void MainWindow::onSaveMessages(wxCommandEvent &event) {
     wxFileDialog fileDialog(this, _("Save CIFE Messages"),
                             wxStandardPaths::Get().GetUserDataDir(),
                             "CIFE.msg", _("Text Files (*.txt,*.log)|*.txt;*.log|all Files (*.*)|*.*"),
@@ -329,7 +329,7 @@ void MainWindow::onButtonSaveMessagesClicked(wxCommandEvent &event) {
 }
 
 // --------------------------------------------------------------------------------
-void MainWindow::onViewRefresh(wxCommandEvent &event) {
+void MainWindow::onRefresh(wxCommandEvent &event) {
     listImageContents->DeleteAllItems();
     cpmtools->showDirectory();
     listImageContents->SetFocus();
@@ -484,7 +484,7 @@ void MainWindow::onDelete(wxCommandEvent &event) {
         }
 
         cpmtools->deleteFile(files);
-        onViewRefresh(event);
+        onRefresh(event);
     }
 }
 
@@ -504,7 +504,7 @@ void MainWindow::onRename(wxCommandEvent &event) {
         int newUser = dialog->getNewUser();
         newName = wxString::Format(("%i"), newUser) + ":" + newName;
         cpmtools->renameFile(oldName, newName);
-        onViewRefresh(event);
+        onRefresh(event);
     }
 
     wxDELETE(dialog);
@@ -519,7 +519,7 @@ void MainWindow::onCreateNew(wxCommandEvent &event) {
         cpmtools->createNewImage(editImageFile->GetValue(), dialog->getFileSystemLabel(),
                                  dialog->useTimestamps(), dialog->getBootTrackFile());
         cpmtools->openImage(editImageFile->GetValue());
-        onViewRefresh(event);
+        onRefresh(event);
     }
 
     wxDELETE(dialog);
@@ -577,7 +577,7 @@ void MainWindow::onPasteFile(wxCommandEvent &event) {
                                            keepLastUpdatedTimestamp);
             }
 
-            onViewRefresh(event);
+            onRefresh(event);
         }
 
         cifeClipboard.Close();
@@ -594,7 +594,7 @@ void MainWindow::onAttributes(wxCommandEvent &event) {
 
     if (dialog->ShowModal() == wxID_OK) {
         cpmtools->setFileAttributes(name, dialog->getAttributes());
-        onViewRefresh(event);
+        onRefresh(event);
     }
 
     wxDELETE(dialog);
@@ -610,7 +610,7 @@ void MainWindow::onProtections(wxCommandEvent &event) {
 
     if (dialog->ShowModal() == wxID_OK) {
         cpmtools->setFileProtections(name, dialog->getProtections());
-        onViewRefresh(event);
+        onRefresh(event);
     }
 
     wxDELETE(dialog);
