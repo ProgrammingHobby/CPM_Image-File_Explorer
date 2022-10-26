@@ -36,7 +36,7 @@ bool CpmTools::setImageType(wxString typeName) {
     imageTypeName = typeName;
 
     if (cpmfs->cpmReadDiskdefData(typeName.c_str()) == -1) {
-        guiintf->printMsg(wxString::Format("cannot read superblock (%s)\n",
+        guiintf->printMsg(wxString::Format("cannot read superblock  (%s)\n",
                                            cpmfs->getErrorMsg()));
         return (false);
     }
@@ -50,13 +50,13 @@ bool CpmTools::openImage(wxString fileName) {
     wxString image = fileName.substr(fileName.find_last_of("/\\") + 1);
 
     if (!cpmdevice->Open(fileName.c_str(), "r+b")) {
-        guiintf->printMsg(wxString::Format("cannot open %s (%s)\n", image,
+        guiintf->printMsg(wxString::Format("cannot open %s  (%s)\n", image,
                                            cpmdevice->getErrorMsg()));
         return (false);
     }
     else {
         if (cpmfs->cpmInitDriveData() == -1) {
-            guiintf->printMsg(wxString::Format("cannot init filesystem (%s)\n",
+            guiintf->printMsg(wxString::Format("cannot init filesystem  (%s)\n",
                                                cpmfs->getErrorMsg()));
             return (false);
         }
@@ -71,7 +71,7 @@ bool CpmTools::closeImage() {
     wxString image = imageFileName.substr(imageFileName.find_last_of("/\\") + 1);
 
     if (!cpmdevice->Close()) {
-        guiintf->printMsg(wxString::Format("cannot close %s (%s)\n", image,
+        guiintf->printMsg(wxString::Format("cannot close %s  (%s)\n", image,
                                            cpmdevice->getErrorMsg()));
         return (false);
     }
@@ -191,7 +191,7 @@ void CpmTools::deleteFile(wxArrayString files) {
         cpmfs->cpmglob(fileName.c_str(), &gargc, &gargv);
 
         if (cpmfs->cpmUnlink(gargv[0]) == -1) {
-            guiintf->printMsg(wxString::Format("%s: can not erase %s: %s\n", cmd, gargv[0],
+            guiintf->printMsg(wxString::Format("%s: can not erase %s  (%s)\n", cmd, gargv[0],
                                                cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
         }
     }
@@ -209,7 +209,7 @@ void CpmTools::renameFile(wxString oldName, wxString newName) {
     convertFilename(newName.c_str(), nName);
 
     if (cpmfs->cpmRename(gargv[0], nName) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not rename %s in %s:  %s\n", cmd, oldName,
+        guiintf->printMsg(wxString::Format("%s: can not rename %s in %s  (%s)\n", cmd, oldName,
                                            newName, cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
     }
 
@@ -225,11 +225,11 @@ void CpmTools::setFileAttributes(wxString name, int attributes) {
     cpmfs->cpmglob(name.c_str(), &gargc, &gargv);
 
     if (cpmfs->cpmNamei(gargv[0], &ino) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0],
+        guiintf->printMsg(wxString::Format("%s: can not find %s  (%s)\n", cmd, gargv[0],
                                            cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
     }
     else if (cpmfs->cpmAttrSet(&ino, attributes) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not set attributes %s: %s\n", cmd, gargv[0],
+        guiintf->printMsg(wxString::Format("%s: can not set attributes %s  (%s)\n", cmd, gargv[0],
                                            cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
     }
 
@@ -245,11 +245,12 @@ void CpmTools::setFileProtections(wxString name, int protections) {
     cpmfs->cpmglob(name.c_str(), &gargc, &gargv);
 
     if (cpmfs->cpmNamei(gargv[0], &ino) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not find %s: %s\n", cmd, gargv[0],
+        guiintf->printMsg(wxString::Format("%s: can not find %s  (%s)\n", cmd, gargv[0],
                                            cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
     }
     else if (cpmfs->cpmProtSet(&ino, protections) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not set protections %s: %s\n", cmd, gargv[0],
+        guiintf->printMsg(wxString::Format("%s: can not set protections %s  (%s)\n", cmd,
+                                           gargv[0],
                                            cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
     }
 
@@ -266,7 +267,7 @@ void CpmTools::createNewImage(wxString imageFile, wxString label, bool useTimeSt
     size_t bootTrackSize = cpmfs->getBootTrackSize();
 
     if ((bootTracks = (char *)malloc(bootTrackSize)) == (char *)0) {
-        guiintf->printMsg(wxString::Format("%s: can not allocate boot track buffer: %s\n", cmd,
+        guiintf->printMsg(wxString::Format("%s: can not allocate boot track buffer  (%s)\n", cmd,
                                            strerror(errno)), CpmGuiInterface::msgColRed);
         return;
     }
@@ -278,7 +279,7 @@ void CpmTools::createNewImage(wxString imageFile, wxString label, bool useTimeSt
         size_t filesize, readsize;
 
         if ((fd = fopen(bootTrackFile.c_str(), "rb")) == (FILE *)0) {
-            guiintf->printMsg(wxString::Format("%s: can not open %s: %s\n", cmd, bootImage.c_str(),
+            guiintf->printMsg(wxString::Format("%s: can not open %s  (%s)\n", cmd, bootImage.c_str(),
                                                strerror(errno)), CpmGuiInterface::msgColRed);
             return;
         }
@@ -304,7 +305,7 @@ void CpmTools::createNewImage(wxString imageFile, wxString label, bool useTimeSt
 
     if (cpmfs->mkfs(imageFile.c_str(), imageTypeName.c_str(), label.c_str(), bootTracks,
                     (useTimeStamps ? 1 : 0)) == -1) {
-        guiintf->printMsg(wxString::Format("%s: can not make new file system: %s\n", cmd,
+        guiintf->printMsg(wxString::Format("%s: can not make new file system  (%s)\n", cmd,
                                            cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
         return;
     }
@@ -322,16 +323,16 @@ void CpmTools::checkImage(bool doRepair) {
 
     if (ret & MODIFIED) {
         if (cpmfs->cpmSync() == -1) {
-            guiintf->printMsg(wxString::Format("%s: write error on %s: %s\n", cmd, image.c_str(),
+            guiintf->printMsg(wxString::Format("%s: write error on %s  (%s)\n", cmd, image.c_str(),
                                                strerror(errno)), CpmGuiInterface::msgColRed);
             ret |= BROKEN;
         }
 
-        guiintf->printMsg(wxString::Format("%s: FILE SYSTEM ON %s MODIFIED", cmd, image.c_str()),
+        guiintf->printMsg(wxString::Format("%s: file system on %s modified", cmd, image.c_str()),
                           CpmGuiInterface::msgColBlue);
 
         if (ret & BROKEN) {
-            guiintf->printMsg(wxString::Format(", PLEASE CHECK AGAIN"), CpmGuiInterface::msgColBlue);
+            guiintf->printMsg(wxString::Format(", please check again"), CpmGuiInterface::msgColBlue);
         }
 
         guiintf->printMsg(wxString::Format("\n"), CpmGuiInterface::msgColBlue);
@@ -1050,7 +1051,7 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
     unixfile = unixfile.substr(unixfile.find_last_of("/\\") + 1);
 
     if ((ufp = fopen(unixfilename, "rb")) == (FILE *)0) {
-        guiintf->printMsg(wxString::Format("%s: can not open %s: %s\n", cmd, unixfile,
+        guiintf->printMsg(wxString::Format("%s: can not open %s  (%s)\n", cmd, unixfile,
                                            strerror(errno)));
         exitcode = 1;
     }
@@ -1063,7 +1064,7 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
                  strchr(cpmfilename, ':') + 1);
 
         if (cpmfs->cpmCreat(&cpmfs->getDirectoryRoot(), cpmname, &ino, 0666) == -1) {
-            guiintf->printMsg(wxString::Format("%s: can not create %s: %s\n", cmd, cpmfilename,
+            guiintf->printMsg(wxString::Format("%s: can not create %s  (%s)\n", cmd, cpmfilename,
                                                cpmfs->getErrorMsg()));
             exitcode = 1;
         }
@@ -1089,7 +1090,7 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
                 }
 
                 if (cpmfs->cpmWrite(&file, buf, j) != (ssize_t)j) {
-                    guiintf->printMsg(wxString::Format("%s: can not write %s: %s\n", cmd, cpmfilename,
+                    guiintf->printMsg(wxString::Format("%s: can not write %s  (%s)\n", cmd, cpmfilename,
                                                        cpmfs->getErrorMsg()));
                     ohno = 1;
                     exitcode = 1;
@@ -1098,7 +1099,7 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
             } while (c != EOF);
 
             if (cpmfs->cpmClose(&file) == EOF && !ohno) {
-                guiintf->printMsg(wxString::Format("%s: can not close %s: %s\n", cmd, cpmfilename,
+                guiintf->printMsg(wxString::Format("%s: can not close %s  (%s)\n", cmd, cpmfilename,
                                                    cpmfs->getErrorMsg()));
                 exitcode = 1;
             }
