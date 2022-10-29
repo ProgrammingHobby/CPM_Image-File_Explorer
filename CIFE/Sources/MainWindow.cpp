@@ -490,7 +490,7 @@ void MainWindow::onDelete(wxCommandEvent &event) {
         }
 
         cpmtools->deleteFile(files);
-        onRefresh(event);
+        showDirectory();
     }
 }
 
@@ -510,7 +510,7 @@ void MainWindow::onRename(wxCommandEvent &event) {
         int newUser = dialog->getNewUser();
         newName = wxString::Format(("%i"), newUser) + ":" + newName;
         cpmtools->renameFile(oldName, newName);
-        onRefresh(event);
+        showDirectory();
     }
 
     wxDELETE(dialog);
@@ -610,7 +610,7 @@ void MainWindow::onAttributes(wxCommandEvent &event) {
 
     if (dialog->ShowModal() == wxID_OK) {
         cpmtools->setFileAttributes(name, dialog->getAttributes());
-        onRefresh(event);
+        showDirectory();
     }
 
     wxDELETE(dialog);
@@ -626,7 +626,7 @@ void MainWindow::onProtections(wxCommandEvent &event) {
 
     if (dialog->ShowModal() == wxID_OK) {
         cpmtools->setFileProtections(name, dialog->getProtections());
-        onRefresh(event);
+        showDirectory();
     }
 
     wxDELETE(dialog);
@@ -687,6 +687,5 @@ void MainWindow::onDropFiles(wxDropFilesEvent &event) {
         showDirectory();
     }
 }
-
 
 // --------------------------------------------------------------------------------
