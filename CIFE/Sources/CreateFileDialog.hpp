@@ -26,6 +26,7 @@ class CreateFileDialog : public Ui_CreateFileDialog {
 
     public:     // Methods
         void setImageFileName(wxString fileName);
+        void setImageType(wxString typeName);
         wxString getImageFileName();
         wxString getBootTrackFile();
         wxString getFileSystemLabel();

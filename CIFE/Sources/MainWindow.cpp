@@ -231,6 +231,7 @@ void MainWindow::onImageFileClose(wxCommandEvent &event) {
 void MainWindow::onImageFileNew(wxCommandEvent &event) {
     CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs->getBootTracksEnabled(),
             true);
+    dialog->setImageType(comboboxImageType->GetValue());
 
     if (dialog->ShowModal() == wxID_OK) {
         editImageFile->SetValue(dialog->getImageFileName());

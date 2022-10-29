@@ -67,6 +67,12 @@ void CreateFileDialog::setImageFileName(wxString fileName) {
 }
 
 // --------------------------------------------------------------------------------
+void CreateFileDialog::setImageType(wxString typeName) {
+    wxString title = "New Image : " + typeName;
+    this->SetTitle(title);
+}
+
+// --------------------------------------------------------------------------------
 wxString CreateFileDialog::getImageFileName() {
     return (editImageFile->GetValue());
 }
