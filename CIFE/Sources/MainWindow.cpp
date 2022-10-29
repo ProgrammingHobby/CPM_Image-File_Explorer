@@ -100,9 +100,6 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
         cpmtools->openImage(filePath);
         isImageLoaded = true;
         showDirectory();
-        menuMainWindow->Enable(wxID_FILE_CLOSE, true);
-        menuMainWindow->Enable(wxID_FILE_NEW, false);
-        menuMainWindow->Enable(wxID_FILE_OPEN, false);
     }
     else {
         isImageLoaded = false;
@@ -213,12 +210,11 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
         wxString filePath = fileDialog.GetPath();
         editImageFile->SetValue(filePath);
         editImageFile->SetInsertionPoint(filePath.length());
-        cpmtools->openImage(filePath);
-        isImageLoaded = true;
-        showDirectory();
-        menuMainWindow->Enable(wxID_FILE_CLOSE, true);
-        menuMainWindow->Enable(wxID_FILE_NEW, false);
-        menuMainWindow->Enable(wxID_FILE_OPEN, false);
+
+        if (cpmtools->openImage(filePath)) {
+            isImageLoaded = true;
+            showDirectory();
+        }
     }
 }
 
@@ -240,8 +236,11 @@ void MainWindow::onImageFileNew(wxCommandEvent &event) {
         editImageFile->SetValue(dialog->getImageFileName());
         cpmtools->createNewImage(editImageFile->GetValue(), dialog->getFileSystemLabel(),
                                  dialog->useTimestamps(), dialog->getBootTrackFile());
-        cpmtools->openImage(editImageFile->GetValue());
-        onRefresh(event);
+
+        if (cpmtools->openImage(editImageFile->GetValue())) {
+            isImageLoaded = true;
+            showDirectory();
+        }
     }
 
     wxDELETE(dialog);
@@ -406,6 +405,9 @@ void MainWindow::showDirectory() {
     menuMainWindow->Enable(wxID_REFRESH, true);
     menuMainWindow->Enable(wxID_CREATE_NEW, true);
     menuMainWindow->Enable(wxID_CHECK_IMAGE, true);
+    menuMainWindow->Enable(wxID_FILE_CLOSE, true);
+    menuMainWindow->Enable(wxID_FILE_NEW, false);
+    menuMainWindow->Enable(wxID_FILE_OPEN, false);
 
     if (listImageContents->GetItemCount() > 0) {
         menuMainWindow->Enable(wxID_SELECTALL, true);
@@ -522,7 +524,7 @@ void MainWindow::onCreateNew(wxCommandEvent &event) {
         cpmtools->createNewImage(editImageFile->GetValue(), dialog->getFileSystemLabel(),
                                  dialog->useTimestamps(), dialog->getBootTrackFile());
         cpmtools->openImage(editImageFile->GetValue());
-        onRefresh(event);
+        showDirectory();
     }
 
     wxDELETE(dialog);
