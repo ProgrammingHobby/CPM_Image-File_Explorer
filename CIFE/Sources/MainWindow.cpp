@@ -39,6 +39,8 @@
 #include <wx/datetime.h>
 #include <wx/clipbrd.h>
 #include <wx/filename.h>
+#include <wx/arrstr.h>
+#include <wx/dir.h>
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_ENTER_WINDOW(MainWindow::onEnterWindow)
@@ -80,6 +82,9 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     textContentsInfo->SetFont(listFont);
     textMessages->SetFont(listFont);
     listImageContents->Bind(wxEVT_CONTEXT_MENU, &MainWindow::onShowContextMenu, this);
+    listImageContents->Connect(wxEVT_DROP_FILES,
+                               wxDropFilesEventHandler(MainWindow::onDropFiles), NULL, this);
+    listImageContents->DragAcceptFiles(true);
     comboboxImageType->SetSelection(cifeSettings->readInteger("CpmSettings", "ImageType", 0));
     cpmtools->setImageType(comboboxImageType->GetValue());
     wxString filePath = cifeSettings->readString("CpmSettings", "ImageFile", "");
@@ -330,9 +335,7 @@ void MainWindow::onSaveMessages(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onRefresh(wxCommandEvent &event) {
-    listImageContents->DeleteAllItems();
-    cpmtools->showDirectory();
-    listImageContents->SetFocus();
+    showDirectory();
 }
 
 // --------------------------------------------------------------------------------
@@ -567,7 +570,17 @@ void MainWindow::onPasteFile(wxCommandEvent &event) {
                                        "txt pip pas");
             bool keepLastUpdatedTimestamp = cifeSettings->readBoolean("CpmOptions",
                                             "KeepLastUpdatedTimestamp", false);
-            wxArrayString files = data.GetFilenames();
+            wxArrayString pasted, files;
+            pasted = data.GetFilenames();
+
+            for (size_t i = 0; i < pasted.Count(); i++) {
+                if (wxFileExists(pasted[i])) {
+                    files.push_back(pasted[i]);
+                }
+                else if (wxDirExists(pasted[i])) {
+                    wxDir::GetAllFiles(pasted[i], &files);
+                }
+            }
 
             for (size_t i = 0; i < files.Count(); i++) {
                 wxFileName fileName(files[i]);
@@ -577,7 +590,7 @@ void MainWindow::onPasteFile(wxCommandEvent &event) {
                                            keepLastUpdatedTimestamp);
             }
 
-            onRefresh(event);
+            showDirectory();
         }
 
         cifeClipboard.Close();
@@ -635,5 +648,42 @@ void MainWindow::onEnterWindow(wxMouseEvent &event) {
         popupMenu->Enable(wxID_PASTE, false);
     }
 }
+
+// --------------------------------------------------------------------------------
+void MainWindow::onDropFiles(wxDropFilesEvent &event) {
+    if (event.GetNumberOfFiles() > 0) {
+        wxString *dropped = event.GetFiles();
+        wxASSERT(dropped);
+        wxBusyCursor busyCursor;
+        wxWindowDisabler disabler;
+        wxArrayString files;
+
+        for (int i = 0; i < event.GetNumberOfFiles(); i++) {
+            if (wxFileExists(dropped[i])) {
+                files.push_back(dropped[i]);
+            }
+            else if (wxDirExists(dropped[i])) {
+                wxDir::GetAllFiles(dropped[i], &files);
+            }
+        }
+
+        int defaultUserNumber = cifeSettings->readInteger("CpmOptions", "DefaultUserNumber", 0);
+        wxString textFileEndings = cifeSettings->readString("CpmOptions", "TextfileEndings",
+                                   "txt pip pas");
+        bool keepLastUpdatedTimestamp = cifeSettings->readBoolean("CpmOptions",
+                                        "KeepLastUpdatedTimestamp", false);
+
+        for (size_t i = 0; i < files.Count(); i++) {
+            wxFileName fileName(files[i]);
+            wxString fileExt = fileName.GetExt();
+            bool isTextFile = textFileEndings.Matches("*" + fileExt + "*");
+            cpmtools->writeFileToImage(files[i], defaultUserNumber, isTextFile,
+                                       keepLastUpdatedTimestamp);
+        }
+
+        showDirectory();
+    }
+}
+
 
 // --------------------------------------------------------------------------------

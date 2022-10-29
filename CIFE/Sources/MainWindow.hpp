@@ -61,6 +61,7 @@ class MainWindow : public Ui_MainWindow {
         void onListItemSelected(wxListEvent &event);
         void onListItemRightClick(wxListEvent &event);
         void onEnterWindow(wxMouseEvent &event);
+        void onDropFiles(wxDropFilesEvent &event);
 
     private:    // Attributes
         wxMenu *popupMenu;
