@@ -68,6 +68,7 @@ protected:
     wxMenu* menuFile;
     wxMenuItem* menuItemNew;
     wxMenuItem* menuItemOpen;
+    wxMenu* menuRecentFiles;
     wxMenuItem* menuItemSeparator;
     wxMenuItem* menuItemFileClose;
     wxMenuItem* menuItemSeparator1;

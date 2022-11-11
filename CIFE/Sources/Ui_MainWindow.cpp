@@ -48,6 +48,9 @@ Ui_MainWindow::Ui_MainWindow(wxWindow* parent, wxWindowID id, const wxString& ti
     menuItemOpen->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("datei")));
     menuFile->Append(menuItemOpen);
     
+    menuRecentFiles = new wxMenu();
+    menuFile->AppendSubMenu(menuRecentFiles, _("Recent Files"));
+    
     menuFile->AppendSeparator();
     
     menuItemFileClose = new wxMenuItem(menuFile, wxID_FILE_CLOSE, _("Close\tCtrl+W"), wxT(""), wxITEM_NORMAL);
