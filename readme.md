@@ -12,7 +12,7 @@ Entwickelt wird der CP/M Image File Explorer in C/C++ mit den wxWidgets GUI-Fram
 
 Als Entwicklungsumgebung dient Eclipse CDT.
 
-#*Kompilieren von CIFE ohne Entwicklungsumgebung*#
+# Kompilieren von CIFE ohne Entwicklungsumgebung #
 CIFE kann unter Linux auch ohne eine installierte Entwicklungsumgebung auf das jeweilige Zielsystem hin Kompiliert werden.
 Dafür habe ich ein GNUmakefile angelegt. Voraussetzung ist der Linux Compiler GCC sowie die wxWidgets Development Pakete.
 
@@ -20,6 +20,6 @@ Unter Ubuntu können die Voraussetzungen in der Console mit folgender Zeile inst
 
 sudo apt install build-essential libwxgtk3.0-gtk3-dev
 
-Dann die Sourcen von CIFE von Github herunterladen und in der Stammordner in welchem sich das GNUmakefile befindet wechseln.
+Dann die Sourcen von CIFE von Github herunterladen und in den Stammordner in welchem sich das GNUmakefile befindet wechseln.
 
 Dort reicht dann in der Console ein einfaches  make  um CIFE zu kompilieren.
