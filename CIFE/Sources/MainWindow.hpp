@@ -17,12 +17,9 @@
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-// --------------------------------------------------------------------------------
-#include <wx/arrstr.h>
 
 #include "Ui_MainWindow.hpp"
 // --------------------------------------------------------------------------------
-class wxMenu;
 class CpmDevice;
 class CpmFs;
 class CpmTools;

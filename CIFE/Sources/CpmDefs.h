@@ -62,24 +62,24 @@
 #define MODIFIED 1
 #define BROKEN 2
 
-#define T0 'G'
-#define T1 'E'
-#define T2 'H'
-#define T3 'E'
-#define T4 'I'
-#define T5 'M'
-#define T6 ' '
-#define T7 ' '
+#define C0 'G'
+#define C1 'E'
+#define C2 'H'
+#define C3 'E'
+#define C4 'I'
+#define C5 'M'
+#define C6 ' '
+#define C7 ' '
 
-#define PB ((char)(T0+T1+T2+T3+T4+T5+T6+T7))
-#define P0 ((char)(T7^PB))
-#define P1 ((char)(T6^PB))
-#define P2 ((char)(T5^PB))
-#define P3 ((char)(T4^PB))
-#define P4 ((char)(T3^PB))
-#define P5 ((char)(T2^PB))
-#define P6 ((char)(T1^PB))
-#define P7 ((char)(T0^PB))
+#define PB ((char)(C0+C1+C2+C3+C4+C5+C6+C7))
+#define PC0 ((char)(C7^PB))
+#define PC1 ((char)(C6^PB))
+#define PC2 ((char)(C5^PB))
+#define PC3 ((char)(C4^PB))
+#define PC4 ((char)(C3^PB))
+#define PC5 ((char)(C2^PB))
+#define PC6 ((char)(C1^PB))
+#define PC7 ((char)(C0^PB))
 
 // --------------------------------------------------------------------------------
 #endif // CPMDEFS_H

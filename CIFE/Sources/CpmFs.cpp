@@ -17,14 +17,14 @@
 
 #include "CpmFs.hpp"
 #include "CpmDefs.h"
+#include "CpmDevice.hpp"
 // --------------------------------------------------------------------------------
-#include <cstdio>
-#include <stdarg.h>
-#include <memory>
-#include <ctype.h>
-#include <sys/stat.h>
-#include <errno.h>
+#include <cstring>
+#include <climits>
+#include <cstdarg>
+#include <ctime>
 #include <fcntl.h>
+#include <memory>
 // --------------------------------------------------------------------------------
 CpmFs::CpmFs(CpmDevice *device, std::string appPath) {
     cpmdevice = device;

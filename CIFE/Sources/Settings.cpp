@@ -20,7 +20,6 @@
 #include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/stdpaths.h>
-#include <wx/filefn.h>
 // --------------------------------------------------------------------------------
 Settings::Settings(wxString settingsFileName) {
 

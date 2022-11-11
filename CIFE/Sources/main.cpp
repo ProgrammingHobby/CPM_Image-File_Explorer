@@ -15,18 +15,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <wx/wx.h>
-#include <wx/file.h>
-#include <wx/msgdlg.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/image.h>
-#include <wx/filename.h>
-#include <wx/stdpaths.h>
-// --------------------------------------------------------------------------------
-
 #include "MainWindow.hpp"
 // --------------------------------------------------------------------------------
-// application class
+#include <wx/app.h>
+#include <wx/stdpaths.h>
+#include <wx/msgdlg.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/string.h>
+#include <wx/image.h>
+#include <wx/filename.h>
+// --------------------------------------------------------------------------------
 class wxCifeApp : public wxApp {
     public:
         virtual bool OnInit();

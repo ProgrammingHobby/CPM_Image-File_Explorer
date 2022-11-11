@@ -27,19 +27,13 @@
 #include "FileCopySettingsDialog.hpp"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
-#include <wx/versioninfo.h>
 #include <wx/filedlg.h>
 #include <wx/stdpaths.h>
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 #include <wx/tokenzr.h>
-#include <wx/bitmap.h>
-#include <wx/icon.h>
 #include <wx/msgdlg.h>
-#include <wx/datetime.h>
 #include <wx/clipbrd.h>
-#include <wx/filename.h>
-#include <wx/arrstr.h>
 #include <wx/dir.h>
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MainWindow, wxFrame)
@@ -533,7 +527,7 @@ void MainWindow::onCreateNew(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onCheckImage(wxCommandEvent &event) {
-#ifdef _WINDOWS_
+#ifdef __WINDOWS__
     wxMessageDialog deleteDialog(NULL, "Repair Filesystem Errors ?", "Check CP/M Image",
                                  wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
 #else

@@ -21,10 +21,9 @@
 #include <wx/xml/xml.h>
 // --------------------------------------------------------------------------------
 class Settings {
-    public:
-        //////////// Public Attributes ///////////
+    public: // Attributes
 
-        ////////////// Public Methods ////////////
+    public: // Methods
         void writeInteger(wxString section, wxString key, int data);
         void writeString(wxString section, wxString key, wxString data);
         void writeBoolean(wxString section, wxString key, bool data);
@@ -34,19 +33,19 @@ class Settings {
         void removeSection(wxString section);
         void removeKey(wxString section, wxString key);
 
-        ///// Public Constructor & Destructor ////
+    public: // Constructor & Destructor
         Settings(wxString settingsFileName);
         virtual ~Settings();
 
-    protected:
-        //////// Protected Event Methods /////////
+    protected: // Attributes
 
-    private:
-        /////////// Private Attributes ///////////
+    protected: // Methods
+
+    private: // Attributes
         wxString settingsFile;
         wxXmlDocument xmlSettings;
 
-        ///////////// Private Methods ////////////
+    private: // Methods
         wxXmlNode *findNode(wxXmlNode *rootNode, wxString name);
 };
 

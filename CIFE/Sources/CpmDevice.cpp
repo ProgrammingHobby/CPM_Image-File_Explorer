@@ -17,8 +17,11 @@
 
 #include "CpmDevice.hpp"
 // --------------------------------------------------------------------------------
-#include <errno.h>
+#include <cstdio>
+#include <cerrno>
+#include <cstring>
 #include <memory>
+#include <cstdarg>
 // --------------------------------------------------------------------------------
 CpmDevice::CpmDevice() {
     // TODO Auto-generated constructor stub

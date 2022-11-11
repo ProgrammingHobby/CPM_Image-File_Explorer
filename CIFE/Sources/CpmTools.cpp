@@ -19,6 +19,8 @@
 #include "CpmTools.hpp"
 #include "CpmGuiInterface.hpp"
 // --------------------------------------------------------------------------------
+#include <fcntl.h>
+// --------------------------------------------------------------------------------
 CpmTools::CpmTools(CpmDevice *device, CpmFs *fs, CpmGuiInterface *intf,
                    wxString appPath) {
     guiintf = intf;
@@ -818,17 +820,17 @@ int CpmTools::fsck(const char *image, bool repair) {
 
             if ((dir->extnol & 0x80) && pwdCheck(extent, dir->pointers, dir->lrc)) {
                 char msg[80];
-                sprintf(msg, "Set password to %c%c%c%c%c%c%c%c", T0, T1, T2, T3, T4, T5, T6, T7);
+                sprintf(msg, "Set password to %c%c%c%c%c%c%c%c", C0, C1, C2, C3, C4, C5, C6, C7);
 
                 if (repair && ask(msg)) {
-                    dir->pointers[0] = P0;
-                    dir->pointers[1] = P1;
-                    dir->pointers[2] = P2;
-                    dir->pointers[3] = P3;
-                    dir->pointers[4] = P4;
-                    dir->pointers[5] = P5;
-                    dir->pointers[6] = P6;
-                    dir->pointers[7] = P7;
+                    dir->pointers[0] = PC0;
+                    dir->pointers[1] = PC1;
+                    dir->pointers[2] = PC2;
+                    dir->pointers[3] = PC3;
+                    dir->pointers[4] = PC4;
+                    dir->pointers[5] = PC5;
+                    dir->pointers[6] = PC6;
+                    dir->pointers[7] = PC7;
                     dir->lrc = PB;
                     ret |= MODIFIED;
                 }
@@ -893,17 +895,17 @@ int CpmTools::fsck(const char *image, bool repair) {
             /* check password */
             if ((dir->extnol & (0x80 | 0x40 | 0x20)) && pwdCheck(extent, dir->pointers, dir->lrc)) {
                 char msg[80];
-                sprintf(msg, "Set password to %c%c%c%c%c%c%c%c", T0, T1, T2, T3, T4, T5, T6, T7);
+                sprintf(msg, "Set password to %c%c%c%c%c%c%c%c", C0, C1, C2, C3, C4, C5, C6, C7);
 
                 if (repair && ask(msg)) {
-                    dir->pointers[0] = P0;
-                    dir->pointers[1] = P1;
-                    dir->pointers[2] = P2;
-                    dir->pointers[3] = P3;
-                    dir->pointers[4] = P4;
-                    dir->pointers[5] = P5;
-                    dir->pointers[6] = P6;
-                    dir->pointers[7] = P7;
+                    dir->pointers[0] = PC0;
+                    dir->pointers[1] = PC1;
+                    dir->pointers[2] = PC2;
+                    dir->pointers[3] = PC3;
+                    dir->pointers[4] = PC4;
+                    dir->pointers[5] = PC5;
+                    dir->pointers[6] = PC6;
+                    dir->pointers[7] = PC7;
                     dir->lrc = PB;
                     ret |= MODIFIED;
                 }
