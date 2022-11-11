@@ -998,7 +998,7 @@ int CpmFs::amsReadSuper(const char *format) {
     cpmdevice->SetGeometry(512, 9, 40, 0);
 
     if (cpmdevice->ReadSector(0, 0, (char *) boot_sector)) {
-        fserr = msgFormat("Failed to read Amstrad superblock  (%s)", cpmdevice->getErrorMsg());
+        fserr = msgFormat("Failed to read Amstrad superblock  (%s)", cpmdevice->getErrorMsg().c_str());
         return (1);
     }
 
