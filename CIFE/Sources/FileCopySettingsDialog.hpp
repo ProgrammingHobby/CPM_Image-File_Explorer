@@ -20,8 +20,6 @@
 // --------------------------------------------------------------------------------
 #include "Ui_FileCopySettingsDialog.hpp"
 // --------------------------------------------------------------------------------
-class Settings;
-// --------------------------------------------------------------------------------
 class FileCopySettingsDialog : public Ui_FileCopySettingsDialog {
 
     public:     // Attributes
@@ -29,13 +27,13 @@ class FileCopySettingsDialog : public Ui_FileCopySettingsDialog {
     public:     // Methods
 
     public:     // Constructor & Destructor
-        FileCopySettingsDialog(wxWindow *parent, Settings *settings);
+        FileCopySettingsDialog(wxWindow *parent, wxConfigBase *cnf);
         virtual ~FileCopySettingsDialog();
 
     protected:  // Event Methods
 
     private:    // Attributes
-        Settings *dialogSettings;
+        wxConfigBase *config;
 
     private:    // Methods
         void correctDialogSize();

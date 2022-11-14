@@ -22,7 +22,7 @@
 #include "FileAttributesDialog.hpp"
 #include "FileProtectionsDialog.hpp"
 #include "RenameFileDialog.hpp"
-#include "Settings.hpp"
+#include "wxXmlConfig.hpp"
 #include "Version.h"
 #include "FileCopySettingsDialog.hpp"
 // --------------------------------------------------------------------------------
@@ -65,7 +65,11 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     cpmdevice = new CpmDevice();
     cpmfs = new CpmFs(cpmdevice, appPath.ToStdString());
     cpmtools = new CpmTools(cpmdevice, cpmfs, cpmguiinterface, appPath);
-    cifeSettings = new Settings("cife.conf");
+    wxXmlConfig *xmlconfig = new wxXmlConfig(wxEmptyString, wxEmptyString, "cife.conf",
+            wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
+    wxConfigBase::Set(xmlconfig);
+    config = wxConfigBase::Get();
+
     comboboxImageType->Append(getImageTypes(appPath));
     comboboxImageType->SetSelection(0);
     editImageFile->SetFocus();
@@ -79,13 +83,14 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     listImageContents->Connect(wxEVT_DROP_FILES,
                                wxDropFilesEventHandler(MainWindow::onDropFiles), NULL, this);
     listImageContents->DragAcceptFiles(true);
-    comboboxImageType->SetSelection(cifeSettings->readInteger("CpmSettings", "ImageType", 0));
+    comboboxImageType->SetSelection(config->ReadLong("/CpmSettings/ImageType", 0));
     cpmtools->setImageType(comboboxImageType->GetValue());
-    wxString filePath = cifeSettings->readString("CpmSettings", "ImageFile", "");
     presetMenues();
     createPopupMenu();
     listImageContents->enableSizing(true);
     correctWindowSize();
+    wxString filePath;
+    config->Read("/CpmSettings/ImageFile", &filePath, "");
 
     if (wxFileExists(filePath)) {
         editImageFile->SetValue(filePath);
@@ -161,33 +166,36 @@ void MainWindow::correctWindowSize() {
     int height = this->GetBestSize().GetHeight();
     this->SetMinSize(wxSize(width, (height * 1.5)));
     wxSize size;
-    size.x = cifeSettings->readInteger("MainWindow", "SizeX", width);
-    size.y = cifeSettings->readInteger("MainWindow", "SizeY", (height * 1.5));
+    size.x = config->ReadLong("/MainWindow/SizeX", width);
+    size.y = config->ReadLong("/MainWindow/SizeY", (height * 1.5));
     this->SetSize(size);
+    this->SetSize(width, height);
     wxPoint point;
-    point.x = cifeSettings->readInteger("MainWindow", "PosX", 10);
-    point.y = cifeSettings->readInteger("MainWindow", "PosY", 10);
+    point.x = config->ReadLong("/MainWindow/PosX", 10);
+    point.y = config->ReadLong("/MainWindow/PosY", 10);
     this->SetPosition(point);
-    splitterImageViews->SetSashPosition(cifeSettings->readInteger("MainWindow", "SplitterPos",
-                                        466), true);
+    splitterImageViews->SetSashPosition(config->ReadLong("/MainWindow/SplitterPos", 466),
+                                        true);
 }
 
 // --------------------------------------------------------------------------------
 MainWindow::~MainWindow() {
-    cifeSettings->writeInteger("MainWindow", "PosX", this->GetPosition().x);
-    cifeSettings->writeInteger("MainWindow", "PosY", this->GetPosition().y);
-    cifeSettings->writeInteger("MainWindow", "SizeX", this->GetSize().x);
-    cifeSettings->writeInteger("MainWindow", "SizeY", this->GetSize().y);
-    cifeSettings->writeInteger("MainWindow", "SplitterPos",
-                               splitterImageViews->GetSashPosition());
-    cifeSettings->writeInteger("CpmSettings", "ImageType", comboboxImageType->GetSelection());
-    cifeSettings->writeString("CpmSettings", "ImageFile", editImageFile->GetValue());
+    config->Write("/MainWindow/PosX", this->GetPosition().x);
+    config->Write("/MainWindow/PosY", this->GetPosition().y);
+    config->Write("/MainWindow/SizeX", this->GetSize().x);
+    config->Write("/MainWindow/SizeY", this->GetSize().y);
+    config->Write("/MainWindow/SplitterPos", splitterImageViews->GetSashPosition());
+    config->Write("/CpmSettings/ImageType", comboboxImageType->GetSelection());
+
+    if (!editImageFile->IsEmpty()) {
+        config->Write("/CpmSettings/ImageFile", editImageFile->GetValue());
+    }
 
     wxDELETE(cpmguiinterface);
     wxDELETE(cpmtools);
     wxDELETE(cpmfs);
     wxDELETE(cpmdevice);
-    wxDELETE(cifeSettings);
+    wxDELETE(config);
     wxDELETE(popupMenu);
 }
 
@@ -545,12 +553,8 @@ void MainWindow::onCheckImage(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onCopySettings(wxCommandEvent &event) {
-    FileCopySettingsDialog *dialog = new FileCopySettingsDialog(this, cifeSettings);
-
-    if (dialog->ShowModal() == wxID_OK) {
-
-    }
-
+    FileCopySettingsDialog *dialog = new FileCopySettingsDialog(this, config);
+    dialog->ShowModal();
     wxDELETE(dialog);
 }
 
@@ -562,11 +566,12 @@ void MainWindow::onPasteFile(wxCommandEvent &event) {
         if (cifeClipboard.IsSupported(wxDF_FILENAME)) {
             wxFileDataObject data;
             cifeClipboard.GetData(data);
-            int defaultUserNumber = cifeSettings->readInteger("CpmOptions", "DefaultUserNumber", 0);
-            wxString textFileEndings = cifeSettings->readString("CpmOptions", "TextfileEndings",
-                                       "txt pip pas");
-            bool keepLastUpdatedTimestamp = cifeSettings->readBoolean("CpmOptions",
-                                            "KeepLastUpdatedTimestamp", false);
+            int defaultUserNumber = config->ReadLong("/CpmOptions/DefaultUserNumber", 0);
+            wxString textFileEndings;
+            config->Read("/CpmOptions/TextfileEndings", &textFileEndings, "txt pip pas");
+            bool keepLastUpdatedTimestamp;
+            config->Read("/CpmOptions/KeepLastUpdatedTimestamp", &keepLastUpdatedTimestamp,
+                         false);
             wxArrayString pasted, files;
             pasted = data.GetFilenames();
 
@@ -664,11 +669,12 @@ void MainWindow::onDropFiles(wxDropFilesEvent &event) {
             }
         }
 
-        int defaultUserNumber = cifeSettings->readInteger("CpmOptions", "DefaultUserNumber", 0);
-        wxString textFileEndings = cifeSettings->readString("CpmOptions", "TextfileEndings",
-                                   "txt pip pas");
-        bool keepLastUpdatedTimestamp = cifeSettings->readBoolean("CpmOptions",
-                                        "KeepLastUpdatedTimestamp", false);
+        int defaultUserNumber = config->ReadLong("/CpmOptions/DefaultUserNumber", 0);
+        wxString textFileEndings;
+        config->Read("/CpmOptions/TextfileEndings", &textFileEndings, "txt pip pas");
+        bool keepLastUpdatedTimestamp;
+        config->Read("/CpmOptions/KeepLastUpdatedTimestamp", &keepLastUpdatedTimestamp,
+                     false);
 
         for (size_t i = 0; i < files.Count(); i++) {
             wxFileName fileName(files[i]);

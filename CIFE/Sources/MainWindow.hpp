@@ -24,7 +24,6 @@ class CpmDevice;
 class CpmFs;
 class CpmTools;
 class CpmGuiInterface;
-class Settings;
 // --------------------------------------------------------------------------------
 class MainWindow : public Ui_MainWindow {
     public:     // Attributes
@@ -62,7 +61,7 @@ class MainWindow : public Ui_MainWindow {
 
     private:    // Attributes
         wxMenu *popupMenu;
-        Settings *cifeSettings;
+        wxConfigBase *config;
         CpmDevice *cpmdevice;
         CpmFs *cpmfs;
         CpmTools *cpmtools;

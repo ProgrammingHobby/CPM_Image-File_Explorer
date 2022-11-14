@@ -16,34 +16,36 @@
  */
 
 #include "FileCopySettingsDialog.hpp"
-#include "Settings.hpp"
 // --------------------------------------------------------------------------------
 FileCopySettingsDialog::FileCopySettingsDialog(wxWindow *parent,
-        Settings *settings) : Ui_FileCopySettingsDialog(parent) {
-    dialogSettings = settings;
-
-    spinCtrlDefaultUserNumber->SetValue(dialogSettings->readInteger("CpmOptions",
-                                        "DefaultUserNumber", 0));
-    editTextFileEndings->SetValue(dialogSettings->readString("CpmOptions", "TextfileEndings",
-                                  "txt pip pas"));
-    checkboxKeepLastUpdated->SetValue(dialogSettings->readBoolean("CpmOptions",
-                                      "KeepLastUpdatedTimestamp", false));
-
+        wxConfigBase *cnf) : Ui_FileCopySettingsDialog(parent) {
+    config = cnf;
+    spinCtrlDefaultUserNumber->SetValue(
+        config->ReadLong("/CpmOptions/DefaultUserNumber", 0));
+    wxString textFileEndings;
+    config->Read("/CpmOptions/TextfileEndings", &textFileEndings, "txt pip pas");
+    editTextFileEndings->SetValue(textFileEndings);
+    bool keepLastUpdated;
+    config->Read("/CpmOptions/KeepLastUpdatedTimestamp", &keepLastUpdated, false);
+    checkboxKeepLastUpdated->SetValue(keepLastUpdated);
     correctDialogSize();
-
 }
 
 // --------------------------------------------------------------------------------
 FileCopySettingsDialog::~FileCopySettingsDialog() {
-    dialogSettings->writeInteger("CopySettingsDialog", "PosX", this->GetPosition().x);
-    dialogSettings->writeInteger("CopySettingsDialog", "PosY", this->GetPosition().y);
-    dialogSettings->writeInteger("CopySettingsDialog", "SizeX", this->GetSize().x);
-    dialogSettings->writeInteger("CopySettingsDialog", "SizeY", this->GetSize().y);
+    config->Write("/CopySettingsDialog/PosX", this->GetPosition().x);
+    config->Write("/CopySettingsDialog/PosY", this->GetPosition().y);
+    config->Write("/CopySettingsDialog/SizeX", this->GetSize().x);
+    config->Write("/CopySettingsDialog/SizeY", this->GetSize().y);
+    config->Write("/CpmOptions/DefaultUserNumber",
+                  spinCtrlDefaultUserNumber->GetValue());
 
-    dialogSettings->writeInteger("CpmOptions", "DefaultUserNumber",
-                                 spinCtrlDefaultUserNumber->GetValue());
-    dialogSettings->writeString("CpmOptions", "TextfileEndings",
-                                editTextFileEndings->GetValue());
+    if (!editTextFileEndings->IsEmpty()) {
+        config->Write("/CpmOptions/TextfileEndings", editTextFileEndings->GetValue());
+    }
+
+    config->Write("/CpmOptions/KeepLastUpdatedTimestamp",
+                  checkboxKeepLastUpdated->GetValue());
 }
 
 // --------------------------------------------------------------------------------
@@ -52,13 +54,13 @@ void FileCopySettingsDialog::correctDialogSize() {
     int width = this->GetBestSize().GetWidth();
     int height = this->GetBestSize().GetHeight();
     wxSize size;
-    size.x = dialogSettings->readInteger("CopySettingsDialog", "SizeX", width);
-    size.y = dialogSettings->readInteger("CopySettingsDialog", "SizeY", (height * 1.5));
+    size.x = config->ReadLong("/CopySettingsDialog/SizeX", width);
+    size.y = config->ReadLong("/CopySettingsDialog/SizeY", (height * 1.5));
     this->SetSize(size);
     this->SetMinSize(wxSize(width, (height * 1.5)));
     wxPoint point;
-    point.x = dialogSettings->readInteger("CopySettingsDialog", "PosX", 10);
-    point.y = dialogSettings->readInteger("CopySettingsDialog", "PosY", 10);
+    point.x = config->ReadLong("/CopySettingsDialog/PosX", 10);
+    point.y = config->ReadLong("/CopySettingsDialog/PosY", 10);
     this->SetPosition(point);
 }
 
