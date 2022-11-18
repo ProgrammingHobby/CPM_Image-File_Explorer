@@ -24,6 +24,7 @@ class CpmDevice;
 class CpmFs;
 class CpmTools;
 class CpmGuiInterface;
+class ImagesHistory;
 // --------------------------------------------------------------------------------
 class MainWindow : public Ui_MainWindow {
     public:     // Attributes
@@ -67,6 +68,7 @@ class MainWindow : public Ui_MainWindow {
         CpmTools *cpmtools;
         CpmGuiInterface *cpmguiinterface;
         bool isImageLoaded;
+        ImagesHistory *imageshistory;
 
     private:    // Methods
         wxArrayString getImageTypes(wxString appPath);

@@ -25,6 +25,7 @@
 #include "wxXmlConfig.hpp"
 #include "Version.h"
 #include "FileCopySettingsDialog.hpp"
+#include "ImagesHistory.hpp"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/filedlg.h>
@@ -69,6 +70,8 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
             wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
     wxConfigBase::Set(xmlconfig);
     config = wxConfigBase::Get();
+    imageshistory = new ImagesHistory(menuRecentFiles, config);
+    imageshistory->load();
 
     comboboxImageType->Append(getImageTypes(appPath));
     comboboxImageType->SetSelection(0);
@@ -83,18 +86,16 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     listImageContents->Connect(wxEVT_DROP_FILES,
                                wxDropFilesEventHandler(MainWindow::onDropFiles), NULL, this);
     listImageContents->DragAcceptFiles(true);
-    comboboxImageType->SetSelection(config->ReadLong("/CpmSettings/ImageType", 0));
-    cpmtools->setImageType(comboboxImageType->GetValue());
     presetMenues();
     createPopupMenu();
     listImageContents->enableSizing(true);
     correctWindowSize();
-    wxString filePath;
-    config->Read("/CpmSettings/ImageFile", &filePath, "");
+    wxString filePath = imageshistory->getActualImageFile();
 
     if (wxFileExists(filePath)) {
         editImageFile->SetValue(filePath);
         editImageFile->SetInsertionPoint(filePath.length());
+        comboboxImageType->SetSelection(imageshistory->getActualImageType());
         cpmtools->setImageType(comboboxImageType->GetValue());
         cpmtools->openImage(filePath);
         isImageLoaded = true;
@@ -187,10 +188,9 @@ MainWindow::~MainWindow() {
     config->Write("/MainWindow/SplitterPos", splitterImageViews->GetSashPosition());
     config->Write("/CpmSettings/ImageType", comboboxImageType->GetSelection());
 
-    if (!editImageFile->IsEmpty()) {
-        config->Write("/CpmSettings/ImageFile", editImageFile->GetValue());
-    }
+    imageshistory->save();
 
+    wxDELETE(imageshistory);
     wxDELETE(cpmguiinterface);
     wxDELETE(cpmtools);
     wxDELETE(cpmfs);
@@ -212,6 +212,7 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
         wxString filePath = fileDialog.GetPath();
         editImageFile->SetValue(filePath);
         editImageFile->SetInsertionPoint(filePath.length());
+        imageshistory->addItem(filePath, comboboxImageType->GetSelection());
 
         if (cpmtools->openImage(filePath)) {
             isImageLoaded = true;
@@ -241,6 +242,7 @@ void MainWindow::onImageFileNew(wxCommandEvent &event) {
                                  dialog->useTimestamps(), dialog->getBootTrackFile());
 
         if (cpmtools->openImage(editImageFile->GetValue())) {
+            imageshistory->addItem(dialog->getImageFileName(), comboboxImageType->GetSelection());
             isImageLoaded = true;
             showDirectory();
         }
