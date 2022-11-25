@@ -66,7 +66,7 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     cpmdevice = new CpmDevice();
     cpmfs = new CpmFs(cpmdevice, appPath.ToStdString());
     cpmtools = new CpmTools(cpmdevice, cpmfs, cpmguiinterface, appPath);
-    wxXmlConfig *xmlconfig = new wxXmlConfig(wxEmptyString, wxEmptyString, "cife.conf",
+    wxXmlConfig *xmlconfig = new wxXmlConfig(wxEmptyString, wxEmptyString, "cife.xml",
             wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
     wxConfigBase::Set(xmlconfig);
     config = wxConfigBase::Get();
