@@ -19,14 +19,26 @@
 #define IMAGESHISTORY_HPP_
 // --------------------------------------------------------------------------------
 #include <wx/object.h>
+#include <wx/arrstr.h>
+// --------------------------------------------------------------------------------
+class wxConfigBase;
+class wxMenu;
 // --------------------------------------------------------------------------------
 class ImagesHistory: public wxObject {
     public: // Attributes
 
     public: // Methods
+        void clearHistory();
+        void addItem(wxString file, int type);
+        wxString getActualImageFile();
+        int getActualImageType();
+        wxString getHistoryImageFile(int item);
+        int getHistoryImageType(int item);
+        bool load();
+        void save();
 
     public: // Constructor & Destructor
-        ImagesHistory();
+        ImagesHistory(wxMenu *menu, wxConfigBase *config);
         virtual ~ImagesHistory();
 
     protected: // Attributes
@@ -34,8 +46,17 @@ class ImagesHistory: public wxObject {
     protected: // Methods
 
     private: // Attributes
+        const int MAXITEMS = 10;
+        wxWindowID m_MenuItemId = wxID_FILE1;
+        wxArrayString m_ImageFiles;
+        wxArrayString m_ImageTypes;
+        wxMenu *m_RecentMenu;
+        wxConfigBase *m_Config;
 
     private: // Methods
+        wxString recentMenuLabel(int num, wxString file);
+        void removeHistoryItem(int item);
+        void refreshMenuLabels();
 };
 
 // --------------------------------------------------------------------------------
