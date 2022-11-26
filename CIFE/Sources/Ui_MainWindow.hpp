@@ -49,19 +49,20 @@ class Ui_MainWindow : public wxFrame
 {
 public:
     enum {
-        wxID_BUTTON_CLEAR_MESSAGES = 10001,
-        wxID_IMAGE_TYPE = 10002,
-        wxID_CHECK_IMAGE = 10003,
-        wxID_CREATE_NEW = 10004,
-        wxID_BUTTON_SAVE_MESSAGES = 10005,
-        wxID_IMAGE_CONTENTS = 10006,
-        wxID_PROTECTIONS = 10007,
-        wxID_QUIT = 10008,
-        wxID_ATTRIBUTES = 10009,
-        wxID_FILE_CLOSE = 10010,
-        wxID_COPY_SETTINGS = 10011,
-        wxID_FILE_OPEN = 10012,
-        wxID_FILE_NEW = 10013,
+        wxID_BUTTON_SAVE_MESSAGES = 10001,
+        wxID_FILE_NEW = 10002,
+        wxID_FILE_OPEN = 10003,
+        wxID_COPY_SETTINGS = 10004,
+        wxID_CLEAR_HISTORY = 10005,
+        wxID_FILE_CLOSE = 10006,
+        wxID_ATTRIBUTES = 10007,
+        wxID_PROTECTIONS = 10008,
+        wxID_IMAGE_CONTENTS = 10009,
+        wxID_CREATE_NEW = 10010,
+        wxID_QUIT = 10011,
+        wxID_CHECK_IMAGE = 10012,
+        wxID_IMAGE_TYPE = 10013,
+        wxID_BUTTON_CLEAR_MESSAGES = 10014,
     };
 protected:
     wxMenuBar* menuMainWindow;
@@ -70,21 +71,23 @@ protected:
     wxMenuItem* menuItemOpen;
     wxMenu* menuRecentFiles;
     wxMenuItem* menuItemSeparator;
-    wxMenuItem* menuItemFileClose;
+    wxMenuItem* menuItemClearHistory;
     wxMenuItem* menuItemSeparator1;
+    wxMenuItem* menuItemFileClose;
+    wxMenuItem* menuItemSeparator2;
     wxMenuItem* menuItemQuit;
     wxMenu* menuEdit;
     wxMenuItem* menuItemCut;
     wxMenuItem* menuItemCopy;
     wxMenuItem* menuItemPaste;
     wxMenuItem* menuItemSelectAll;
-    wxMenuItem* menuItemSeparator2;
+    wxMenuItem* menuItemSeparator3;
     wxMenuItem* menuItemRename;
     wxMenuItem* menuItemDelete;
-    wxMenuItem* menuItemSeparator3;
+    wxMenuItem* menuItemSeparator4;
     wxMenuItem* menuItemAttributes;
     wxMenuItem* menuItemProtections;
-    wxMenuItem* menuItemSeparator4;
+    wxMenuItem* menuItemSeparator5;
     wxMenuItem* menuItemFormatCurrent;
     wxMenu* menuView;
     wxMenuItem* menuItemRefresh;

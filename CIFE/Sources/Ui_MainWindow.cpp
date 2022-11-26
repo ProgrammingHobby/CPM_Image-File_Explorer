@@ -51,6 +51,11 @@ Ui_MainWindow::Ui_MainWindow(wxWindow* parent, wxWindowID id, const wxString& ti
     menuRecentFiles = new wxMenu();
     menuFile->AppendSubMenu(menuRecentFiles, _("Recent Files"));
     
+    menuRecentFiles->AppendSeparator();
+    
+    menuItemClearHistory = new wxMenuItem(menuRecentFiles, wxID_CLEAR_HISTORY, _("Clear History"), wxT(""), wxITEM_NORMAL);
+    menuRecentFiles->Append(menuItemClearHistory);
+    
     menuFile->AppendSeparator();
     
     menuItemFileClose = new wxMenuItem(menuFile, wxID_FILE_CLOSE, _("Close\tCtrl+W"), wxT(""), wxITEM_NORMAL);
