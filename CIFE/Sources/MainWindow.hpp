@@ -54,6 +54,8 @@ class MainWindow : public Ui_MainWindow {
         void onCheckImage(wxCommandEvent &event);
         void onCopySettings(wxCommandEvent &event);
         void onPasteFile(wxCommandEvent &event);
+        void onClearHistory(wxCommandEvent &event);
+        void onSelectHistoryEntry(wxCommandEvent &event);
         void onShowContextMenu(wxContextMenuEvent &event);
         void onListItemSelected(wxListEvent &event);
         void onListItemRightClick(wxListEvent &event);

@@ -54,6 +54,7 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CHECK_IMAGE, MainWindow::onCheckImage)
     EVT_MENU(wxID_COPY_SETTINGS, MainWindow::onCopySettings)
     EVT_MENU(wxID_PASTE, MainWindow::onPasteFile)
+    EVT_MENU(wxID_CLEAR_HISTORY, MainWindow::onClearHistory)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onClearMessages)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onSaveMessages)
     EVT_COMBOBOX(wxID_IMAGE_TYPE, MainWindow::onImageTypeChanged)
@@ -71,7 +72,15 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     wxConfigBase::Set(xmlconfig);
     config = wxConfigBase::Get();
     imageshistory = new ImagesHistory(menuRecentFiles, config);
-    imageshistory->load();
+
+    if (!imageshistory->load()) {
+        menuRecentFiles->Enable(wxID_CLEAR_HISTORY, false);
+    }
+
+    for (int i = 0; i < 10; i++) {
+        this->Bind(wxEVT_COMMAND_MENU_SELECTED, &MainWindow::onSelectHistoryEntry, this,
+                   wxID_FILE1 + i);
+    }
 
     comboboxImageType->Append(getImageTypes(appPath));
     comboboxImageType->SetSelection(0);
@@ -186,17 +195,15 @@ MainWindow::~MainWindow() {
     config->Write("/MainWindow/SizeX", this->GetSize().x);
     config->Write("/MainWindow/SizeY", this->GetSize().y);
     config->Write("/MainWindow/SplitterPos", splitterImageViews->GetSashPosition());
-    config->Write("/CpmSettings/ImageType", comboboxImageType->GetSelection());
 
     imageshistory->save();
 
-    wxDELETE(imageshistory);
     wxDELETE(cpmguiinterface);
     wxDELETE(cpmtools);
     wxDELETE(cpmfs);
     wxDELETE(cpmdevice);
-    wxDELETE(config);
     wxDELETE(popupMenu);
+    wxDELETE(imageshistory);
 }
 
 // --------------------------------------------------------------------------------
@@ -213,6 +220,10 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
         editImageFile->SetValue(filePath);
         editImageFile->SetInsertionPoint(filePath.length());
         imageshistory->addItem(filePath, comboboxImageType->GetSelection());
+
+        if (!menuRecentFiles->IsEnabled(wxID_CLEAR_HISTORY)) {
+            menuRecentFiles->Enable(wxID_CLEAR_HISTORY, true);
+        }
 
         if (cpmtools->openImage(filePath)) {
             isImageLoaded = true;
@@ -290,6 +301,7 @@ void MainWindow::onImageTypeChanged(wxCommandEvent &event) {
 
     if (isImageLoaded) {
         showDirectory();
+        imageshistory->addItem(editImageFile->GetValue(), comboboxImageType->GetSelection());
     }
 }
 
@@ -599,6 +611,38 @@ void MainWindow::onPasteFile(wxCommandEvent &event) {
 
         cifeClipboard.Close();
     }
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onClearHistory(wxCommandEvent &event) {
+    WXUNUSED(event)
+    imageshistory->clearHistory();
+    menuRecentFiles->Enable(wxID_CLEAR_HISTORY, false);
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::onSelectHistoryEntry(wxCommandEvent &event) {
+    int historyId = (event.GetId() - wxID_FILE1);
+    wxString file = imageshistory->getHistoryImageFile(historyId);
+    int type = imageshistory->getHistoryImageType(historyId);
+    imageshistory->addItem(file, type);
+    cpmtools->closeImage();
+    presetMenues();
+    listImageContents->DeleteAllItems();
+
+    if (wxFileExists(file)) {
+        editImageFile->SetValue(file);
+        editImageFile->SetInsertionPoint(file.length());
+        comboboxImageType->SetSelection(type);
+        cpmtools->setImageType(comboboxImageType->GetValue());
+        cpmtools->openImage(file);
+        isImageLoaded = true;
+        showDirectory();
+    }
+    else {
+        isImageLoaded = false;
+    }
+
 }
 
 // --------------------------------------------------------------------------------
