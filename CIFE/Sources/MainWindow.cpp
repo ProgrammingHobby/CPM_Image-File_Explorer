@@ -300,6 +300,7 @@ void MainWindow::onImageTypeChanged(wxCommandEvent &event) {
     cpmtools->setImageType(comboboxImageType->GetValue());
 
     if (isImageLoaded) {
+        cpmfs->initDriveData();
         showDirectory();
         imageshistory->addItem(editImageFile->GetValue(), comboboxImageType->GetSelection());
     }
