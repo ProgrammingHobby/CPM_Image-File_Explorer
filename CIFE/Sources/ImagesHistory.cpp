@@ -83,7 +83,7 @@ wxString ImagesHistory::getHistoryImageFile(int item) {
 
 // --------------------------------------------------------------------------------
 int ImagesHistory::getHistoryImageType(int item) {
-    return (m_ImageTypes.GetCount() ?  wxAtoi(m_ImageTypes[0]) : -1);
+    return (m_ImageTypes.GetCount() ?  wxAtoi(m_ImageTypes[item]) : -1);
 }
 
 // --------------------------------------------------------------------------------
