@@ -244,6 +244,7 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onImageFileClose(wxCommandEvent &event) {
+    WXUNUSED(event)
     cpmtools->closeImage();
     editImageFile->SetValue("");
     listImageContents->DeleteAllItems();
@@ -253,6 +254,7 @@ void MainWindow::onImageFileClose(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onImageFileNew(wxCommandEvent &event) {
+    WXUNUSED(event)
     CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs->getBootTracksEnabled(),
             true);
     dialog->setImageType(comboboxImageType->GetValue());
@@ -345,11 +347,13 @@ wxArrayString MainWindow::getImageTypes(wxString appPath) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onClearMessages(wxCommandEvent &event) {
+    WXUNUSED(event)
     textMessages->Clear();
 }
 
 // --------------------------------------------------------------------------------
 void MainWindow::onSaveMessages(wxCommandEvent &event) {
+    WXUNUSED(event)
     wxFileDialog fileDialog(this, _("Save CIFE Messages"),
                             wxStandardPaths::Get().GetUserDataDir(),
                             "CIFE.msg", _("Text Files (*.txt,*.log)|*.txt;*.log|all Files (*.*)|*.*"),
@@ -362,11 +366,13 @@ void MainWindow::onSaveMessages(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onRefresh(wxCommandEvent &event) {
+    WXUNUSED(event)
     showDirectory();
 }
 
 // --------------------------------------------------------------------------------
 void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
+    WXUNUSED(event)
     if (isImageLoaded) {
 
         if (listImageContents->GetItemCount() == 0) {
@@ -444,6 +450,7 @@ void MainWindow::showDirectory() {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onListItemSelected(wxListEvent &event) {
+    WXUNUSED(event)
     if (listImageContents->GetSelectedItemCount() > 0) {
         menuMainWindow->Enable(wxID_CUT, true);
         menuMainWindow->Enable(wxID_COPY, true);
@@ -469,6 +476,7 @@ void MainWindow::onListItemSelected(wxListEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onListItemRightClick(wxListEvent &event) {
+    WXUNUSED(event)
     long index = event.GetIndex();
     long nextIndex = listImageContents->GetNextSelected(index);
     long firstIndex = listImageContents->GetFirstSelected();
@@ -497,11 +505,13 @@ void MainWindow::onListItemRightClick(wxListEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onSelectAll(wxCommandEvent &event) {
+    WXUNUSED(event)
     listImageContents->SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
 
 // --------------------------------------------------------------------------------
 void MainWindow::onDelete(wxCommandEvent &event) {
+    WXUNUSED(event)
     wxMessageDialog deleteDialog(NULL, _("Are you sure you want delete selected File/s ?"),
                                  _("Delete File/s"), wxYES_NO | wxYES_DEFAULT | wxICON_WARNING);
 
@@ -523,6 +533,7 @@ void MainWindow::onDelete(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onRename(wxCommandEvent &event) {
+    WXUNUSED(event)
     RenameFileDialog *dialog = new RenameFileDialog(this);
     long index = listImageContents->GetFirstSelected();
     wxString oldName = listImageContents->GetItemText(index, 0);
@@ -545,6 +556,7 @@ void MainWindow::onRename(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onCreateNew(wxCommandEvent &event) {
+    WXUNUSED(event)
     CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs->getBootTracksEnabled());
     dialog->setImageFileName(editImageFile->GetValue());
 
@@ -560,6 +572,7 @@ void MainWindow::onCreateNew(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onCheckImage(wxCommandEvent &event) {
+    WXUNUSED(event)
 #ifdef __WINDOWS__
     wxMessageDialog deleteDialog(NULL, "Repair Filesystem Errors ?", "Check CP/M Image",
                                  wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
@@ -578,6 +591,7 @@ void MainWindow::onCheckImage(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onCopySettings(wxCommandEvent &event) {
+    WXUNUSED(event)
     FileCopySettingsDialog *dialog = new FileCopySettingsDialog(this, config);
     dialog->ShowModal();
     wxDELETE(dialog);
@@ -585,6 +599,7 @@ void MainWindow::onCopySettings(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onPasteFile(wxCommandEvent &event) {
+    WXUNUSED(event)
     wxClipboard cifeClipboard;
 
     if (cifeClipboard.Open()) {
@@ -633,6 +648,7 @@ void MainWindow::onClearHistory(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onSelectHistoryEntry(wxCommandEvent &event) {
+    WXUNUSED(event)
     int historyId = (event.GetId() - wxID_FILE1);
     wxString file = imageshistory->getHistoryImageFile(historyId);
     int type = imageshistory->getHistoryImageType(historyId);
@@ -658,6 +674,7 @@ void MainWindow::onSelectHistoryEntry(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onAttributes(wxCommandEvent &event) {
+    WXUNUSED(event)
     FileAttributesDialog *dialog = new FileAttributesDialog(this);
     long index = listImageContents->GetFirstSelected();
     wxString name = listImageContents->GetItemText(index, 0);
@@ -674,6 +691,7 @@ void MainWindow::onAttributes(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onProtections(wxCommandEvent &event) {
+    WXUNUSED(event)
     FileProtectionsDialog *dialog = new FileProtectionsDialog(this);
     long index = listImageContents->GetFirstSelected();
     wxString name = listImageContents->GetItemText(index, 0);
@@ -690,6 +708,7 @@ void MainWindow::onProtections(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onEnterWindow(wxMouseEvent &event) {
+    WXUNUSED(event)
     wxClipboard cifeClipboard;
 
     if (cifeClipboard.Open()) {
@@ -710,6 +729,7 @@ void MainWindow::onEnterWindow(wxMouseEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onDropFiles(wxDropFilesEvent &event) {
+    WXUNUSED(event)
     if (event.GetNumberOfFiles() > 0) {
         wxString *dropped = event.GetFiles();
         wxASSERT(dropped);
