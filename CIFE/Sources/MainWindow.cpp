@@ -209,8 +209,18 @@ MainWindow::~MainWindow() {
 // --------------------------------------------------------------------------------
 void MainWindow::onImageFileOpen(wxCommandEvent &event) {
     WXUNUSED(event)
+    wxString dialogPath;
+    wxFileName filename(imageshistory->getActualImageFile());
+
+    if (filename.IsOk()) {
+        dialogPath = filename.GetPath();
+    }
+    else {
+        dialogPath = wxStandardPaths::Get().GetDocumentsDir();
+    }
+
     wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"),
-                            wxStandardPaths::Get().GetDocumentsDir(), wxEmptyString,
+                            dialogPath, wxEmptyString,
                             _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;"
                               "*.fdd;*.FDD;*.dsk;*.DSK|all Files (*.*)|*.*"),
                             wxFD_OPEN);
