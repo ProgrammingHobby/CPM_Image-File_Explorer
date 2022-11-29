@@ -1,3 +1,13 @@
+//*****************************************************************************
+// @file	wxXMLConfig.h
+// @author	Nicolas Dextraze
+// @web		http://www.nicdex.com
+// @date	February 17, 2007
+// @desc	wxXMLConfig class header
+//*****************************************************************************
+// 2022_11	Changed private attributes order and reformatted (Uwe Merker)
+//*****************************************************************************
+
 #ifndef WXXMLCONFIG_HPP_
 #define WXXMLCONFIG_HPP_
 // --------------------------------------------------------------------------------

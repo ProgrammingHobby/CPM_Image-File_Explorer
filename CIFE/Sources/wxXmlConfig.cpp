@@ -1,3 +1,13 @@
+//*****************************************************************************
+// @file	wxXMLConfig.cpp
+// @author	Nicolas Dextraze
+// @web		http://www.nicdex.com
+// @date	February 17, 2007
+// @desc	wxXMLConfig class implementation
+//*****************************************************************************
+// 2022_11	Changed path generation of Config file and reformatted (Uwe Merker)
+//*****************************************************************************
+
 #include "wxXmlConfig.hpp"
 // --------------------------------------------------------------------------------
 #include <wx/log.h>
