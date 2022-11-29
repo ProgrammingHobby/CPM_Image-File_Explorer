@@ -179,7 +179,6 @@ void MainWindow::correctWindowSize() {
     size.x = config->ReadLong("/MainWindow/SizeX", width);
     size.y = config->ReadLong("/MainWindow/SizeY", (height * 1.5));
     this->SetSize(size);
-    this->SetSize(width, height);
     wxPoint point;
     point.x = config->ReadLong("/MainWindow/PosX", 10);
     point.y = config->ReadLong("/MainWindow/PosY", 10);
