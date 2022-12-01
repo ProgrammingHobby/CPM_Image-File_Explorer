@@ -70,10 +70,11 @@ class MainWindow : public Ui_MainWindow {
         CpmTools *cpmtools;
         CpmGuiInterface *cpmguiinterface;
         bool isImageLoaded;
+        wxArrayString imageTypes;
         ImagesHistory *imageshistory;
 
     private:    // Methods
-        wxArrayString getImageTypes(wxString appPath);
+        void getImageTypes(wxString appPath);
         void createPopupMenu();
         void correctWindowSize();
         void presetMenues();

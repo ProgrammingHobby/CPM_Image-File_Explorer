@@ -82,7 +82,8 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
                    wxID_FILE1 + i);
     }
 
-    comboboxImageType->Append(getImageTypes(appPath));
+    getImageTypes(appPath);
+    comboboxImageType->Append(imageTypes);
     comboboxImageType->SetSelection(0);
     editImageFile->SetFocus();
     wxSize fontSize = this->GetFont().GetPixelSize();
@@ -318,8 +319,8 @@ void MainWindow::onImageTypeChanged(wxCommandEvent &event) {
 }
 
 // --------------------------------------------------------------------------------
-wxArrayString MainWindow::getImageTypes(wxString appPath) {
-    wxArrayString imageTypes;
+void MainWindow::getImageTypes(wxString appPath) {
+    imageTypes.Clear();
     wxFileInputStream file(appPath + "diskdefs");
     wxTextInputStream text(file);
     int diskdefsCount = 0;
@@ -341,7 +342,6 @@ wxArrayString MainWindow::getImageTypes(wxString appPath) {
 
     textDiskdefsCount->SetLabel(wxString::Format(_("%d Disk definitions found."),
                                 diskdefsCount));
-    return (imageTypes);
 }
 
 // --------------------------------------------------------------------------------
