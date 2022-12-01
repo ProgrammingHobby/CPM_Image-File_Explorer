@@ -42,8 +42,7 @@ void ImagesHistory::clearHistory() {
 }
 
 // --------------------------------------------------------------------------------
-void ImagesHistory::addItem(wxString file, int type) {
-    wxString typeStr = wxString::Format(wxT("%i"), type);
+void ImagesHistory::addItem(wxString file, wxString type) {
     int itemsCount = m_ImageFiles.GetCount();
 
     // check if the given Image is already in History
@@ -62,7 +61,7 @@ void ImagesHistory::addItem(wxString file, int type) {
 
     m_RecentMenu->Insert(itemsCount, (m_MenuItemId + itemsCount), " ");
     m_ImageFiles.insert(m_ImageFiles.begin(), file);
-    m_ImageTypes.insert(m_ImageTypes.begin(), typeStr);
+    m_ImageTypes.insert(m_ImageTypes.begin(), type);
     refreshMenuLabels();
 }
 
@@ -72,7 +71,7 @@ wxString ImagesHistory::getActualImageFile() {
 }
 
 // --------------------------------------------------------------------------------
-int ImagesHistory::getActualImageType() {
+wxString ImagesHistory::getActualImageType() {
     return (getHistoryImageType(0));
 }
 
@@ -82,8 +81,8 @@ wxString ImagesHistory::getHistoryImageFile(int item) {
 }
 
 // --------------------------------------------------------------------------------
-int ImagesHistory::getHistoryImageType(int item) {
-    return (m_ImageTypes.GetCount() ?  wxAtoi(m_ImageTypes[item]) : -1);
+wxString ImagesHistory::getHistoryImageType(int item) {
+    return (m_ImageTypes.GetCount() ?  m_ImageTypes[item] : "");
 }
 
 // --------------------------------------------------------------------------------

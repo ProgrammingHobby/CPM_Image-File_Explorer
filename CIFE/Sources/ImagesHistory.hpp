@@ -29,11 +29,11 @@ class ImagesHistory: public wxObject {
 
     public: // Methods
         void clearHistory();
-        void addItem(wxString file, int type);
+        void addItem(wxString file, wxString type);
         wxString getActualImageFile();
-        int getActualImageType();
+        wxString getActualImageType();
         wxString getHistoryImageFile(int item);
-        int getHistoryImageType(int item);
+        wxString getHistoryImageType(int item);
         bool load();
         void save();
 

@@ -104,7 +104,7 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     if (wxFileExists(filePath)) {
         editImageFile->SetValue(filePath);
         editImageFile->SetInsertionPoint(filePath.length());
-        comboboxImageType->SetSelection(imageshistory->getActualImageType());
+        comboboxImageType->SetValue(imageshistory->getActualImageType());
         cpmtools->setImageType(comboboxImageType->GetValue());
         cpmtools->openImage(filePath);
         isImageLoaded = true;
@@ -228,7 +228,7 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
         wxString filePath = fileDialog.GetPath();
         editImageFile->SetValue(filePath);
         editImageFile->SetInsertionPoint(filePath.length());
-        imageshistory->addItem(filePath, comboboxImageType->GetSelection());
+        imageshistory->addItem(filePath, comboboxImageType->GetValue());
 
         if (!menuRecentFiles->IsEnabled(wxID_CLEAR_HISTORY)) {
             menuRecentFiles->Enable(wxID_CLEAR_HISTORY, true);
@@ -264,7 +264,7 @@ void MainWindow::onImageFileNew(wxCommandEvent &event) {
                                  dialog->useTimestamps(), dialog->getBootTrackFile());
 
         if (cpmtools->openImage(editImageFile->GetValue())) {
-            imageshistory->addItem(dialog->getImageFileName(), comboboxImageType->GetSelection());
+            imageshistory->addItem(dialog->getImageFileName(), comboboxImageType->GetValue());
             isImageLoaded = true;
             showDirectory();
         }
@@ -313,7 +313,7 @@ void MainWindow::onImageTypeChanged(wxCommandEvent &event) {
     if (isImageLoaded) {
         cpmfs->initDriveData();
         showDirectory();
-        imageshistory->addItem(editImageFile->GetValue(), comboboxImageType->GetSelection());
+        imageshistory->addItem(editImageFile->GetValue(), comboboxImageType->GetValue());
     }
 }
 
@@ -372,6 +372,7 @@ void MainWindow::onRefresh(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onShowContextMenu(wxContextMenuEvent &event) {
     WXUNUSED(event)
+
     if (isImageLoaded) {
 
         if (listImageContents->GetItemCount() == 0) {
@@ -450,6 +451,7 @@ void MainWindow::showDirectory() {
 // --------------------------------------------------------------------------------
 void MainWindow::onListItemSelected(wxListEvent &event) {
     WXUNUSED(event)
+
     if (listImageContents->GetSelectedItemCount() > 0) {
         menuMainWindow->Enable(wxID_CUT, true);
         menuMainWindow->Enable(wxID_COPY, true);
@@ -650,7 +652,7 @@ void MainWindow::onSelectHistoryEntry(wxCommandEvent &event) {
     WXUNUSED(event)
     int historyId = (event.GetId() - wxID_FILE1);
     wxString file = imageshistory->getHistoryImageFile(historyId);
-    int type = imageshistory->getHistoryImageType(historyId);
+    wxString type = imageshistory->getHistoryImageType(historyId);
     imageshistory->addItem(file, type);
     cpmtools->closeImage();
     presetMenues();
@@ -659,7 +661,7 @@ void MainWindow::onSelectHistoryEntry(wxCommandEvent &event) {
     if (wxFileExists(file)) {
         editImageFile->SetValue(file);
         editImageFile->SetInsertionPoint(file.length());
-        comboboxImageType->SetSelection(type);
+        comboboxImageType->SetValue(type);
         cpmtools->setImageType(comboboxImageType->GetValue());
         cpmtools->openImage(file);
         isImageLoaded = true;
@@ -729,6 +731,7 @@ void MainWindow::onEnterWindow(wxMouseEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onDropFiles(wxDropFilesEvent &event) {
     WXUNUSED(event)
+
     if (event.GetNumberOfFiles() > 0) {
         wxString *dropped = event.GetFiles();
         wxASSERT(dropped);
