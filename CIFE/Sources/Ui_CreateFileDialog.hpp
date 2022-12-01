@@ -21,6 +21,8 @@
 #include <wx/checkbox.h>
 #include <wx/panel.h>
 #include <wx/button.h>
+#include <wx/combobox.h>
+#include <wx/arrstr.h>
 #if wxVERSION_NUMBER >= 2900
 #include <wx/persist.h>
 #include <wx/persist/toplevel.h>
@@ -58,6 +60,9 @@ protected:
     wxPanel* panelBootTrackFile;
     wxTextCtrl* editBootTrackFile;
     wxButton* buttonBootTrackFile;
+    wxPanel* panelImageType;
+    wxComboBox* comboboxImageType;
+    wxStaticText* textImageType;
     wxPanel* panelCreationWarning;
     wxStaticText* textWarning1;
     wxStaticText* textWarning2;
@@ -78,6 +83,9 @@ public:
     wxTextCtrl* GetEditBootTrackFile() { return editBootTrackFile; }
     wxButton* GetButtonBootTrackFile() { return buttonBootTrackFile; }
     wxPanel* GetPanelBootTrackFile() { return panelBootTrackFile; }
+    wxComboBox* GetComboboxImageType() { return comboboxImageType; }
+    wxPanel* GetPanelImageType() { return panelImageType; }
+    wxStaticText* GetTextImageType() { return textImageType; }
     wxStaticText* GetTextWarning1() { return textWarning1; }
     wxStaticText* GetTextWarning2() { return textWarning2; }
     wxPanel* GetPanelCreationWarning() { return panelCreationWarning; }
