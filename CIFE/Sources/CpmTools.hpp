@@ -32,7 +32,9 @@ class CpmTools {
 
     public:     // Methods
         bool setImageType(wxString typeName);
+        wxString getActualImageType();
         bool openImage(wxString fileName);
+        wxString getActualFileName();
         bool closeImage();
         void showDirectory();
         void deleteFile(wxArrayString files);

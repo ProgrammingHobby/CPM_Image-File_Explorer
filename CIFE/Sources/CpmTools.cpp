@@ -47,6 +47,11 @@ bool CpmTools::setImageType(wxString typeName) {
 }
 
 // --------------------------------------------------------------------------------
+wxString CpmTools::getActualImageType() {
+    return(imageTypeName);
+}
+
+// --------------------------------------------------------------------------------
 bool CpmTools::openImage(wxString fileName) {
     imageFileName = fileName;
     wxString image = fileName.substr(fileName.find_last_of("/\\") + 1);
@@ -65,6 +70,11 @@ bool CpmTools::openImage(wxString fileName) {
     }
 
     return (true);
+}
+
+// --------------------------------------------------------------------------------
+wxString CpmTools::getActualFileName() {
+    return(imageFileName);
 }
 
 // --------------------------------------------------------------------------------
