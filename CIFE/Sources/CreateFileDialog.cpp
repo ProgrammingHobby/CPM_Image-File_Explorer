@@ -129,6 +129,7 @@ void CreateFileDialog::onButtonImageFileClicked(wxCommandEvent &event) {
         }
 
         editImageType->SetValue(imageType);
+        cpmtools->setImageType(imageType);
         panelBootTrackFile->Enable(cpmfs->getBootTracksEnabled());
         buttonOk->Enable(!imageType.IsEmpty() && imageFile.IsOk());
     }
