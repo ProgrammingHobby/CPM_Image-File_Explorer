@@ -43,7 +43,6 @@ class MainWindow : public Ui_MainWindow {
         void onImageFileNew(wxCommandEvent &event);
         void onClearMessages(wxCommandEvent &event);
         void onSaveMessages(wxCommandEvent &event);
-        void onImageTypeChanged(wxCommandEvent &event);
         void onRefresh(wxCommandEvent &event);
         void onSelectAll(wxCommandEvent &event);
         void onDelete(wxCommandEvent &event);
@@ -70,11 +69,11 @@ class MainWindow : public Ui_MainWindow {
         CpmTools *cpmtools;
         CpmGuiInterface *cpmguiinterface;
         bool isImageLoaded;
-        wxArrayString imageTypes;
+        wxString imageType;
+        wxFileName imageFile;
         ImagesHistory *imageshistory;
 
     private:    // Methods
-        void getImageTypes(wxString appPath);
         void createPopupMenu();
         void correctWindowSize();
         void presetMenues();

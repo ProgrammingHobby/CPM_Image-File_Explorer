@@ -26,13 +26,12 @@
 #include "Version.h"
 #include "FileCopySettingsDialog.hpp"
 #include "ImagesHistory.hpp"
+#include "diskdefs.hpp"
+#include "FileDialogImageTypesPanel.hpp"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/filedlg.h>
 #include <wx/stdpaths.h>
-#include <wx/txtstrm.h>
-#include <wx/wfstream.h>
-#include <wx/tokenzr.h>
 #include <wx/msgdlg.h>
 #include <wx/clipbrd.h>
 #include <wx/dir.h>
@@ -57,7 +56,6 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CLEAR_HISTORY, MainWindow::onClearHistory)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onClearMessages)
     EVT_BUTTON(wxID_BUTTON_SAVE_MESSAGES, MainWindow::onSaveMessages)
-    EVT_COMBOBOX(wxID_IMAGE_TYPE, MainWindow::onImageTypeChanged)
     EVT_LIST_ITEM_SELECTED(wxID_IMAGE_CONTENTS, MainWindow::onListItemSelected)
     EVT_LIST_ITEM_RIGHT_CLICK(wxID_IMAGE_CONTENTS, MainWindow::onListItemRightClick)
 END_EVENT_TABLE()
@@ -82,10 +80,6 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
                    wxID_FILE1 + i);
     }
 
-    getImageTypes(appPath);
-    comboboxImageType->Append(imageTypes);
-    comboboxImageType->SetSelection(0);
-    editImageFile->SetFocus();
     wxSize fontSize = this->GetFont().GetPixelSize();
     wxFont listFont = wxFont(fontSize, wxFontFamily::wxFONTFAMILY_TELETYPE,
                              wxFontStyle::wxFONTSTYLE_NORMAL, wxFontWeight::wxFONTWEIGHT_NORMAL);
@@ -100,14 +94,15 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     createPopupMenu();
     listImageContents->enableSizing(true);
     correctWindowSize();
-    wxString filePath = imageshistory->getActualImageFile();
+    imageFile = imageshistory->getActualImageFile();
 
-    if (wxFileExists(filePath)) {
-        editImageFile->SetValue(filePath);
-        editImageFile->SetInsertionPoint(filePath.length());
-        comboboxImageType->SetValue(imageshistory->getActualImageType());
-        cpmtools->setImageType(comboboxImageType->GetValue());
-        cpmtools->openImage(filePath);
+    if (imageFile.FileExists()) {
+        editImageFile->SetValue(imageFile.GetFullPath());
+        editImageFile->SetInsertionPoint(imageFile.GetFullPath().Length());
+        imageType = imageshistory->getActualImageType();
+        editImageType->SetValue(imageType);
+        cpmtools->setImageType(imageType);
+        cpmtools->openImage(imageFile.GetFullPath());
         isImageLoaded = true;
         showDirectory();
     }
@@ -210,32 +205,45 @@ MainWindow::~MainWindow() {
 void MainWindow::onImageFileOpen(wxCommandEvent &event) {
     WXUNUSED(event)
     wxString dialogPath;
-    wxFileName filename(imageshistory->getActualImageFile());
+//    imageFile=imageshistory->getActualImageFile();
 
-    if (filename.IsOk()) {
-        dialogPath = filename.GetPath();
+    if (imageFile.IsOk()) {
+        dialogPath = imageFile.GetPath();
     }
     else {
         dialogPath = wxStandardPaths::Get().GetDocumentsDir();
     }
 
     wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"),
-                            dialogPath, wxEmptyString,
+                            dialogPath, imageFile.GetFullName(),
                             _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;"
                               "*.fdd;*.FDD;*.dsk;*.DSK|all Files (*.*)|*.*"),
                             wxFD_OPEN);
+    fileDialog.SetExtraControlCreator(&createFileDialogImageTypesPanel);
 
     if (fileDialog.ShowModal() == wxID_OK) {
-        wxString filePath = fileDialog.GetPath();
-        editImageFile->SetValue(filePath);
-        editImageFile->SetInsertionPoint(filePath.length());
-        imageshistory->addItem(filePath, comboboxImageType->GetValue());
+        imageFile = fileDialog.GetPath();
+        editImageFile->SetValue(imageFile.GetFullPath());
+        editImageFile->SetInsertionPoint(imageFile.GetFullPath().length());
+        imageType = static_cast<FileDialogImageTypesPanel *>
+                    (fileDialog.GetExtraControl())->getSelectedImageType();
+
+        if (imageType.IsEmpty()) {
+            wxMessageDialog dialog(NULL,
+                                   "\nNo Image-Type selected.""\n\nPlease select proper Image-Type"" to create the new Image.",
+                                   "Create new Image-File", wxOK | wxICON_QUESTION);
+            dialog.ShowModal();
+            return;
+        }
+
+        editImageType->SetValue(imageType);
+        imageshistory->addItem(imageFile.GetFullPath(), imageType);
 
         if (!menuRecentFiles->IsEnabled(wxID_CLEAR_HISTORY)) {
             menuRecentFiles->Enable(wxID_CLEAR_HISTORY, true);
         }
 
-        if (cpmtools->openImage(filePath)) {
+        if (cpmtools->setImageType(imageType) && cpmtools->openImage(imageFile.GetFullPath())) {
             isImageLoaded = true;
             showDirectory();
         }
@@ -246,7 +254,8 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
 void MainWindow::onImageFileClose(wxCommandEvent &event) {
     WXUNUSED(event)
     cpmtools->closeImage();
-    editImageFile->SetValue("");
+    editImageFile->Clear();
+    editImageType->Clear();
     listImageContents->DeleteAllItems();
     presetMenues();
     isImageLoaded = false;
@@ -255,19 +264,23 @@ void MainWindow::onImageFileClose(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onImageFileNew(wxCommandEvent &event) {
     WXUNUSED(event)
-    CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs->getBootTracksEnabled(),
-            true);
-    dialog->setImageType(comboboxImageType->GetValue());
+    CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs, cpmtools, true);
+    dialog->setDefaultPath(imageshistory->getActualImageFile());
 
     if (dialog->ShowModal() == wxID_OK) {
-        editImageFile->SetValue(dialog->getImageFileName());
-        cpmtools->createNewImage(editImageFile->GetValue(), dialog->getFileSystemLabel(),
-                                 dialog->useTimestamps(), dialog->getBootTrackFile());
+        wxString fileName = dialog->getImageFileName();
 
-        if (cpmtools->openImage(editImageFile->GetValue())) {
-            imageshistory->addItem(dialog->getImageFileName(), comboboxImageType->GetValue());
+        if (cpmtools->openImage(fileName)) {
+            wxString imageType = dialog->getImageType();
+            imageshistory->addItem(fileName, imageType);
+            editImageFile->SetValue(fileName);
+            editImageFile->SetInsertionPoint(imageFile.GetFullPath().length());
+            editImageType->SetValue(imageType);
             isImageLoaded = true;
             showDirectory();
+        }
+        else {
+            isImageLoaded = false;
         }
     }
 
@@ -304,44 +317,6 @@ void MainWindow::onAbout(wxCommandEvent &event) {
     }
 
     wxAboutBox(aboutInfo, this);
-}
-
-// --------------------------------------------------------------------------------
-void MainWindow::onImageTypeChanged(wxCommandEvent &event) {
-    WXUNUSED(event)
-    cpmtools->setImageType(comboboxImageType->GetValue());
-
-    if (isImageLoaded) {
-        cpmfs->initDriveData();
-        showDirectory();
-        imageshistory->addItem(editImageFile->GetValue(), comboboxImageType->GetValue());
-    }
-}
-
-// --------------------------------------------------------------------------------
-void MainWindow::getImageTypes(wxString appPath) {
-    imageTypes.Clear();
-    wxFileInputStream file(appPath + "diskdefs");
-    wxTextInputStream text(file);
-    int diskdefsCount = 0;
-
-    while (!file.Eof()) {
-        wxString line = text.ReadLine();
-        wxStringTokenizer tokenizer(line, " ");
-
-        while (tokenizer.HasMoreTokens()) {
-            wxString token = tokenizer.GetNextToken();
-
-            if (token == "diskdef") {
-                wxString type = tokenizer.GetNextToken();
-                imageTypes.Add(type);
-                diskdefsCount++;
-            }
-        }
-    }
-
-    textDiskdefsCount->SetLabel(wxString::Format(_("%d Disk definitions found."),
-                                diskdefsCount));
 }
 
 // --------------------------------------------------------------------------------
@@ -558,12 +533,10 @@ void MainWindow::onRename(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onCreateNew(wxCommandEvent &event) {
     WXUNUSED(event)
-    CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs->getBootTracksEnabled());
-    dialog->setImageFileName(editImageFile->GetValue());
+    CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs, cpmtools, false);
+    dialog->setDefaultPath(imageFile.GetFullPath());
 
     if (dialog->ShowModal() == wxID_OK) {
-        cpmtools->createNewImage(editImageFile->GetValue(), dialog->getFileSystemLabel(),
-                                 dialog->useTimestamps(), dialog->getBootTrackFile());
         cpmtools->openImage(editImageFile->GetValue());
         showDirectory();
     }
@@ -651,19 +624,23 @@ void MainWindow::onClearHistory(wxCommandEvent &event) {
 void MainWindow::onSelectHistoryEntry(wxCommandEvent &event) {
     WXUNUSED(event)
     int historyId = (event.GetId() - wxID_FILE1);
-    wxString file = imageshistory->getHistoryImageFile(historyId);
-    wxString type = imageshistory->getHistoryImageType(historyId);
-    imageshistory->addItem(file, type);
-    cpmtools->closeImage();
+    imageFile = imageshistory->getHistoryImageFile(historyId);
+    imageType = imageshistory->getHistoryImageType(historyId);
+    imageshistory->addItem(imageFile.GetFullPath(), imageType);
+
+    if (isImageLoaded) {
+        cpmtools->closeImage();
+    }
+
     presetMenues();
     listImageContents->DeleteAllItems();
 
-    if (wxFileExists(file)) {
-        editImageFile->SetValue(file);
-        editImageFile->SetInsertionPoint(file.length());
-        comboboxImageType->SetValue(type);
-        cpmtools->setImageType(comboboxImageType->GetValue());
-        cpmtools->openImage(file);
+    if (imageFile.FileExists()) {
+        editImageFile->SetValue(imageFile.GetFullPath());
+        editImageFile->SetInsertionPoint(imageFile.GetFullPath().length());
+        editImageType->SetValue(imageType);
+        cpmtools->setImageType(imageType);
+        cpmtools->openImage(imageFile.GetFullPath());
         isImageLoaded = true;
         showDirectory();
     }
