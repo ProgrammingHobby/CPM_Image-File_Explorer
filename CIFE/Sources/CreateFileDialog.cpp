@@ -16,44 +16,63 @@
  */
 
 #include "CreateFileDialog.hpp"
+#include "CpmTools.hpp"
+#include "FileDialogImageTypesPanel.hpp"
 // --------------------------------------------------------------------------------
 #include <wx/dcscreen.h>
 #include <wx/filedlg.h>
 #include <wx/stdpaths.h>
+#include <wx/msgdlg.h>
 // --------------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(CreateFileDialog, wxDialog)
     EVT_BUTTON(wxID_BUTTON_IMAGEFILE, CreateFileDialog::onButtonImageFileClicked)
     EVT_BUTTON(wxID_BUTTON_BOOTFILE, CreateFileDialog::onButtonBootFileClicked)
+    EVT_BUTTON(wxID_OK, CreateFileDialog::onButtonOkClicked)
 END_EVENT_TABLE()
 // --------------------------------------------------------------------------------
-CreateFileDialog::CreateFileDialog(wxWindow *parent, bool isBoottrackUsed,
+CreateFileDialog::CreateFileDialog(wxWindow *parent, CpmFs *fs, CpmTools *tools,
                                    bool isNewFile) : Ui_CreateFileDialog(parent) {
-    panelImageFile->Enable(isNewFile);
-    panelBootTrackFile->Enable(isBoottrackUsed);
+    cpmfs = fs;
+    cpmtools = tools;
     int size = editBootTrackFile->GetSize().GetHeight();
     wxScreenDC dc;
     dc.SetFont(buttonImageFile->GetFont());
-    wxString tempString = "#" + buttonImageFile->GetLabel() + "#";
+    wxString tempString = " " + buttonImageFile->GetLabel() + " ";
     wxCoord width, height;
     dc.GetTextExtent(tempString, &width, &height);
     buttonBootTrackFile->SetMinSize(wxSize(width, size));
     buttonBootTrackFile->SetMaxSize(wxSize(width, size));
     buttonImageFile->SetMinSize(wxSize(width, size));
     buttonImageFile->SetMaxSize(wxSize(width, size));
+    buttonOk->Enable(false);
+    imageFile.Clear();
+    imageType.Clear();
+    panelImageFile->Enable(isNewFile);
+    panelImageType->Enable(isNewFile);
 
     if (isNewFile) {
         textWarning1->SetLabel("Are you sure you want create an new empty Image-File ?");
         textWarning2->SetLabel("Existing Imagefile will be overwritten !");
+        this->SetTitle("Create new empty Image");
+        panelBootTrackFile->Enable(false);
     }
     else {
         textWarning1->SetLabel("Are you sure you want recreate existing Image-File ?");
         textWarning2->SetLabel("All existing Data will be lost !");
+        this->SetTitle("Reformat current Image");
+        panelBootTrackFile->Enable(cpmfs->getBootTracksEnabled());
+        imageType = cpmtools->getActualImageType();
+        editImageType->SetValue(imageType);
+        imageFile = cpmtools->getActualFileName();
+        editImageFile->SetValue(imageFile.GetFullName());
+        buttonOk->Enable(!editImageType->IsEmpty() && imageFile.IsOk());
     }
 
     width = this->GetBestSize().GetWidth();
     height = this->GetBestSize().GetHeight();
     this->SetMinSize(wxSize(width, height));
     this->SetMaxSize(wxSize(width, height));
+    this->SetFocus();
 }
 
 // --------------------------------------------------------------------------------
@@ -61,59 +80,65 @@ CreateFileDialog::~CreateFileDialog() {
 }
 
 // --------------------------------------------------------------------------------
-void CreateFileDialog::setImageFileName(wxString fileName) {
-    fileName = fileName.substr(fileName.find_last_of("/\\") + 1);
-    editImageFile->SetValue(fileName);
-    editImageFile->SetInsertionPoint(fileName.length());
+void CreateFileDialog::setDefaultPath(wxString path) {
+    defaultPath = path;
+    wxFileName filename(path);
+
+    if (filename.IsOk()) {
+        defaultPath = filename.GetPath();
+    }
+    else {
+        defaultPath = wxStandardPaths::Get().GetDocumentsDir();
+    }
 }
 
 // --------------------------------------------------------------------------------
-void CreateFileDialog::setImageType(wxString typeName) {
-    wxString title = "New Image : " + typeName;
-    this->SetTitle(title);
+wxString CreateFileDialog::getImageType() {
+    return (imageType);
 }
 
 // --------------------------------------------------------------------------------
 wxString CreateFileDialog::getImageFileName() {
-    return (editImageFile->GetValue());
-}
-
-// --------------------------------------------------------------------------------
-wxString CreateFileDialog::getBootTrackFile() {
-    return (editBootTrackFile->GetValue());
-}
-
-// --------------------------------------------------------------------------------
-wxString CreateFileDialog::getFileSystemLabel() {
-    return (editFileSystemLabel->GetValue());
-}
-
-// --------------------------------------------------------------------------------
-bool CreateFileDialog::useTimestamps() {
-    return (checkboxUseTimeStamps->GetValue());
+    return (imageFile.GetFullPath());
 }
 
 // --------------------------------------------------------------------------------
 void CreateFileDialog::onButtonImageFileClicked(wxCommandEvent &event) {
     WXUNUSED(event)
-    wxFileDialog fileDialog(this, _("Open CP/M Boot-Track Image File"),
-                            wxStandardPaths::Get().GetDocumentsDir(), wxEmptyString,
+    wxFileDialog fileDialog(this, _("Open CP/M Image-File"), defaultPath,
+                            imageFile.GetFullName(),
                             _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;*.fdd;*.FDD;*.dsk;*.DSK|"
                               "Binary Files (*.bin,*.cpm,*.sys)|*.bin;*.BIN;*.cpm;*.CPM;*.sys;*.SYS|"
                               "all Files (*.*)|*.*"), wxFD_SAVE);
 
+    fileDialog.SetExtraControlCreator(&createFileDialogImageTypesPanel);
+
     if (fileDialog.ShowModal() == wxID_OK) {
-        wxString filePath = fileDialog.GetPath();
-        editImageFile->SetValue(filePath);
-        editImageFile->SetInsertionPoint(filePath.length());
+        imageFile = fileDialog.GetPath();
+        defaultPath = imageFile.GetPath();
+        editImageFile->SetValue(imageFile.GetFullName());
+        imageType = static_cast<FileDialogImageTypesPanel *>
+                    (fileDialog.GetExtraControl())->getSelectedImageType();
+
+        if (imageType.IsEmpty()) {
+            wxMessageDialog dialog(NULL,
+                                   "\nNo Image-Type selected.""\n\nPlease select proper Image-Type"
+                                   " to create the new Image.", "Create new Image-File", wxOK | wxICON_QUESTION);
+            dialog.ShowModal();
+            return;
+        }
+
+        editImageType->SetValue(imageType);
+        panelBootTrackFile->Enable(cpmfs->getBootTracksEnabled());
+        buttonOk->Enable(!imageType.IsEmpty() && imageFile.IsOk());
     }
 }
 
 // --------------------------------------------------------------------------------
 void CreateFileDialog::onButtonBootFileClicked(wxCommandEvent &event) {
     WXUNUSED(event)
-    wxFileDialog fileDialog(this, _("Open CP/M Boot-Track Image File"),
-                            wxStandardPaths::Get().GetDocumentsDir(), wxEmptyString,
+    wxFileDialog fileDialog(this, _("Open CP/M Boot-Track Image File"), defaultPath,
+                            wxEmptyString,
                             _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;*.fdd;*.FDD;*.dsk;*.DSK|"
                               "Binary Files (*.bin,*.cpm,*.sys)|*.bin;*.BIN;*.cpm;*.CPM;*.sys;*.SYS|"
                               "all Files (*.*)|*.*"), wxFD_OPEN);
@@ -125,4 +150,10 @@ void CreateFileDialog::onButtonBootFileClicked(wxCommandEvent &event) {
     }
 }
 
+// --------------------------------------------------------------------------------
+void CreateFileDialog::onButtonOkClicked(wxCommandEvent &event) {
+    cpmtools->createNewImage(imageFile.GetFullPath(), editFileSystemLabel->GetValue(),
+                             checkboxUseTimeStamps->GetValue(), editBootTrackFile->GetValue());
+    wxDialog::EndModal(wxID_OK);
+}
 // --------------------------------------------------------------------------------

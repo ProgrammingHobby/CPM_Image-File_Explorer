@@ -21,28 +21,36 @@
 #include "Ui_CreateFileDialog.hpp"
 // --------------------------------------------------------------------------------
 #include <wx/string.h>
+#include <wx/filename.h>
+// --------------------------------------------------------------------------------
+class CpmFs;
+class CpmTools;
 // --------------------------------------------------------------------------------
 class CreateFileDialog : public Ui_CreateFileDialog {
 
     public:     // Attributes
 
     public:     // Methods
-        void setImageFileName(wxString fileName);
-        void setImageType(wxString typeName);
+        void setDefaultPath(wxString path);
+        wxString getImageType();
         wxString getImageFileName();
-        wxString getBootTrackFile();
-        wxString getFileSystemLabel();
-        bool useTimestamps();
 
     public:     // Constructor & Destructor
-        CreateFileDialog(wxWindow *parent, bool isBoottrackUsed = false, bool isNewFile = false);
+        CreateFileDialog(wxWindow *parent, CpmFs *fs, CpmTools *tools,
+                         bool isNewFile);
         virtual ~CreateFileDialog();
 
     protected:  // Event Methods
         void onButtonImageFileClicked(wxCommandEvent &event);
         void onButtonBootFileClicked(wxCommandEvent &event);
+        void onButtonOkClicked(wxCommandEvent &event);
 
     private:    // Attributes
+        CpmFs *cpmfs;
+        CpmTools *cpmtools;
+        wxString defaultPath;
+        wxString imageType;
+        wxFileName imageFile;
 
     private:    // Methods
 
