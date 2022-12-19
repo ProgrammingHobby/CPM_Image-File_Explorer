@@ -32,7 +32,11 @@ Ui_CreateFileDialog::Ui_CreateFileDialog(wxWindow* parent, wxWindowID id, const 
     
     textImageFile = new wxStaticText(this, wxID_ANY, _("Image File:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
     
-    sizerImageSettings->Add(textImageFile, wxGBPosition(1,0), wxGBSpan(1,1), wxTOP|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+    sizerImageSettings->Add(textImageFile, wxGBPosition(0,0), wxGBSpan(1,1), wxTOP|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+    
+    textImageType = new wxStaticText(this, wxID_ANY, _("ImageType:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
+    
+    sizerImageSettings->Add(textImageType, wxGBPosition(1,0), wxGBSpan(1,1), wxTOP|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(5));
     
     textBootTrackFile = new wxStaticText(this, wxID_ANY, _("Boottrack File:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
     
@@ -54,9 +58,25 @@ Ui_CreateFileDialog::Ui_CreateFileDialog(wxWindow* parent, wxWindowID id, const 
     
     sizerImageSettings->Add(checkboxUseTimeStamps, wxGBPosition(4,1), wxGBSpan(1,1), wxTOP|wxBOTTOM, WXC_FROM_DIP(4));
     
+    panelImageType = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
+    
+    sizerImageSettings->Add(panelImageType, wxGBPosition(1,1), wxGBSpan(1,2), wxALL|wxEXPAND, WXC_FROM_DIP(4));
+    
+    wxBoxSizer* sizerImageType = new wxBoxSizer(wxHORIZONTAL);
+    panelImageType->SetSizer(sizerImageType);
+    
+    editImageType = new wxTextCtrl(panelImageType, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelImageType, wxSize(-1,-1)), wxTE_READONLY);
+    #if wxVERSION_NUMBER >= 3000
+    editImageType->SetHint(wxT(""));
+    #endif
+    
+    sizerImageType->Add(editImageType, 3, wxTOP, WXC_FROM_DIP(4));
+    
+    sizerImageType->Add(-1, -1, 1, 0, WXC_FROM_DIP(4));
+    
     panelImageFile = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
-    sizerImageSettings->Add(panelImageFile, wxGBPosition(1,1), wxGBSpan(1,2), wxALL|wxEXPAND, WXC_FROM_DIP(4));
+    sizerImageSettings->Add(panelImageFile, wxGBPosition(0,1), wxGBSpan(1,2), wxLEFT|wxRIGHT|wxTOP|wxEXPAND, WXC_FROM_DIP(4));
     
     wxBoxSizer* sizerImageFile = new wxBoxSizer(wxHORIZONTAL);
     panelImageFile->SetSizer(sizerImageFile);
@@ -66,11 +86,11 @@ Ui_CreateFileDialog::Ui_CreateFileDialog(wxWindow* parent, wxWindowID id, const 
     editImageFile->SetHint(wxT(""));
     #endif
     
-    sizerImageFile->Add(editImageFile, 1, wxEXPAND, WXC_FROM_DIP(4));
+    sizerImageFile->Add(editImageFile, 1, wxTOP|wxEXPAND, WXC_FROM_DIP(4));
     
     buttonImageFile = new wxButton(panelImageFile, wxID_BUTTON_IMAGEFILE, _("Browse"), wxDefaultPosition, wxDLG_UNIT(panelImageFile, wxSize(-1,-1)), 0);
     
-    sizerImageFile->Add(buttonImageFile, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+    sizerImageFile->Add(buttonImageFile, 0, wxLEFT|wxTOP|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
     
     panelBootTrackFile = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
@@ -89,25 +109,6 @@ Ui_CreateFileDialog::Ui_CreateFileDialog(wxWindow* parent, wxWindowID id, const 
     buttonBootTrackFile = new wxButton(panelBootTrackFile, wxID_BUTTON_BOOTFILE, _("Browse"), wxDefaultPosition, wxDLG_UNIT(panelBootTrackFile, wxSize(-1,-1)), 0);
     
     sizerBootTrackFile->Add(buttonBootTrackFile, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
-    
-    panelImageType = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
-    
-    sizerImageSettings->Add(panelImageType, wxGBPosition(0,1), wxGBSpan(1,2), wxALL|wxEXPAND, WXC_FROM_DIP(4));
-    
-    wxBoxSizer* sizerImageType = new wxBoxSizer(wxVERTICAL);
-    panelImageType->SetSizer(sizerImageType);
-    
-    wxArrayString comboboxImageTypeArr;
-    comboboxImageType = new wxComboBox(panelImageType, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(panelImageType, wxSize(-1,-1)), comboboxImageTypeArr, wxCB_SORT);
-    #if wxVERSION_NUMBER >= 3000
-    comboboxImageType->SetHint(wxT(""));
-    #endif
-    
-    sizerImageType->Add(comboboxImageType, 1, wxEXPAND, WXC_FROM_DIP(4));
-    
-    textImageType = new wxStaticText(this, wxID_ANY, _("ImageType:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
-    
-    sizerImageSettings->Add(textImageType, wxGBPosition(0,0), wxGBSpan(1,1), wxTOP|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(5));
     sizerImageSettings->AddGrowableCol(1);
     sizerImageSettings->AddGrowableRow(0);
     panelCreationWarning = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL|wxBORDER_THEME);

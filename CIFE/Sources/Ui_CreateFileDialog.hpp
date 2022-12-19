@@ -21,8 +21,6 @@
 #include <wx/checkbox.h>
 #include <wx/panel.h>
 #include <wx/button.h>
-#include <wx/combobox.h>
-#include <wx/arrstr.h>
 #if wxVERSION_NUMBER >= 2900
 #include <wx/persist.h>
 #include <wx/persist/toplevel.h>
@@ -50,19 +48,19 @@ public:
     };
 protected:
     wxStaticText* textImageFile;
+    wxStaticText* textImageType;
     wxStaticText* textBootTrackFile;
     wxStaticText* textFileSystemLabel;
     wxTextCtrl* editFileSystemLabel;
     wxCheckBox* checkboxUseTimeStamps;
+    wxPanel* panelImageType;
+    wxTextCtrl* editImageType;
     wxPanel* panelImageFile;
     wxTextCtrl* editImageFile;
     wxButton* buttonImageFile;
     wxPanel* panelBootTrackFile;
     wxTextCtrl* editBootTrackFile;
     wxButton* buttonBootTrackFile;
-    wxPanel* panelImageType;
-    wxComboBox* comboboxImageType;
-    wxStaticText* textImageType;
     wxPanel* panelCreationWarning;
     wxStaticText* textWarning1;
     wxStaticText* textWarning2;
@@ -73,19 +71,19 @@ protected:
 
 public:
     wxStaticText* GetTextImageFile() { return textImageFile; }
+    wxStaticText* GetTextImageType() { return textImageType; }
     wxStaticText* GetTextBootTrackFile() { return textBootTrackFile; }
     wxStaticText* GetTextFileSystemLabel() { return textFileSystemLabel; }
     wxTextCtrl* GetEditFileSystemLabel() { return editFileSystemLabel; }
     wxCheckBox* GetCheckboxUseTimeStamps() { return checkboxUseTimeStamps; }
+    wxTextCtrl* GetEditImageType() { return editImageType; }
+    wxPanel* GetPanelImageType() { return panelImageType; }
     wxTextCtrl* GetEditImageFile() { return editImageFile; }
     wxButton* GetButtonImageFile() { return buttonImageFile; }
     wxPanel* GetPanelImageFile() { return panelImageFile; }
     wxTextCtrl* GetEditBootTrackFile() { return editBootTrackFile; }
     wxButton* GetButtonBootTrackFile() { return buttonBootTrackFile; }
     wxPanel* GetPanelBootTrackFile() { return panelBootTrackFile; }
-    wxComboBox* GetComboboxImageType() { return comboboxImageType; }
-    wxPanel* GetPanelImageType() { return panelImageType; }
-    wxStaticText* GetTextImageType() { return textImageType; }
     wxStaticText* GetTextWarning1() { return textWarning1; }
     wxStaticText* GetTextWarning2() { return textWarning2; }
     wxPanel* GetPanelCreationWarning() { return panelCreationWarning; }
