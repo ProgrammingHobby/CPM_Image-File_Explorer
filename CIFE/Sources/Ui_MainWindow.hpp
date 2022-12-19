@@ -20,8 +20,6 @@
 #include <wx/panel.h>
 #include <wx/gbsizer.h>
 #include <wx/stattext.h>
-#include <wx/combobox.h>
-#include <wx/arrstr.h>
 #include <wx/textctrl.h>
 #include <wx/splitter.h>
 #include "CifeListView.hpp"
@@ -49,20 +47,19 @@ class Ui_MainWindow : public wxFrame
 {
 public:
     enum {
-        wxID_BUTTON_SAVE_MESSAGES = 10001,
-        wxID_FILE_NEW = 10002,
-        wxID_FILE_OPEN = 10003,
-        wxID_COPY_SETTINGS = 10004,
-        wxID_CLEAR_HISTORY = 10005,
-        wxID_FILE_CLOSE = 10006,
-        wxID_ATTRIBUTES = 10007,
-        wxID_PROTECTIONS = 10008,
-        wxID_IMAGE_CONTENTS = 10009,
-        wxID_CREATE_NEW = 10010,
-        wxID_QUIT = 10011,
-        wxID_CHECK_IMAGE = 10012,
-        wxID_IMAGE_TYPE = 10013,
-        wxID_BUTTON_CLEAR_MESSAGES = 10014,
+        wxID_BUTTON_CLEAR_MESSAGES = 10001,
+        wxID_CHECK_IMAGE = 10002,
+        wxID_CREATE_NEW = 10003,
+        wxID_BUTTON_SAVE_MESSAGES = 10004,
+        wxID_IMAGE_CONTENTS = 10005,
+        wxID_PROTECTIONS = 10006,
+        wxID_QUIT = 10007,
+        wxID_ATTRIBUTES = 10008,
+        wxID_FILE_CLOSE = 10009,
+        wxID_CLEAR_HISTORY = 10010,
+        wxID_COPY_SETTINGS = 10011,
+        wxID_FILE_OPEN = 10012,
+        wxID_FILE_NEW = 10013,
     };
 protected:
     wxMenuBar* menuMainWindow;
@@ -100,8 +97,7 @@ protected:
     wxStatusBar* statusMainWindow;
     wxPanel* panelImageFile;
     wxStaticText* textImageType;
-    wxComboBox* comboboxImageType;
-    wxStaticText* textDiskdefsCount;
+    wxTextCtrl* editImageType;
     wxStaticText* textImageFile;
     wxTextCtrl* editImageFile;
     wxPanel* panelImageViews;
@@ -123,8 +119,7 @@ public:
     wxMenuBar* GetMenuMainWindow() { return menuMainWindow; }
     wxStatusBar* GetStatusMainWindow() { return statusMainWindow; }
     wxStaticText* GetTextImageType() { return textImageType; }
-    wxComboBox* GetComboboxImageType() { return comboboxImageType; }
-    wxStaticText* GetTextDiskdefsCount() { return textDiskdefsCount; }
+    wxTextCtrl* GetEditImageType() { return editImageType; }
     wxStaticText* GetTextImageFile() { return textImageFile; }
     wxTextCtrl* GetEditImageFile() { return editImageFile; }
     wxPanel* GetPanelImageFile() { return panelImageFile; }
