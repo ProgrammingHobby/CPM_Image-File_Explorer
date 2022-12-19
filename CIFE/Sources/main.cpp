@@ -16,6 +16,7 @@
  */
 
 #include "MainWindow.hpp"
+#include "diskdefs.hpp"
 // --------------------------------------------------------------------------------
 #include <wx/app.h>
 #include <wx/stdpaths.h>
@@ -39,6 +40,7 @@ bool wxCifeApp::OnInit() {
     wxString appPath(f.GetPath() + wxFileName::GetPathSeparator());
 
     if (wxFileExists(appPath  + "diskdefs")) {
+        diskdefs::getImageTypes(appPath);
         wxXmlResource::Get()->InitAllHandlers();
         wxImage::AddHandler(new wxPNGHandler);
         SetTopWindow(new MainWindow(NULL, appPath));
