@@ -18,6 +18,39 @@
 #ifndef FILEDIALOGIMAGETYPESPANEL_HPP_
 #define FILEDIALOGIMAGETYPESPANEL_HPP_
 // --------------------------------------------------------------------------------
+#include <wx/defs.h>
+// --------------------------------------------------------------------------------
+#if wxVERSION_NUMBER >= 3100
+// --------------------------------------------------------------------------------
+#include <wx/event.h>
+#include <wx/filedlgcustomize.h>
+// --------------------------------------------------------------------------------
+class ImageTypesHook: public wxFileDialogCustomizeHook {
+
+    public: // Attributes
+
+    public: // Methods
+        void AddCustomControls(wxFileDialogCustomize &customizer) wxOVERRIDE;
+        void TransferDataFromCustomControls() wxOVERRIDE;
+        wxString getImageType();
+        void setImageType(wxString type);
+
+    public: // Constructor & Destructor
+
+    protected: // Attributes
+
+    protected: // Methods
+
+    private: // Attributes
+        wxFileDialogChoice *choiceBoxImageType;
+        wxFileDialogStaticText *textImageType;
+        wxString selectedImageType;
+
+    private: // Methods
+
+};
+#else
+// --------------------------------------------------------------------------------
 #include <wx/panel.h>
 #include <wx/stattext.h>
 #include <wx/combobox.h>
@@ -50,4 +83,5 @@ static wxWindow *createFileDialogImageTypesPanel(wxWindow *parent) {
 }
 
 // --------------------------------------------------------------------------------
+#endif
 #endif /* FILEDIALOGIMAGETYPESPANEL_HPP_ */

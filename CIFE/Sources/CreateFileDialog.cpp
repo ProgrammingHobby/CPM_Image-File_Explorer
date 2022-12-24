@@ -37,6 +37,7 @@ CreateFileDialog::CreateFileDialog(wxWindow *parent, CpmFs *fs, CpmTools *tools,
     int size = editBootTrackFile->GetSize().GetHeight();
     wxScreenDC dc;
     dc.SetFont(buttonImageFile->GetFont());
+    //TODO: Buttongröße unter Windows korrigieren.
     wxString tempString = " " + buttonImageFile->GetLabel() + " ";
     wxCoord width, height;
     dc.GetTextExtent(tempString, &width, &height);
@@ -110,15 +111,22 @@ void CreateFileDialog::onButtonImageFileClicked(wxCommandEvent &event) {
                             _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;*.fdd;*.FDD;*.dsk;*.DSK|"
                               "Binary Files (*.bin,*.cpm,*.sys)|*.bin;*.BIN;*.cpm;*.CPM;*.sys;*.SYS|"
                               "all Files (*.*)|*.*"), wxFD_SAVE);
-
+#if wxVERSION_NUMBER >= 3100
+    ImageTypesHook dialogHook;
+    fileDialog.SetCustomizeHook(dialogHook);
+#else
     fileDialog.SetExtraControlCreator(&createFileDialogImageTypesPanel);
+#endif
 
     if (fileDialog.ShowModal() == wxID_OK) {
         imageFile = fileDialog.GetPath();
         defaultPath = imageFile.GetPath();
         editImageFile->SetValue(imageFile.GetFullName());
-        imageType = static_cast<FileDialogImageTypesPanel *>
-                    (fileDialog.GetExtraControl())->getSelectedImageType();
+#if wxVERSION_NUMBER >= 3100
+        imageType=dialogHook.getImageType();
+#else
+        imageType = static_cast<FileDialogImageTypesPanel *>(fileDialog.GetExtraControl())->getSelectedImageType();
+#endif
 
         if (imageType.IsEmpty()) {
             wxMessageDialog dialog(NULL,

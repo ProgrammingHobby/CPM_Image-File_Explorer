@@ -205,7 +205,6 @@ MainWindow::~MainWindow() {
 void MainWindow::onImageFileOpen(wxCommandEvent &event) {
     WXUNUSED(event)
     wxString dialogPath;
-//    imageFile=imageshistory->getActualImageFile();
 
     if (imageFile.IsOk()) {
         dialogPath = imageFile.GetPath();
@@ -219,18 +218,28 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
                             _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;"
                               "*.fdd;*.FDD;*.dsk;*.DSK|all Files (*.*)|*.*"),
                             wxFD_OPEN);
+#if wxVERSION_NUMBER >= 3100
+    ImageTypesHook dialogHook;
+    fileDialog.SetCustomizeHook(dialogHook);
+#else
     fileDialog.SetExtraControlCreator(&createFileDialogImageTypesPanel);
+#endif
 
     if (fileDialog.ShowModal() == wxID_OK) {
         imageFile = fileDialog.GetPath();
         editImageFile->SetValue(imageFile.GetFullPath());
         editImageFile->SetInsertionPoint(imageFile.GetFullPath().length());
+#if wxVERSION_NUMBER >= 3100
+        imageType = dialogHook.getImageType();
+#else
         imageType = static_cast<FileDialogImageTypesPanel *>
                     (fileDialog.GetExtraControl())->getSelectedImageType();
+#endif
 
         if (imageType.IsEmpty()) {
-            wxMessageDialog dialog(NULL,
-                                   "\nNo Image-Type selected.""\n\nPlease select proper Image-Type"" to create the new Image.",
+            wxMessageDialog dialog(NULL, "\nNo Image-Type selected."
+                                   "\n\nPlease select proper Image-Type"
+                                   " to create the new Image.",
                                    "Create new Image-File", wxOK | wxICON_QUESTION);
             dialog.ShowModal();
             return;
@@ -252,6 +261,7 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onImageFileClose(wxCommandEvent &event) {
+    //TODO: auch den letzten Imagefilenamen löschen
     WXUNUSED(event)
     cpmtools->closeImage();
     editImageFile->Clear();

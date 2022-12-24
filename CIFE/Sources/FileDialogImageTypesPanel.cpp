@@ -18,8 +18,45 @@
 #include "FileDialogImageTypesPanel.hpp"
 #include "diskdefs.hpp"
 // --------------------------------------------------------------------------------
-#include <wx/sizer.h>
+#if wxVERSION_NUMBER >= 3100
+// --------------------------------------------------------------------------------
+void ImageTypesHook::AddCustomControls(wxFileDialogCustomize &customizer) {
+    textImageType = customizer.AddStaticText("Image Type :");
+    int count = diskdefs::imageTypes.GetCount();
+    diskdefs::imageTypes.Sort();
+    wxCArrayString cArray(diskdefs::imageTypes);
+    wxString *choiceStrings = cArray.GetStrings();
+    choiceBoxImageType = customizer.AddChoice(count, choiceStrings);
+    int selection = diskdefs::imageTypes.Index(selectedImageType);
+    choiceBoxImageType->SetSelection(selection);
+}
 
+// --------------------------------------------------------------------------------
+void ImageTypesHook::TransferDataFromCustomControls() {
+    int selection = choiceBoxImageType->GetSelection();
+
+    if (selection > -1) {
+        selectedImageType = diskdefs::imageTypes[selection];
+    }
+    else {
+        selectedImageType = wxEmptyString;
+    }
+}
+
+// --------------------------------------------------------------------------------
+wxString ImageTypesHook::getImageType() {
+    return (selectedImageType);
+}
+
+// --------------------------------------------------------------------------------
+void ImageTypesHook::setImageType(wxString type) {
+    selectedImageType = type;
+}
+
+// --------------------------------------------------------------------------------
+#else
+// --------------------------------------------------------------------------------
+#include <wx/sizer.h>
 // --------------------------------------------------------------------------------
 wxString FileDialogImageTypesPanel::getSelectedImageType() {
     return (comboboxImageTypes->GetValue());
@@ -29,10 +66,11 @@ wxString FileDialogImageTypesPanel::getSelectedImageType() {
 FileDialogImageTypesPanel::FileDialogImageTypesPanel(wxWindow *parent) : wxPanel(parent) {
     labelImageTypes = new wxStaticText(this, wxID_ANY, "Image Type : ", wxDefaultPosition,
                                        wxDefaultSize);
-    comboboxImageTypes = new wxComboBox(this, wxID_ANY, "", wxDefaultPosition, wxDefaultSize,
+    comboboxImageTypes = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
+                                        wxDefaultSize,
                                         diskdefs::imageTypes, wxCB_SORT | wxCB_READONLY);
     wxBoxSizer *panelSizer = new wxBoxSizer(wxHORIZONTAL);
-    panelSizer->AddStretchSpacer(4);
+    panelSizer->AddStretchSpacer(1);
     panelSizer->Add(labelImageTypes, wxSizerFlags(1).Centre());
     panelSizer->Add(comboboxImageTypes, wxSizerFlags(1).Centre());
     this->SetSizerAndFit(panelSizer);
@@ -43,4 +81,5 @@ FileDialogImageTypesPanel::~FileDialogImageTypesPanel() {
     // TODO Auto-generated destructor stub
 }
 
-// --------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+#endif
