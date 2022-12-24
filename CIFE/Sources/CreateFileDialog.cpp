@@ -34,17 +34,16 @@ CreateFileDialog::CreateFileDialog(wxWindow *parent, CpmFs *fs, CpmTools *tools,
                                    bool isNewFile) : Ui_CreateFileDialog(parent) {
     cpmfs = fs;
     cpmtools = tools;
-    int size = editBootTrackFile->GetSize().GetHeight();
     wxScreenDC dc;
     dc.SetFont(buttonImageFile->GetFont());
-    //TODO: Buttongröße unter Windows korrigieren.
-    wxString tempString = " " + buttonImageFile->GetLabel() + " ";
+    wxString tempString = "#" + buttonImageFile->GetLabel() + "#";
     wxCoord width, height;
     dc.GetTextExtent(tempString, &width, &height);
-    buttonBootTrackFile->SetMinSize(wxSize(width, size));
-    buttonBootTrackFile->SetMaxSize(wxSize(width, size));
-    buttonImageFile->SetMinSize(wxSize(width, size));
-    buttonImageFile->SetMaxSize(wxSize(width, size));
+    height=editImageFile->GetSize().GetY();
+    buttonBootTrackFile->SetMinSize(wxSize(width, height));
+    buttonBootTrackFile->SetMaxSize(wxSize(width, height));
+    buttonImageFile->SetMinSize(wxSize(width, height));
+    buttonImageFile->SetMaxSize(wxSize(width, height));
     buttonOk->Enable(false);
     imageFile.Clear();
     imageType.Clear();
