@@ -269,11 +269,11 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onImageFileClose(wxCommandEvent &event) {
-    //TODO: auch den letzten Imagefilenamen löschen
     WXUNUSED(event)
     cpmtools->closeImage();
     editImageFile->Clear();
     editImageType->Clear();
+    imageFile.ClearExt();
     listImageContents->DeleteAllItems();
     presetMenues();
     isImageLoaded = false;
@@ -640,6 +640,8 @@ void MainWindow::onClearHistory(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onSelectHistoryEntry(wxCommandEvent &event) {
+    //TODO: Prüfen ob aus der History gelesener Imagetyp gültig ist. Wenn nicht,
+    //TODO: fragen ob der Historyeintrag gelöscht werden soll.
     WXUNUSED(event)
     int historyId = (event.GetId() - wxID_FILE1);
     imageFile = imageshistory->getHistoryImageFile(historyId);
