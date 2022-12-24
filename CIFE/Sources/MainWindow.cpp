@@ -206,57 +206,65 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
     WXUNUSED(event)
     wxString dialogPath;
 
-    if (imageFile.IsOk()) {
-        dialogPath = imageFile.GetPath();
-    }
-    else {
-        dialogPath = wxStandardPaths::Get().GetDocumentsDir();
-    }
+    do {
+        if (imageFile.IsOk()) {
+            dialogPath = imageFile.GetPath();
+        }
+        else {
+            dialogPath = wxStandardPaths::Get().GetDocumentsDir();
+        }
 
-    wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"),
-                            dialogPath, imageFile.GetFullName(),
-                            _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;"
-                              "*.fdd;*.FDD;*.dsk;*.DSK|all Files (*.*)|*.*"),
-                            wxFD_OPEN);
+        wxFileDialog fileDialog(this, _("Open CP/M Disk Image File"),
+                                dialogPath, imageFile.GetFullName(),
+                                _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;"
+                                  "*.fdd;*.FDD;*.dsk;*.DSK|all Files (*.*)|*.*"),
+                                wxFD_OPEN);
 #if wxVERSION_NUMBER >= 3100
-    ImageTypesHook dialogHook;
-    fileDialog.SetCustomizeHook(dialogHook);
+        ImageTypesHook dialogHook;
+        fileDialog.SetCustomizeHook(dialogHook);
 #else
-    fileDialog.SetExtraControlCreator(&createFileDialogImageTypesPanel);
+        fileDialog.SetExtraControlCreator(&createFileDialogImageTypesPanel);
 #endif
 
-    if (fileDialog.ShowModal() == wxID_OK) {
-        imageFile = fileDialog.GetPath();
-        editImageFile->SetValue(imageFile.GetFullPath());
-        editImageFile->SetInsertionPoint(imageFile.GetFullPath().length());
+        if (fileDialog.ShowModal() == wxID_OK) {
 #if wxVERSION_NUMBER >= 3100
-        imageType = dialogHook.getImageType();
+            imageType = dialogHook.getImageType();
 #else
-        imageType = static_cast<FileDialogImageTypesPanel *>
-                    (fileDialog.GetExtraControl())->getSelectedImageType();
+            imageType = static_cast<FileDialogImageTypesPanel *>
+                        (fileDialog.GetExtraControl())->getSelectedImageType();
 #endif
+            imageFile = fileDialog.GetPath();
 
-        if (imageType.IsEmpty()) {
-            wxMessageDialog dialog(NULL, "\nNo Image-Type selected."
-                                   "\n\nPlease select proper Image-Type"
-                                   " to create the new Image.",
-                                   "Create new Image-File", wxOK | wxICON_QUESTION);
-            dialog.ShowModal();
-            return;
+            if (!imageType.IsEmpty()) {
+                editImageFile->SetValue(imageFile.GetFullPath());
+                editImageFile->SetInsertionPoint(imageFile.GetFullPath().length());
+                editImageType->SetValue(imageType);
+                imageshistory->addItem(imageFile.GetFullPath(), imageType);
+
+                if (!menuRecentFiles->IsEnabled(wxID_CLEAR_HISTORY)) {
+                    menuRecentFiles->Enable(wxID_CLEAR_HISTORY, true);
+                }
+
+                if (cpmtools->setImageType(imageType) && cpmtools->openImage(imageFile.GetFullPath())) {
+                    isImageLoaded = true;
+                    showDirectory();
+                }
+
+                break;
+            }
+            else {
+                wxMessageDialog dialog(NULL, "\nNo Image-Type selected."
+                                       "\n\nPlease select proper Image-Type"
+                                       " to create the new Image.",
+                                       "Create new Image-File", wxOK | wxICON_QUESTION);
+                dialog.ShowModal();
+            }
+
         }
-
-        editImageType->SetValue(imageType);
-        imageshistory->addItem(imageFile.GetFullPath(), imageType);
-
-        if (!menuRecentFiles->IsEnabled(wxID_CLEAR_HISTORY)) {
-            menuRecentFiles->Enable(wxID_CLEAR_HISTORY, true);
+        else {
+            break;
         }
-
-        if (cpmtools->setImageType(imageType) && cpmtools->openImage(imageFile.GetFullPath())) {
-            isImageLoaded = true;
-            showDirectory();
-        }
-    }
+    } while (imageType.IsEmpty());
 }
 
 // --------------------------------------------------------------------------------

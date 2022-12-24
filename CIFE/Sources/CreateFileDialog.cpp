@@ -106,41 +106,52 @@ wxString CreateFileDialog::getImageFileName() {
 // --------------------------------------------------------------------------------
 void CreateFileDialog::onButtonImageFileClicked(wxCommandEvent &event) {
     WXUNUSED(event)
-    wxFileDialog fileDialog(this, _("Open CP/M Image-File"), defaultPath,
-                            imageFile.GetFullName(),
-                            _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;*.fdd;*.FDD;*.dsk;*.DSK|"
-                              "Binary Files (*.bin,*.cpm,*.sys)|*.bin;*.BIN;*.cpm;*.CPM;*.sys;*.SYS|"
-                              "all Files (*.*)|*.*"), wxFD_SAVE);
+
+    do {
+        wxFileDialog fileDialog(this, _("Open CP/M Image-File"), defaultPath,
+                                imageFile.GetFullName(),
+                                _("Image Files (*.img,*.fdd,*.dsk)|*.img;*.IMG;*.fdd;*.FDD;*.dsk;*.DSK|"
+                                  "Binary Files (*.bin,*.cpm,*.sys)|*.bin;*.BIN;*.cpm;*.CPM;*.sys;*.SYS|"
+                                  "all Files (*.*)|*.*"), wxFD_SAVE);
 #if wxVERSION_NUMBER >= 3100
-    ImageTypesHook dialogHook;
-    fileDialog.SetCustomizeHook(dialogHook);
+        ImageTypesHook dialogHook;
+        fileDialog.SetCustomizeHook(dialogHook);
 #else
-    fileDialog.SetExtraControlCreator(&createFileDialogImageTypesPanel);
+        fileDialog.SetExtraControlCreator(&createFileDialogImageTypesPanel);
 #endif
 
-    if (fileDialog.ShowModal() == wxID_OK) {
-        imageFile = fileDialog.GetPath();
-        defaultPath = imageFile.GetPath();
-        editImageFile->SetValue(imageFile.GetFullName());
+        if (fileDialog.ShowModal() == wxID_OK) {
 #if wxVERSION_NUMBER >= 3100
-        imageType=dialogHook.getImageType();
+            imageType = dialogHook.getImageType();
 #else
-        imageType = static_cast<FileDialogImageTypesPanel *>(fileDialog.GetExtraControl())->getSelectedImageType();
+            imageType = static_cast<FileDialogImageTypesPanel *>
+                        (fileDialog.GetExtraControl())->getSelectedImageType();
 #endif
+            imageFile = fileDialog.GetPath();
+            defaultPath = imageFile.GetPath();
 
-        if (imageType.IsEmpty()) {
-            wxMessageDialog dialog(NULL,
-                                   "\nNo Image-Type selected.""\n\nPlease select proper Image-Type"
-                                   " to create the new Image.", "Create new Image-File", wxOK | wxICON_QUESTION);
-            dialog.ShowModal();
-            return;
+            if (!imageType.IsEmpty()) {
+                editImageFile->SetValue(imageFile.GetFullName());
+                editImageType->SetValue(imageType);
+                cpmtools->setImageType(imageType);
+                panelBootTrackFile->Enable(cpmfs->getBootTracksEnabled());
+                buttonOk->Enable(!imageType.IsEmpty() && imageFile.IsOk());
+                break;
+            }
+            else {
+                wxMessageDialog dialog(NULL,
+                                       "\nNo Image-Type selected."
+                                       "\n\nPlease select proper Image-Type"
+                                       " to create the new Image.",
+                                       "Create new Image-File", wxOK | wxICON_QUESTION);
+                dialog.ShowModal();
+            }
         }
+        else {
+            break;
+        }
+    } while (imageType.IsEmpty());
 
-        editImageType->SetValue(imageType);
-        cpmtools->setImageType(imageType);
-        panelBootTrackFile->Enable(cpmfs->getBootTracksEnabled());
-        buttonOk->Enable(!imageType.IsEmpty() && imageFile.IsOk());
-    }
 }
 
 // --------------------------------------------------------------------------------
