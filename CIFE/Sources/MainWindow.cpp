@@ -255,7 +255,7 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
             else {
                 wxMessageDialog dialog(NULL, "\nNo Image-Type selected."
                                        "\n\nPlease select proper Image-Type"
-                                       " to create the new Image.",
+                                       " to open the Image.",
                                        "Create new Image-File", wxOK | wxICON_QUESTION);
                 dialog.ShowModal();
             }
