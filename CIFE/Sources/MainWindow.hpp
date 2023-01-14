@@ -78,6 +78,7 @@ class MainWindow : public Ui_MainWindow {
         void correctWindowSize();
         void presetMenues();
         void showDirectory();
+        void loadImageFromHistory(int historyId);
 
         DECLARE_EVENT_TABLE()
 };

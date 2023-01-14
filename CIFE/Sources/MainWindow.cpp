@@ -94,25 +94,16 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     createPopupMenu();
     listImageContents->enableSizing(true);
     correctWindowSize();
-    imageFile = imageshistory->getActualImageFile();
+    imageFile = imageshistory->getHistoryImageFile(0);
 
     if (imageFile.FileExists()) {
-        editImageFile->SetValue(imageFile.GetFullPath());
-        editImageFile->SetInsertionPoint(imageFile.GetFullPath().Length());
-        imageType = imageshistory->getActualImageType();
-        editImageType->SetValue(imageType);
-        cpmtools->setImageType(imageType);
-        cpmtools->openImage(imageFile.GetFullPath());
-        isImageLoaded = true;
-        showDirectory();
-    }
-    else {
-        isImageLoaded = false;
+        loadImageFromHistory(0);
     }
 
     if (listImageContents->GetItemCount() > 0) {
         menuMainWindow->Enable(wxID_SELECTALL, true);
     }
+
 }
 
 // --------------------------------------------------------------------------------
@@ -283,7 +274,7 @@ void MainWindow::onImageFileClose(wxCommandEvent &event) {
 void MainWindow::onImageFileNew(wxCommandEvent &event) {
     WXUNUSED(event)
     CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs, cpmtools, true);
-    dialog->setDefaultPath(imageshistory->getActualImageFile());
+    dialog->setDefaultPath(imageshistory->getHistoryImageFile(0));
 
     if (dialog->ShowModal() == wxID_OK) {
         wxString fileName = dialog->getImageFileName();
@@ -640,12 +631,27 @@ void MainWindow::onClearHistory(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void MainWindow::onSelectHistoryEntry(wxCommandEvent &event) {
-    //TODO: Prüfen ob aus der History gelesener Imagetyp gültig ist. Wenn nicht,
-    //TODO: fragen ob der Historyeintrag gelöscht werden soll.
     WXUNUSED(event)
-    int historyId = (event.GetId() - wxID_FILE1);
+    loadImageFromHistory(event.GetId() - wxID_FILE1);
+}
+
+// --------------------------------------------------------------------------------
+void MainWindow::loadImageFromHistory(int historyId) {
     imageFile = imageshistory->getHistoryImageFile(historyId);
     imageType = imageshistory->getHistoryImageType(historyId);
+
+    if (diskdefs::imageTypes.Index(imageType) == wxNOT_FOUND) {
+        wxMessageDialog deleteDialog(NULL, "\nDo you want to delete the History Entry?",
+                                     "Not a valid Image-Type !",
+                                     wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+
+        if (deleteDialog.ShowModal() == wxID_YES) {
+            imageshistory->deleteItem(historyId);
+        }
+
+        return;
+    }
+
     imageshistory->addItem(imageFile.GetFullPath(), imageType);
 
     if (isImageLoaded) {
@@ -667,8 +673,8 @@ void MainWindow::onSelectHistoryEntry(wxCommandEvent &event) {
     else {
         isImageLoaded = false;
     }
-
 }
+
 
 // --------------------------------------------------------------------------------
 void MainWindow::onAttributes(wxCommandEvent &event) {
