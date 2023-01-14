@@ -30,8 +30,7 @@ class ImagesHistory: public wxObject {
     public: // Methods
         void clearHistory();
         void addItem(wxString file, wxString type);
-        wxString getActualImageFile();
-        wxString getActualImageType();
+        void deleteItem(int item);
         wxString getHistoryImageFile(int item);
         wxString getHistoryImageType(int item);
         bool load();
@@ -55,7 +54,6 @@ class ImagesHistory: public wxObject {
 
     private: // Methods
         wxString recentMenuLabel(int num, wxString file);
-        void removeHistoryItem(int item);
         void refreshMenuLabels();
 };
 

@@ -48,7 +48,7 @@ void ImagesHistory::addItem(wxString file, wxString type) {
     // check if the given Image is already in History
     for (int i = 0; i < itemsCount; i++) {
         if (file == m_ImageFiles[i]) {
-            removeHistoryItem(i);
+            deleteItem(i);
             itemsCount--;
             break;
         }
@@ -56,23 +56,13 @@ void ImagesHistory::addItem(wxString file, wxString type) {
 
     // if History full, delete last item
     if (itemsCount == MAXITEMS) {
-        removeHistoryItem(--itemsCount);
+        deleteItem(--itemsCount);
     }
 
     m_RecentMenu->Insert(itemsCount, (m_MenuItemId + itemsCount), " ");
     m_ImageFiles.insert(m_ImageFiles.begin(), file);
     m_ImageTypes.insert(m_ImageTypes.begin(), type);
     refreshMenuLabels();
-}
-
-// --------------------------------------------------------------------------------
-wxString ImagesHistory::getActualImageFile() {
-    return (getHistoryImageFile(0));
-}
-
-// --------------------------------------------------------------------------------
-wxString ImagesHistory::getActualImageType() {
-    return (getHistoryImageType(0));
 }
 
 // --------------------------------------------------------------------------------
@@ -158,7 +148,7 @@ wxString ImagesHistory::recentMenuLabel(int num, wxString file) {
 }
 
 // --------------------------------------------------------------------------------
-void ImagesHistory::removeHistoryItem(int item) {
+void ImagesHistory::deleteItem(int item) {
     int itemsCount = m_ImageFiles.GetCount();
 
     // delete Items
