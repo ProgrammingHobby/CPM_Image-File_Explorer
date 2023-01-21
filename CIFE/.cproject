@@ -436,7 +436,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.exe.debug.280105441.1390582163" name="MSW-Debug_wx3.2_32bit_static" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=" parent="cdt.managedbuild.config.gnu.exe.debug" prebuildStep="windres -i&quot;${ProjDirPath}/${ProjName}.rc&quot; -o&quot;${CWD}\${ProjName}_rc.o&quot; -F pe-i386 $(shell wx-config --rcflags)">
+				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.exe.debug.280105441.1390582163" name="MSW-Debug_wx3.2_32bit_static" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.dockerdpath=,org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=" parent="cdt.managedbuild.config.gnu.exe.debug" prebuildStep="windres -i&quot;${ProjDirPath}/${ProjName}.rc&quot; -o&quot;${CWD}\${ProjName}_rc.o&quot; $(shell wx-config --rcflags)">
 					<folderInfo id="cdt.managedbuild.config.gnu.exe.debug.280105441.1390582163." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.mingw.base.804559837" name="MinGW GCC" superClass="cdt.managedbuild.toolchain.gnu.mingw.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.PE64" id="cdt.managedbuild.target.gnu.platform.mingw.base.1416152236" name="Debug Platform" osList="win32" superClass="cdt.managedbuild.target.gnu.platform.mingw.base"/>
@@ -476,7 +476,7 @@
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.mingw.base.826513245" name="MinGW C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.mingw.base"/>
 							<tool commandLinePattern="${COMMAND} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS} ${EXTRA_FLAGS} ${FLAGS}" id="cdt.managedbuild.tool.gnu.cpp.linker.mingw.base.67119549" name="MinGW C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.mingw.base">
-								<option id="gnu.cpp.link.option.flags.64015701" name="Linker flags" superClass="gnu.cpp.link.option.flags" useByScannerDiscovery="false" value="-F pe-i386 -mwindows $(shell wx-config --libs)" valueType="string"/>
+								<option id="gnu.cpp.link.option.flags.64015701" name="Linker flags" superClass="gnu.cpp.link.option.flags" useByScannerDiscovery="false" value="-mwindows $(shell wx-config --libs)" valueType="string"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.link.option.userobjs.2111438974" name="Other objects" superClass="gnu.cpp.link.option.userobjs" useByScannerDiscovery="false" valueType="userObjs">
 									<listOptionValue builtIn="false" value="&quot;${CWD}\${ProjName}_rc.o&quot;"/>
 								</option>
@@ -504,7 +504,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.exe.debug.280105441.1390582163.283079845" name="MSW-Release_wx3.2_32bit_static" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=" parent="cdt.managedbuild.config.gnu.exe.debug" prebuildStep="windres -i&quot;${ProjDirPath}/${ProjName}.rc&quot; -o&quot;${CWD}\${ProjName}_rc.o&quot; -F pe-i386 $(shell wx-config --rcflags)">
+				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.exe.debug.280105441.1390582163.283079845" name="MSW-Release_wx3.2_32bit_static" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=" parent="cdt.managedbuild.config.gnu.exe.debug" prebuildStep="windres -i&quot;${ProjDirPath}/${ProjName}.rc&quot; -o&quot;${CWD}\${ProjName}_rc.o&quot; $(shell wx-config --rcflags)">
 					<folderInfo id="cdt.managedbuild.config.gnu.exe.debug.280105441.1390582163.283079845." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.mingw.base.136210103" name="MinGW GCC" superClass="cdt.managedbuild.toolchain.gnu.mingw.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.PE64" id="cdt.managedbuild.target.gnu.platform.mingw.base.1991928735" name="Debug Platform" osList="win32" superClass="cdt.managedbuild.target.gnu.platform.mingw.base"/>
@@ -549,7 +549,7 @@
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.mingw.base.40374560" name="MinGW C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.mingw.base"/>
 							<tool commandLinePattern="${COMMAND} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS} ${EXTRA_FLAGS} ${FLAGS}" id="cdt.managedbuild.tool.gnu.cpp.linker.mingw.base.19449503" name="MinGW C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.mingw.base">
-								<option id="gnu.cpp.link.option.flags.135669144" name="Linker flags" superClass="gnu.cpp.link.option.flags" useByScannerDiscovery="false" value="-F pe-i386 -mwindows $(shell wx-config --libs)" valueType="string"/>
+								<option id="gnu.cpp.link.option.flags.135669144" name="Linker flags" superClass="gnu.cpp.link.option.flags" useByScannerDiscovery="false" value="-mwindows $(shell wx-config --libs)" valueType="string"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.link.option.userobjs.438271790" name="Other objects" superClass="gnu.cpp.link.option.userobjs" useByScannerDiscovery="false" valueType="userObjs">
 									<listOptionValue builtIn="false" value="&quot;${CWD}\${ProjName}_rc.o&quot;"/>
 								</option>
