@@ -104,11 +104,11 @@ Ui_CreateFileDialog::Ui_CreateFileDialog(wxWindow* parent, wxWindowID id, const 
     editBootTrackFile->SetHint(wxT(""));
     #endif
     
-    sizerBootTrackFile->Add(buttonBootTrackFile, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
+    sizerBootTrackFile->Add(editBootTrackFile, 1, wxEXPAND, WXC_FROM_DIP(4));
     
     buttonBootTrackFile = new wxButton(panelBootTrackFile, wxID_BUTTON_BOOTFILE, _("Browse"), wxDefaultPosition, wxDLG_UNIT(panelBootTrackFile, wxSize(-1,-1)), 0);
     
-    sizerBootTrackFile->Add(buttonBootTrackFile, 0, wxLEFT|wxEXPAND, WXC_FROM_DIP(4));
+    sizerBootTrackFile->Add(buttonBootTrackFile, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(4));
     sizerImageSettings->AddGrowableCol(1);
     sizerImageSettings->AddGrowableRow(0);
     panelCreationWarning = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL|wxBORDER_THEME);

@@ -15,6 +15,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+//TODO: Speichern der Dialogposition implementieren.
+//TODO: Bootimage Browse-Button Position korrigieren.
+//TODO: Dialog crasht sporadisch.
+
 #include "CreateFileDialog.hpp"
 #include "CpmTools.hpp"
 #include "FileDialogImageTypesPanel.hpp"
