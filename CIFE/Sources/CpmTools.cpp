@@ -48,7 +48,7 @@ bool CpmTools::setImageType(wxString typeName) {
 
 // --------------------------------------------------------------------------------
 wxString CpmTools::getActualImageType() {
-    return(imageTypeName);
+    return (imageTypeName);
 }
 
 // --------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ bool CpmTools::openImage(wxString fileName) {
         return (false);
     }
     else {
-        if (cpmfs->initDriveData() == -1) {
+        if (cpmfs->initDriveData(1) == -1) {
             guiintf->printMsg(wxString::Format("cannot init filesystem  (%s)\n",
                                                cpmfs->getErrorMsg()));
             return (false);
@@ -74,7 +74,7 @@ bool CpmTools::openImage(wxString fileName) {
 
 // --------------------------------------------------------------------------------
 wxString CpmTools::getActualFileName() {
-    return(imageFileName);
+    return (imageFileName);
 }
 
 // --------------------------------------------------------------------------------
@@ -316,7 +316,7 @@ void CpmTools::createNewImage(wxString imageFile, wxString label, bool useTimeSt
     }
 
     if (cpmfs->mkfs(imageFile.c_str(), imageTypeName.c_str(), label.c_str(), bootTracks,
-                    (useTimeStamps ? 1 : 0)) == -1) {
+                    (useTimeStamps ? 1 : 0), 1) == -1) {
         guiintf->printMsg(wxString::Format("%s: can not make new file system  (%s)\n", cmd,
                                            cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
         return;
@@ -643,13 +643,13 @@ int CpmTools::fsck(const char *image, bool repair) {
             /* check block number range */
             {
                 int block, min, max, i;
-                min = (drive.maxdir * 32 + drive.blksiz - 1) / drive.blksiz;
+                min = drive.dirblks;
                 max = drive.size;
 
                 for (i = 0; i < 16; ++i) {
                     block = dir->pointers[i] & 0xff;
 
-                    if (drive.size >= 256) {
+                    if (drive.size > 256) {
                         block += (dir->pointers[++i] & 0xff) << 8;
                     }
 
@@ -683,14 +683,13 @@ int CpmTools::fsck(const char *image, bool repair) {
                 int i, min, max, recordsInBlocks, used = 0;
                 min = (dir->extnol % drive.extents) * 16 / drive.extents;
                 max = ((dir->extnol % drive.extents) + 1) * 16 / drive.extents;
-                assert(min < max);
 
                 for (i = min; i < max; ++i) {
-                    if (dir->pointers[i] || (drive.size >= 256 && dir->pointers[i + 1])) {
+                    if (dir->pointers[i] || (drive.size > 256 && dir->pointers[i + 1])) {
                         ++used;
                     }
 
-                    if (drive.size >= 256) {
+                    if (drive.size > 256) {
                         ++i;
                     }
                 }
@@ -953,7 +952,7 @@ int CpmTools::fsck(const char *image, bool repair) {
             for (i = 0; i < 16; ++i) {
                 block = dir->pointers[i] & 0xff;
 
-                if (drive.size >= 256) {
+                if (drive.size > 256) {
                     block += (dir->pointers[++i] & 0xff) << 8;
                 }
 
@@ -963,7 +962,7 @@ int CpmTools::fsck(const char *image, bool repair) {
                         for (j = 0; j < 16; ++j) {
                             block2 = dir2->pointers[j] & 0xff;
 
-                            if (drive.size >= 256) {
+                            if (drive.size > 256) {
                                 block2 += (dir2->pointers[++j] & 0xff) << 8;
                             }
 
@@ -1024,7 +1023,7 @@ int CpmTools::fsck(const char *image, bool repair) {
                 for (i = 0; i < 16; ++i) {
                     block = dir->pointers[i] & 0xff;
 
-                    if (drive.size >= 256) {
+                    if (drive.size > 256) {
                         block += (dir->pointers[++i] & 0xff) << 8;
                     }
 
@@ -1070,11 +1069,15 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
     else {
         CpmFs::CpmInode_t ino;
         char cpmname[2 + 8 + 1 + 3 + 1];
+        char *translate;
         struct stat st;
         stat(unixfilename, &st);
         snprintf(cpmname, sizeof(cpmname), "%02d%s", getUserNumber(cpmfilename),
                  strchr(cpmfilename, ':') + 1);
-
+        translate=cpmname;
+        while((translate=strchr(translate,','))) {
+            *translate='/';
+        }
         if (cpmfs->create(&cpmfs->getDirectoryRoot(), cpmname, &ino, 0666) == -1) {
             guiintf->printMsg(wxString::Format("%s: can not create %s  (%s)\n", cmd, cpmfilename,
                                                cpmfs->getErrorMsg()));
@@ -1087,9 +1090,9 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
             cpmfs->open(&ino, &file, O_WRONLY);
 
             do {
-                unsigned int j;
+                ssize_t j;
 
-                for (j = 0; j < (sizeof(buf) / 2) && (c = getc(ufp)) != EOF; ++j) {
+                for (j = 0; j < ((ssize_t)sizeof(buf) / 2) && (c = getc(ufp)) != EOF; ++j) {
                     if (text && c == '\n') {
                         buf[j++] = '\r';
                     }
@@ -1101,7 +1104,7 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
                     buf[j++] = '\032';
                 }
 
-                if (cpmfs->write(&file, buf, j) != (ssize_t)j) {
+                if (cpmfs->write(&file, buf, j) != j) {
                     guiintf->printMsg(wxString::Format("%s: can not write %s  (%s)\n", cmd, cpmfilename,
                                                        cpmfs->getErrorMsg()));
                     ohno = 1;
@@ -1124,7 +1127,10 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
             }
         }
 
-        fclose(ufp);
+        if(fclose(ufp)==EOF) {
+            guiintf->printMsg(wxString::Format("%s: can not close %s  (%s)\n", cmd, cpmfilename,strerror(errno)));
+            exitcode = 1;
+        }
     }
 
     return (exitcode);
