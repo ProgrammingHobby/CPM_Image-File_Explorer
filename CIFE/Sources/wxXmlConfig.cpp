@@ -679,7 +679,6 @@ void wxXmlConfig::CleanUp() {
 }
 
 // --------------------------------------------------------------------------------
-//TODO: combining of xml tree
 void wxXmlConfig::Parse(const wxXmlDocument &xmlDocument, bool bLocal) {
     // for now we replace the document with the one provided in parameter
     if (m_xmlDoc) {

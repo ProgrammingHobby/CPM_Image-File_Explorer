@@ -78,7 +78,6 @@ FileDialogImageTypesPanel::FileDialogImageTypesPanel(wxWindow *parent) : wxPanel
 
 // --------------------------------------------------------------------------------
 FileDialogImageTypesPanel::~FileDialogImageTypesPanel() {
-    // TODO Auto-generated destructor stub
 }
 
 //---------------------------------------------------------------------------------

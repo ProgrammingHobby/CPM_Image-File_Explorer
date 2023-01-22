@@ -130,6 +130,9 @@ Ui_MainWindow::Ui_MainWindow(wxWindow* parent, wxWindowID id, const wxString& ti
     menuOptions = new wxMenu();
     menuMainWindow->Append(menuOptions, _("Options"));
     
+    menuItemGeneralSettings = new wxMenuItem(menuOptions, wxID_GENERAL_SETTINGS, _("General Settings"), wxT(""), wxITEM_NORMAL);
+    menuOptions->Append(menuItemGeneralSettings);
+    
     menuItemCopySettings = new wxMenuItem(menuOptions, wxID_COPY_SETTINGS, _("Copy Settings"), wxT(""), wxITEM_NORMAL);
     menuOptions->Append(menuItemCopySettings);
     

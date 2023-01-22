@@ -137,7 +137,6 @@ ImagesHistory::ImagesHistory(wxMenu *menu, wxConfigBase *config) {
 
 // --------------------------------------------------------------------------------
 ImagesHistory::~ImagesHistory() {
-    // TODO Auto-generated destructor stub
 }
 
 // --------------------------------------------------------------------------------
