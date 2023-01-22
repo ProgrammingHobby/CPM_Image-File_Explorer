@@ -67,12 +67,15 @@ class CpmFs {
         } DsDate_t;
 
         typedef struct {
+            int uppercase;
             int secLength;
             int tracks;
             int sectrk;
             int blksiz;
             int maxdir;
+            int dirblks;
             int skew;
+            int bootsec;
             int boottrk;
             off_t offset;
             int type;
@@ -127,26 +130,27 @@ class CpmFs {
 
     public:    // Methods
         int readDiskdefData(const char *format);
-        int initDriveData();
+        int initDriveData(int uppercase);
         void glob(const char *argv, int *gargc, char ***gargv);
+        void globfree(char **dirent, int entries);
         void statFs(CpmStatFS_t *buf);
-        int namei(const char *filename, CpmInode_t *i);
+        int namei(char const *filename, CpmInode_t *i);
         void stat(const CpmInode_t *ino, CpmStat_t *buf);
         int attrGet(CpmInode_t *ino, cpm_attr_t *attrib);
-        void unmount();
-        int unlink(const char *fname);
-        int rename(const char *oldname, const char *newname);
+        int unmount();
+        int unlink(char const *fname);
+        int rename(char const *oldname, char const *newname);
         int attrSet(CpmInode_t *ino, cpm_attr_t attrib);
         int protSet(CpmInode_t *ino, mode_t pmode);
         int sync();
-        int create(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode_t mode);
+        int create(CpmInode_t *dir, char const *fname, CpmInode_t *ino, mode_t mode);
         int open(CpmInode_t *ino, CpmFile_t *file, mode_t mode);
-        int read(CpmFile_t *file, char *buf, int count);
-        int write(CpmFile_t *file, const char *buf, int count);
+        ssize_t read(CpmFile_t *file, char *buf, size_t count);
+        ssize_t write(CpmFile_t *file, char const *buf, size_t count);
         int close(CpmFile_t *file);
         void utime(CpmInode_t *ino, utimbuf *times);
-        int mkfs(const char *filename, const char *format, const char *label, char *bootTracks,
-                 int timeStamps);
+        int mkfs(char const *filename, char const *format, char const *label, char *bootTracks,
+                 int timeStamps, int uppercase);
         bool getBootTracksEnabled();
         size_t getBootTrackSize();
         CpmSuperBlock_t &getDriveData();
@@ -173,26 +177,27 @@ class CpmFs {
     private:    // Methods
         void memcpy7(char *dest, const char *src, int count);
         int splitFilename(const char *fullname, int type, char *name, char *ext, int *user);
-        int isMatching(int user1, const char *name1, const char *ext1, int user2,
-                       const char *name2, const char *ext2);
+        int isMatching(int user1, char const *name1, char const *ext1, int user2,
+                       char const *name2, char const *ext2);
         time_t cpm2unix_time(int days, int hour, int min);
         void unix2cpm_time(time_t now, int *days, int *hour, int *min);
         time_t ds2unix_time(const DsEntry_t *entry);
         void unix2ds_time(time_t now, DsEntry_t *entry);
         void alvInit();
         int allocBlock();
+        int bootOffset();
         int readBlock(int blockno, char *buffer, int start, int end);
-        int writeBlock(int blockno, const char *buffer, int start, int end);
-        int findFileExtent(int user, const char *name, const char *ext, int start, int extno);
+        int writeBlock(int blockno, char const *buffer, int start, int end);
+        int findFileExtent(int user, char const *name, char const *ext, int start, int extno);
         int findFreeExtent();
         void updateTimeStamps(const CpmInode_t *ino, int extent);
         void updateDsStamps(const CpmInode_t *ino, int extent);
         int readTimeStamps(CpmInode_t *i, int lowestExt);
         void readDsStamps(CpmInode_t *i, int lowestExt);
-        int recmatch(const char *a, const char *pattern);
-        int match(const char *a, const char *pattern);
+        int recmatch(char const *a, char const *pattern);
+        int match(char const *a, char const *pattern);
         int diskdefReadSuper(const char *format);
-        int amsReadSuper(const char *format);
+        int amsReadSuper(char const *format);
         int cpmCheckDs();
         int syncDs();
         int cpmOpendir(CpmFile_t *dirp);

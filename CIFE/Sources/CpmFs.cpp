@@ -40,7 +40,7 @@ CpmFs::~CpmFs() {
 // --------------------------------------------------------------------------------
 //  -- Copy string, leaving 8th bit alone
 // --------------------------------------------------------------------------------
-void CpmFs::memcpy7(char *dest, const char *src, int count) {
+void CpmFs::memcpy7(char *dest, char const *src, int count) {
     while (count--) {
         *dest = ((*dest) & 0x80) | ((*src) & 0x7F);
         ++dest;
@@ -51,7 +51,7 @@ void CpmFs::memcpy7(char *dest, const char *src, int count) {
 // --------------------------------------------------------------------------------
 //  -- split file name into name and extension
 // --------------------------------------------------------------------------------
-int CpmFs::splitFilename(const char *fullname, int type, char *name, char *ext,
+int CpmFs::splitFilename(char const *fullname, int type, char *name, char *ext,
                          int *user) {
     int i, j;
     memset(name, ' ', 8);
@@ -105,8 +105,8 @@ int CpmFs::splitFilename(const char *fullname, int type, char *name, char *ext,
 // --------------------------------------------------------------------------------
 //  -- do two file names match?
 // --------------------------------------------------------------------------------
-int CpmFs::isMatching(int user1, const char *name1, const char *ext1, int user2,
-                      const char *name2, const char *ext2) {
+int CpmFs::isMatching(int user1, char const *name1, char const *ext1, int user2,
+                      char const *name2, char const *ext2) {
     int i;
 
     if (user1 != user2) {
@@ -269,7 +269,7 @@ void CpmFs::alvInit() {
     /* mark directory blocks as used */
     /* A directory may cover more blocks than an int may hold bits, */
     /* so a loop is needed. */
-    for (block = 0; block < (drive.maxdir * 32 + drive.blksiz - 1) / drive.blksiz; ++block) {
+    for (block = 0; block < drive.dirblks; ++block) {
         offset = block / INTBITS;
         drive.alv[offset] |= (1 << (block % INTBITS));
     }
@@ -280,7 +280,7 @@ void CpmFs::alvInit() {
             for (j = 0; j < 16; ++j) {
                 block = (unsigned char) drive.dir[i].pointers[j];
 
-                if (drive.size >= 256) {
+                if (drive.size > 256) {
                     block += (((unsigned char) drive.dir[i].pointers[++j]) << 8);
                 }
 
@@ -322,6 +322,17 @@ int CpmFs::allocBlock() {
 }
 
 // --------------------------------------------------------------------------------
+//  -- find the logical sector number of the CP/M directory
+// --------------------------------------------------------------------------------
+int CpmFs::bootOffset() {
+    if (drive.bootsec >= 0) {
+        return (drive.bootsec);
+    }
+
+    return (drive.boottrk * drive.sectrk);
+}
+
+// --------------------------------------------------------------------------------
 //  -- read a (partial) block
 // --------------------------------------------------------------------------------
 int CpmFs::readBlock(int blockno, char *buffer, int start, int end) {
@@ -336,11 +347,9 @@ int CpmFs::readBlock(int blockno, char *buffer, int start, int end) {
         end = drive.blksiz / drive.secLength - 1;
     }
 
-    sect = (blockno * (drive.blksiz / drive.secLength) +
-            drive.sectrk * drive.boottrk) % drive.sectrk;
+    sect = (blockno * (drive.blksiz / drive.secLength) + bootOffset()) % drive.sectrk;
 
-    track = (blockno * (drive.blksiz / drive.secLength) +
-             drive.sectrk * drive.boottrk) / drive.sectrk;
+    track = (blockno * (drive.blksiz / drive.secLength) + bootOffset()) / drive.sectrk;
 
     for (counter = 0; counter <= end; ++counter) {
         if (counter >= start) {
@@ -365,15 +374,15 @@ int CpmFs::readBlock(int blockno, char *buffer, int start, int end) {
 // --------------------------------------------------------------------------------
 //  -- write a (partial) block
 // --------------------------------------------------------------------------------
-int CpmFs::writeBlock(int blockno, const char *buffer, int start, int end) {
+int CpmFs::writeBlock(int blockno, char const *buffer, int start, int end) {
     int sect, track, counter;
 
     if (end < 0) {
         end = drive.blksiz / drive.secLength - 1;
     }
 
-    sect = (blockno * (drive.blksiz / drive.secLength)) % drive.sectrk;
-    track = (blockno * (drive.blksiz / drive.secLength)) / drive.sectrk + drive.boottrk;
+    sect = (blockno * (drive.blksiz / drive.secLength) + bootOffset()) % drive.sectrk;
+    track = (blockno * (drive.blksiz / drive.secLength) + bootOffset()) / drive.sectrk;
 
     for (counter = 0; counter <= end; ++counter) {
         if (counter >= start && (!cpmdevice->WriteSector(track, drive.skewtab[sect],
@@ -396,7 +405,7 @@ int CpmFs::writeBlock(int blockno, const char *buffer, int start, int end) {
 // --------------------------------------------------------------------------------
 //  -- find first/next extent for a file
 // --------------------------------------------------------------------------------
-int CpmFs::findFileExtent(int user, const char *name, const char *ext, int start,
+int CpmFs::findFileExtent(int user, char const *name, char const *ext, int start,
                           int extno) {
     fserr = "file already exists";
 
@@ -602,7 +611,7 @@ void CpmFs::readDsStamps(CpmInode_t *i, int lowestExt) {
 // --------------------------------------------------------------------------------
 //  -- match filename against a pattern
 // --------------------------------------------------------------------------------
-int CpmFs::recmatch(const char *a, const char *pattern) {
+int CpmFs::recmatch(char const *a, char const *pattern) {
     int first = 1;
 
     while (*pattern) {
@@ -656,7 +665,7 @@ int CpmFs::recmatch(const char *a, const char *pattern) {
 // --------------------------------------------------------------------------------
 //  -- match filename against a pattern
 // --------------------------------------------------------------------------------
-int CpmFs::match(const char *a, const char *pattern) {
+int CpmFs::match(char const *a, char const *pattern) {
     int user;
     char pat[257];
 
@@ -724,9 +733,20 @@ void CpmFs::glob(const char *argv, int *gargc, char ***gargv) {
 }
 
 // --------------------------------------------------------------------------------
+//  -- free expanded wildcards
+// --------------------------------------------------------------------------------
+void CpmFs::globfree(char **dirent, int entries) {
+    for (int d = 0; d < entries; ++d) {
+        free(dirent[d]);
+    }
+
+    free(dirent);
+}
+
+// --------------------------------------------------------------------------------
 //  -- read super block from diskdefs file
 // --------------------------------------------------------------------------------
-int CpmFs::diskdefReadSuper(const char *format) {
+int CpmFs::diskdefReadSuper(char const *format) {
     char line[256];
     int ln;
     FILE *fp;
@@ -767,11 +787,11 @@ int CpmFs::diskdefReadSuper(const char *format) {
         if (insideDef) {
             if (argc == 1 && strcmp(argv[0], "end") == 0) {
                 insideDef = 0;
-                drive.size = (drive.secLength * drive.sectrk *
-                              (drive.tracks - drive.boottrk)) / drive.blksiz;
+                drive.size = (drive.sectrk * drive.tracks - bootOffset()) * drive.secLength /
+                             drive.blksiz;
 
                 if (drive.extents == 0) {
-                    drive.extents = ((drive.size >= 256 ? 8 : 16) * drive.blksiz) / 16384;
+                    drive.extents = ((drive.size > 256 ? 8 : 16) * drive.blksiz) / 16384;
                 }
 
                 if (drive.extents == 0) {
@@ -802,6 +822,9 @@ int CpmFs::diskdefReadSuper(const char *format) {
                 }
                 else if (strcmp(argv[0], "maxdir") == 0) {
                     drive.maxdir = strtol(argv[1], (char **) 0, 0);
+                }
+                else if (strcmp(argv[0], "dirblks") == 0) {
+                    drive.dirblks = strtol(argv[1], (char **) 0, 0);
                 }
                 else if (strcmp(argv[0], "skew") == 0) {
                     drive.skew = strtol(argv[1], (char **) 0, 0);
@@ -842,6 +865,9 @@ int CpmFs::diskdefReadSuper(const char *format) {
                 }
                 else if (strcmp(argv[0], "boottrk") == 0) {
                     drive.boottrk = strtol(argv[1], (char **) 0, 0);
+                }
+                else if (strcmp(argv[0], "bootsec") == 0) {
+                    drive.bootsec = strtol(argv[1], (char **) 0, 0);
                 }
                 else if (strcmp(argv[0], "offset") == 0) {
                     off_t val;
@@ -945,7 +971,9 @@ int CpmFs::diskdefReadSuper(const char *format) {
             drive.type = CPMFS_DR22;
             drive.skewtab = (int *) 0;
             drive.offset = 0;
-            drive.blksiz = drive.boottrk = drive.secLength = drive.sectrk = drive.tracks = -1;
+            drive.blksiz = drive.boottrk = drive.bootsec = drive.secLength = drive.sectrk =
+                                               drive.tracks = drive.maxdir = -1;
+            drive.dirblks = 0;
 
             if (strcmp(argv[1], format) == 0) {
                 found = 1;
@@ -962,8 +990,8 @@ int CpmFs::diskdefReadSuper(const char *format) {
         return (1);
     }
 
-    if (drive.boottrk < 0) {
-        fserr = "boottrk parameter invalid or missing from diskdef";
+    if (drive.boottrk < 0 && drive.bootsec < 0) {
+        fserr = "boottrk/bootsec parameter invalid or missing from diskdef";
         return (1);
     }
 
@@ -987,18 +1015,24 @@ int CpmFs::diskdefReadSuper(const char *format) {
         return (1);
     }
 
+    if (drive.maxdir < 0) {
+        fserr = "maxdir parameter invalid or missing from diskdef";
+        return (1);
+    }
+
     return (0);
 }
 
 // --------------------------------------------------------------------------------
 //  -- read super block from amstrad disk
 // --------------------------------------------------------------------------------
-int CpmFs::amsReadSuper(const char *format) {
+int CpmFs::amsReadSuper(char const *format) {
     unsigned char boot_sector[512], *boot_spec;
     cpmdevice->SetGeometry(512, 9, 40, 0);
 
     if (cpmdevice->ReadSector(0, 0, (char *) boot_sector)) {
-        fserr = msgFormat("Failed to read Amstrad superblock  (%s)", cpmdevice->getErrorMsg().c_str());
+        fserr = msgFormat("Failed to read Amstrad superblock  (%s)",
+                          cpmdevice->getErrorMsg().c_str());
         return (1);
     }
 
@@ -1040,13 +1074,14 @@ int CpmFs::amsReadSuper(const char *format) {
     drive.sectrk = boot_spec[3];
     drive.blksiz = 128 << boot_spec[6];
     drive.maxdir = (drive.blksiz / 32) * boot_spec[7];
+    drive.dirblks = 0;
     drive.skew = 1; /* Amstrads skew at the controller level */
     drive.skewtab = (int *) 0;
     drive.boottrk = boot_spec[5];
     drive.offset = 0;
     drive.size = (drive.secLength * drive.sectrk * (drive.tracks - drive.boottrk)) /
                  drive.blksiz;
-    drive.extents = ((drive.size >= 256 ? 8 : 16) * drive.blksiz) / 16384;
+    drive.extents = ((drive.size > 256 ? 8 : 16) * drive.blksiz) / 16384;
     return (0);
 }
 
@@ -1124,7 +1159,15 @@ int CpmFs::readDiskdefData(const char *format) {
 // --------------------------------------------------------------------------------
 //  -- init in-core data for drive
 // --------------------------------------------------------------------------------
-int CpmFs::initDriveData() {
+int CpmFs::initDriveData(int uppercase) {
+
+    drive.uppercase = uppercase;
+
+    if (drive.dirblks == 0) {
+        /* optional field, compute based on directory size */
+        drive.dirblks = (drive.maxdir * 32 + (drive.blksiz - 1)) / drive.blksiz;
+    }
+
     cpmdevice->SetGeometry(drive.secLength, drive.sectrk, drive.tracks, drive.offset);
 
     if (drive.skewtab == (int *) 0) { /* generate skew table */
@@ -1155,8 +1198,8 @@ int CpmFs::initDriveData() {
 
     /* initialise allocation vector bitmap */
     {
-        drive.alvSize = ((drive.secLength * drive.sectrk *
-                          (drive.tracks - drive.boottrk)) / drive.blksiz + INTBITS - 1) / INTBITS;
+        drive.alvSize = ((((drive.sectrk * drive.tracks) - bootOffset()) * drive.secLength) /
+                         drive.blksiz + INTBITS - 1) / INTBITS;
 
         if ((drive.alv = (int *) malloc(drive.alvSize * sizeof(int))) == (int *) 0) {
             fserr = strerror(errno);
@@ -1365,8 +1408,9 @@ int CpmFs::sync() {
 // --------------------------------------------------------------------------------
 //  -- free actual drive
 // --------------------------------------------------------------------------------
-void CpmFs::unmount() {
-    sync();
+int CpmFs::unmount() {
+
+    int errSync = sync();
 
     if (drive.type & CPMFS_DS_DATES) {
         free(drive.ds);
@@ -1389,12 +1433,18 @@ void CpmFs::unmount() {
         free(drive.label);
         drive.label = nullptr;
     }
+
+    if (errSync == -1) {
+        return (errSync);
+    }
+
+    return (0);
 }
 
 // --------------------------------------------------------------------------------
 //  -- map name to inode
 // --------------------------------------------------------------------------------
-int CpmFs::namei(const char *filename, CpmInode_t *i) {
+int CpmFs::namei(char const *filename, CpmInode_t *i) {
     int user;
     char name[8], extension[3];
     int highestExtno, highestExt = -1, lowestExtno, lowestExt = -1;
@@ -1462,7 +1512,7 @@ int CpmFs::namei(const char *filename, CpmInode_t *i) {
         int block;
         i->size = highestExtno * 16384;
 
-        if (drive.size < 256) for (block = 15; block >= 0; --block) {
+        if (drive.size <= 256) for (block = 15; block >= 0; --block) {
                 if (drive.dir[highestExt].pointers[block]) {
                     break;
                 }
@@ -1558,7 +1608,7 @@ void CpmFs::statFs(CpmStatFS_t *buf) {
     buf->f_bsize = drive.blksiz;
     buf->f_blocks = drive.size;
     buf->f_bfree = 0;
-    buf->f_bused = -(drive.maxdir * 32 + drive.blksiz - 1) / drive.blksiz;
+    buf->f_bused = -(drive.dirblks);
 
     for (i = 0; i < drive.alvSize; ++i) {
         int temp, j;
@@ -1594,7 +1644,7 @@ void CpmFs::statFs(CpmStatFS_t *buf) {
 // --------------------------------------------------------------------------------
 //  -- unlink
 // --------------------------------------------------------------------------------
-int CpmFs::unlink(const char *fname) {
+int CpmFs::unlink(char const *fname) {
     int user;
     char name[8], extension[3];
     int extent;
@@ -1626,7 +1676,7 @@ int CpmFs::unlink(const char *fname) {
 // --------------------------------------------------------------------------------
 //  -- rename
 // --------------------------------------------------------------------------------
-int CpmFs::rename(const char *oldn, const char *newn) {
+int CpmFs::rename(char const *oldn, char const *newn) {
     int extent;
     int olduser;
     char oldname[8], oldext[3];
@@ -1756,7 +1806,7 @@ int CpmFs::cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent) {
                     buf[1] = '0' + cur->status % 10;
 
                     for (bufp = buf + 2, i = 0; i < 8 && (cur->name[i] & 0x7f) != ' '; ++i) {
-                        *bufp++ = tolower(cur->name[i] & 0x7f);
+                        *bufp++ = (drive.uppercase ? (cur->name[i] & 0x7f) : (tolower(cur->name[i] & 0x7f)));
                     }
 
                     for (hasext = 0, i = 0; i < 3 && (cur->ext[i] & 0x7f) != ' '; ++i) {
@@ -1765,7 +1815,7 @@ int CpmFs::cpmReaddir(CpmFile_t *dir, CpmDirent_t *ent) {
                             hasext = 1;
                         }
 
-                        *bufp++ = tolower(cur->ext[i] & 0x7f);
+                        *bufp++ = (drive.uppercase ? (cur->ext[i] & 0x7f) : (tolower(cur->ext[i] & 0x7f)));
                     }
 
                     *bufp = '\0';
@@ -1821,19 +1871,19 @@ int CpmFs::open(CpmInode_t *ino, CpmFile_t *file, mode_t mode) {
 // --------------------------------------------------------------------------------
 //  -- read a file from CP/M filesystem
 // --------------------------------------------------------------------------------
-int CpmFs::read(CpmFile_t *file, char *buf, int count) {
+ssize_t CpmFs::read(CpmFile_t *file, char *buf, size_t count) {
     int findext = 1, findblock = 1, extent = -1, block = -1,
         extentno = -1, got = 0, nextblockpos = -1, nextextpos = -1;
     int blocksize = drive.blksiz;
     int extcap;
-    extcap = (drive.size < 256 ? 16 : 8) * blocksize;
+    extcap = (drive.size <= 256 ? 16 : 8) * blocksize;
 
     if (extcap > 16384) {
         extcap = 16384 * drive.extents;
     }
 
     if (file->ino->ino == (ino_t) drive.maxdir + 1) { /* [passwd] */
-        if ((file->pos + count) > file->ino->size) {
+        if ((file->pos + (off_t)count) > file->ino->size) {
             count = file->ino->size - file->pos;
         }
 
@@ -1845,7 +1895,7 @@ int CpmFs::read(CpmFile_t *file, char *buf, int count) {
         return (count);
     }
     else if (file->ino->ino == (ino_t) drive.maxdir + 2) { /* [label] */
-        if ((file->pos + count) > file->ino->size) {
+        if ((file->pos + (off_t)count) > file->ino->size) {
             count = file->ino->size - file->pos;
         }
 
@@ -1871,16 +1921,16 @@ int CpmFs::read(CpmFile_t *file, char *buf, int count) {
 
             if (findblock) {
                 if (extent != -1) {
-                    int start, end, ptr;
+                    int ptr;
                     ptr = (file->pos % extcap) / blocksize;
 
-                    if (drive.size >= 256) {
+                    if (drive.size > 256) {
                         ptr *= 2;
                     }
 
                     block = (unsigned char) drive.dir[extent].pointers[ptr];
 
-                    if (drive.size >= 256) {
+                    if (drive.size > 256) {
                         block += ((unsigned char) drive.dir[extent].pointers[ptr + 1]) << 8;
                     }
 
@@ -1888,10 +1938,20 @@ int CpmFs::read(CpmFile_t *file, char *buf, int count) {
                         memset(buffer, 0, blocksize);
                     }
                     else {
+                        int start, end;
                         start = (file->pos % blocksize) / drive.secLength;
-                        end = ((file->pos % blocksize + count) >
-                               blocksize ? blocksize - 1 : (file->pos % blocksize + count - 1)) /
-                              drive.secLength;
+                        end = ((file->pos % blocksize + (off_t)count) > blocksize ? blocksize - 1 : (int)(
+                                   file->pos % blocksize + count - 1)) / drive.secLength;
+
+                        if (block < drive.dirblks) {
+                            fserr = "Attempting to access block before beginning of data";
+
+                            if (got == 0) {
+                                got = -1;
+                            }
+
+                            break;
+                        }
 
                         if (readBlock(block, buffer, start, end) == -1) {
                             if (got == 0) {
@@ -1933,13 +1993,17 @@ int CpmFs::read(CpmFile_t *file, char *buf, int count) {
 // --------------------------------------------------------------------------------
 //  -- write a file to CP/M filesystem
 // --------------------------------------------------------------------------------
-int CpmFs::write(CpmFile_t *file, const char *buf, int count) {
+ssize_t CpmFs::write(CpmFile_t *file, char const *buf, size_t count) {
     int findext = 1, findblock = -1, extent = -1, extentno = -1, got = 0, nextblockpos = -1,
         nextextpos = -1;
     int blocksize = drive.blksiz;
-    int extcap = (drive.size < 256 ? 16 : 8) * blocksize;
     int block = -1, start = -1, end = -1, ptr = -1, last = -1;
     char buffer[16384];
+    int extcap = (drive.size <= 256 ? 16 : 8) * blocksize;
+
+    if (extcap > 16384) {
+        extcap = (16384 * drive.extents);
+    }
 
     while (count > 0) {
         if (findext) {
@@ -1972,13 +2036,13 @@ int CpmFs::write(CpmFile_t *file, const char *buf, int count) {
         if (findblock) {
             ptr = (file->pos % extcap) / blocksize;
 
-            if (drive.size >= 256) {
+            if (drive.size > 256) {
                 ptr *= 2;
             }
 
             block = (unsigned char) drive.dir[extent].pointers[ptr];
 
-            if (drive.size >= 256) {
+            if (drive.size > 256) {
                 block += ((unsigned char) drive.dir[extent].pointers[ptr + 1]) << 8;
             }
 
@@ -1989,7 +2053,7 @@ int CpmFs::write(CpmFile_t *file, const char *buf, int count) {
 
                 drive.dir[extent].pointers[ptr] = block & 0xff;
 
-                if (drive.size >= 256) {
+                if (drive.size > 256) {
                     drive.dir[extent].pointers[ptr + 1] = (block >> 8) & 0xff;
                 }
 
@@ -2007,9 +2071,8 @@ int CpmFs::write(CpmFile_t *file, const char *buf, int count) {
             }
             else { /* read existing block and set start/end to cover modified parts */
                 start = (file->pos % blocksize) / drive.secLength;
-                end = ((file->pos % blocksize + count) >=
-                       blocksize ? blocksize - 1 : (file->pos % blocksize + count - 1)) /
-                      drive.secLength;
+                end = ((int)(file->pos % blocksize + count) >= blocksize ? blocksize - 1 : (int)(
+                           file->pos % blocksize + count - 1)) / drive.secLength;
 
                 if (file->pos % drive.secLength) {
                     if (readBlock(block, buffer, start, start) == -1) {
@@ -2021,8 +2084,8 @@ int CpmFs::write(CpmFile_t *file, const char *buf, int count) {
                     }
                 }
 
-                if (end != start && file->pos % blocksize + count < blocksize &&
-                        (file->pos + count) % drive.secLength) {
+                if (end != start && (int)(file->pos % blocksize + count) < blocksize
+                        && (file->pos + count) % drive.secLength) {
 
                     if (readBlock(block, buffer, end, end) == -1) {
                         if (got == 0) {
@@ -2060,7 +2123,7 @@ int CpmFs::write(CpmFile_t *file, const char *buf, int count) {
         writeBlock(block, buffer, start, end);
         time(&file->ino->mtime);
 
-        if (drive.size < 256) for (last = 15; last >= 0; --last) {
+        if (drive.size <= 256) for (last = 15; last >= 0; --last) {
                 if (drive.dir[extent].pointers[last]) {
                     break;
                 }
@@ -2112,7 +2175,7 @@ int CpmFs::close(CpmFile_t *file) {
 // --------------------------------------------------------------------------------
 //  -- creat new CP/M file
 // --------------------------------------------------------------------------------
-int CpmFs::create(CpmInode_t *dir, const char *fname, CpmInode_t *ino, mode_t mode) {
+int CpmFs::create(CpmInode_t *dir, char const *fname, CpmInode_t *ino, mode_t mode) {
     int user;
     char name[8], extension[3];
     int extent;
@@ -2282,8 +2345,8 @@ void CpmFs::utime(CpmInode_t *ino, utimbuf *times) {
 // --------------------------------------------------------------------------------
 //  -- create new empty binary Image-File
 // --------------------------------------------------------------------------------
-int CpmFs::mkfs(const char *filename, const char *format, const char *label,
-                char *bootTracks, int timeStamps) {
+int CpmFs::mkfs(char const *filename, char const *format, char const *label,
+                char *bootTracks, int timeStamps, int uppercase) {
     unsigned int i;
     char buf[128];
     char firstbuf[128];
@@ -2409,7 +2472,7 @@ int CpmFs::mkfs(const char *filename, const char *format, const char *label,
             return (-1);
         }
 
-        initDriveData();
+        initDriveData(uppercase);
         records = drive.maxdir / 8;
 
         if (!(ds = (CpmFs::DsDate_t *) malloc(records * 128))) {
