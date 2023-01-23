@@ -55,9 +55,9 @@ void FileCopySettingsDialog::correctDialogSize() {
     int height = this->GetBestSize().GetHeight();
     wxSize size;
     size.x = config->ReadLong("/CopySettingsDialog/SizeX", width);
-    size.y = config->ReadLong("/CopySettingsDialog/SizeY", (height * 1.5));
-    this->SetSize(size);
-    this->SetMinSize(wxSize(width, (height * 1.5)));
+    size.y = config->ReadLong("/CopySettingsDialog/SizeY", height);
+    this->SetMinSize(size);
+    this->SetMaxSize(size);
     wxPoint point;
     point.x = config->ReadLong("/CopySettingsDialog/PosX", 10);
     point.y = config->ReadLong("/CopySettingsDialog/PosY", 10);
