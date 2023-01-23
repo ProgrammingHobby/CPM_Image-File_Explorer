@@ -36,7 +36,7 @@ class CreateFileDialog : public Ui_CreateFileDialog {
         wxString getImageFileName();
 
     public:     // Constructor & Destructor
-        CreateFileDialog(wxWindow *parent, CpmFs *fs, CpmTools *tools,
+        CreateFileDialog(wxWindow *parent, wxConfigBase *cnf, CpmFs *fs, CpmTools *tools,
                          bool isNewFile);
         virtual ~CreateFileDialog();
 
@@ -46,6 +46,7 @@ class CreateFileDialog : public Ui_CreateFileDialog {
         void onButtonOkClicked(wxCommandEvent &event);
 
     private:    // Attributes
+        wxConfigBase *config;
         CpmFs *cpmfs;
         CpmTools *cpmtools;
         wxString defaultPath;
@@ -53,6 +54,7 @@ class CreateFileDialog : public Ui_CreateFileDialog {
         wxFileName imageFile;
 
     private:    // Methods
+        void correctDialogSize();
 
         DECLARE_EVENT_TABLE()
 };

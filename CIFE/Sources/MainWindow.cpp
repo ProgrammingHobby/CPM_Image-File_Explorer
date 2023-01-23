@@ -273,7 +273,7 @@ void MainWindow::onImageFileClose(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onImageFileNew(wxCommandEvent &event) {
     WXUNUSED(event)
-    CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs, cpmtools, true);
+    CreateFileDialog *dialog = new CreateFileDialog(this, config, cpmfs, cpmtools, true);
     dialog->setDefaultPath(imageshistory->getHistoryImageFile(0));
 
     if (dialog->ShowModal() == wxID_OK) {
@@ -542,7 +542,7 @@ void MainWindow::onRename(wxCommandEvent &event) {
 // --------------------------------------------------------------------------------
 void MainWindow::onCreateNew(wxCommandEvent &event) {
     WXUNUSED(event)
-    CreateFileDialog *dialog = new CreateFileDialog(this, cpmfs, cpmtools, false);
+    CreateFileDialog *dialog = new CreateFileDialog(this, config, cpmfs, cpmtools, false);
     dialog->setDefaultPath(imageFile.GetFullPath());
 
     if (dialog->ShowModal() == wxID_OK) {

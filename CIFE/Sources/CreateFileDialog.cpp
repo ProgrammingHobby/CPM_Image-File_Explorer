@@ -15,10 +15,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-//TODO: Speichern der Dialogposition implementieren.
-//TODO: Bootimage Browse-Button Position korrigieren.
-//TODO: Dialog crasht sporadisch.
-
 #include "CreateFileDialog.hpp"
 #include "CpmTools.hpp"
 #include "FileDialogImageTypesPanel.hpp"
@@ -34,8 +30,9 @@ BEGIN_EVENT_TABLE(CreateFileDialog, wxDialog)
     EVT_BUTTON(wxID_OK, CreateFileDialog::onButtonOkClicked)
 END_EVENT_TABLE()
 // --------------------------------------------------------------------------------
-CreateFileDialog::CreateFileDialog(wxWindow *parent, CpmFs *fs, CpmTools *tools,
-                                   bool isNewFile) : Ui_CreateFileDialog(parent) {
+CreateFileDialog::CreateFileDialog(wxWindow *parent, wxConfigBase *cnf, CpmFs *fs,
+                                   CpmTools *tools, bool isNewFile) : Ui_CreateFileDialog(parent) {
+    config = cnf;
     cpmfs = fs;
     cpmtools = tools;
     wxScreenDC dc;
@@ -43,7 +40,7 @@ CreateFileDialog::CreateFileDialog(wxWindow *parent, CpmFs *fs, CpmTools *tools,
     wxString tempString = "#" + buttonImageFile->GetLabel() + "#";
     wxCoord width, height;
     dc.GetTextExtent(tempString, &width, &height);
-    height=editImageFile->GetSize().GetY();
+    height = editImageFile->GetSize().GetY();
     buttonBootTrackFile->SetMinSize(wxSize(width, height));
     buttonBootTrackFile->SetMaxSize(wxSize(width, height));
     buttonImageFile->SetMinSize(wxSize(width, height));
@@ -72,15 +69,30 @@ CreateFileDialog::CreateFileDialog(wxWindow *parent, CpmFs *fs, CpmTools *tools,
         buttonOk->Enable(!editImageType->IsEmpty() && imageFile.IsOk());
     }
 
-    width = this->GetBestSize().GetWidth();
-    height = this->GetBestSize().GetHeight();
-    this->SetMinSize(wxSize(width, height));
-    this->SetMaxSize(wxSize(width, height));
-    this->SetFocus();
+    correctDialogSize();
 }
 
 // --------------------------------------------------------------------------------
 CreateFileDialog::~CreateFileDialog() {
+    config->Write("/CreateFileDialog/PosX", this->GetPosition().x);
+    config->Write("/CreateFileDialog/PosY", this->GetPosition().y);
+    config->Write("/CreateFileDialog/SizeX", this->GetSize().x);
+    config->Write("/CreateFileDialog/SizeY", this->GetSize().y);
+}
+
+// --------------------------------------------------------------------------------
+void CreateFileDialog::correctDialogSize()  {
+    int width = this->GetBestSize().GetWidth();
+    int height = this->GetBestSize().GetHeight();
+    wxSize size;
+    size.x = config->ReadLong("/CreateFileDialog/SizeX", width);
+    size.y = config->ReadLong("/CreateFileDialog/SizeY", height);
+    this->SetMinSize(size);
+    this->SetMaxSize(size);
+    wxPoint point;
+    point.x = config->ReadLong("/CreateFileDialog/PosX", 10);
+    point.y = config->ReadLong("/CreateFileDialog/PosY", 10);
+    this->SetPosition(point);
 }
 
 // --------------------------------------------------------------------------------
