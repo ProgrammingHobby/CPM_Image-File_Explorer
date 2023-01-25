@@ -187,8 +187,10 @@ void CreateFileDialog::onButtonBootFileClicked(wxCommandEvent &event) {
 
 // --------------------------------------------------------------------------------
 void CreateFileDialog::onButtonOkClicked(wxCommandEvent &event) {
+    bool useUppercase;
+    config->Read("/CpmFilesystem/UseUppercaseCharacters", &useUppercase, false);
     cpmtools->createNewImage(imageFile.GetFullPath(), editFileSystemLabel->GetValue(),
-                             checkboxUseTimeStamps->GetValue(), editBootTrackFile->GetValue());
+                             checkboxUseTimeStamps->GetValue(), useUppercase, editBootTrackFile->GetValue());
     wxDialog::EndModal(wxID_OK);
 }
 // --------------------------------------------------------------------------------

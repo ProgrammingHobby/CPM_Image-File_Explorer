@@ -33,7 +33,7 @@ class CpmTools {
     public:     // Methods
         bool setImageType(wxString typeName);
         wxString getActualImageType();
-        bool openImage(wxString fileName);
+        bool openImage(wxString fileName, bool useUppercase);
         wxString getActualFileName();
         bool closeImage();
         void showDirectory();
@@ -42,6 +42,7 @@ class CpmTools {
         void setFileAttributes(wxString name, int attributes);
         void setFileProtections(wxString name, int protections);
         void createNewImage(wxString imageFile, wxString label, bool useTimeStamps,
+                            bool useUppercase,
                             wxString bootTrackFile);
         void checkImage(bool doRepair);
         void writeFileToImage(wxString filename, int userNumber, bool isTextFile,

@@ -52,7 +52,7 @@ wxString CpmTools::getActualImageType() {
 }
 
 // --------------------------------------------------------------------------------
-bool CpmTools::openImage(wxString fileName) {
+bool CpmTools::openImage(wxString fileName, bool useUppercase) {
     imageFileName = fileName;
     wxString image = fileName.substr(fileName.find_last_of("/\\") + 1);
 
@@ -62,7 +62,7 @@ bool CpmTools::openImage(wxString fileName) {
         return (false);
     }
     else {
-        if (cpmfs->initDriveData(1) == -1) {
+        if (cpmfs->initDriveData(useUppercase) == -1) {
             guiintf->printMsg(wxString::Format("cannot init filesystem  (%s)\n",
                                                cpmfs->getErrorMsg()));
             return (false);
@@ -271,6 +271,7 @@ void CpmTools::setFileProtections(wxString name, int protections) {
 
 // --------------------------------------------------------------------------------
 void CpmTools::createNewImage(wxString imageFile, wxString label, bool useTimeStamps,
+                              bool useUppercase,
                               wxString bootTrackFile) {
     char *bootTracks;
     cmd = "cpm.mkfs";
@@ -316,7 +317,7 @@ void CpmTools::createNewImage(wxString imageFile, wxString label, bool useTimeSt
     }
 
     if (cpmfs->mkfs(imageFile.c_str(), imageTypeName.c_str(), label.c_str(), bootTracks,
-                    (useTimeStamps ? 1 : 0), 1) == -1) {
+                    (useTimeStamps ? 1 : 0), useUppercase) == -1) {
         guiintf->printMsg(wxString::Format("%s: can not make new file system  (%s)\n", cmd,
                                            cpmfs->getErrorMsg()), CpmGuiInterface::msgColRed);
         return;
@@ -1074,10 +1075,12 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
         stat(unixfilename, &st);
         snprintf(cpmname, sizeof(cpmname), "%02d%s", getUserNumber(cpmfilename),
                  strchr(cpmfilename, ':') + 1);
-        translate=cpmname;
-        while((translate=strchr(translate,','))) {
-            *translate='/';
+        translate = cpmname;
+
+        while ((translate = strchr(translate, ','))) {
+            *translate = '/';
         }
+
         if (cpmfs->create(&cpmfs->getDirectoryRoot(), cpmname, &ino, 0666) == -1) {
             guiintf->printMsg(wxString::Format("%s: can not create %s  (%s)\n", cmd, cpmfilename,
                                                cpmfs->getErrorMsg()));
@@ -1127,8 +1130,9 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
             }
         }
 
-        if(fclose(ufp)==EOF) {
-            guiintf->printMsg(wxString::Format("%s: can not close %s  (%s)\n", cmd, cpmfilename,strerror(errno)));
+        if (fclose(ufp) == EOF) {
+            guiintf->printMsg(wxString::Format("%s: can not close %s  (%s)\n", cmd, cpmfilename,
+                                               strerror(errno)));
             exitcode = 1;
         }
     }

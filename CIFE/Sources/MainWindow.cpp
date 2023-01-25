@@ -28,6 +28,7 @@
 #include "ImagesHistory.hpp"
 #include "diskdefs.hpp"
 #include "FileDialogImageTypesPanel.hpp"
+#include "GeneralSettingsDialog.hpp"
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/filedlg.h>
@@ -52,6 +53,7 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CREATE_NEW, MainWindow::onCreateNew)
     EVT_MENU(wxID_CHECK_IMAGE, MainWindow::onCheckImage)
     EVT_MENU(wxID_COPY_SETTINGS, MainWindow::onCopySettings)
+    EVT_MENU(wxID_GENERAL_SETTINGS, MainWindow::onGeneralSettings)
     EVT_MENU(wxID_PASTE, MainWindow::onPasteFile)
     EVT_MENU(wxID_CLEAR_HISTORY, MainWindow::onClearHistory)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onClearMessages)
@@ -94,10 +96,15 @@ MainWindow::MainWindow(wxWindow *parent, wxString appPath) : Ui_MainWindow(paren
     createPopupMenu();
     listImageContents->enableSizing(true);
     correctWindowSize();
-    imageFile = imageshistory->getHistoryImageFile(0);
+    bool loadLastImage;
+    config->Read("/General/OpenLastImageOnRestart", &loadLastImage, false);
 
-    if (imageFile.FileExists()) {
-        loadImageFromHistory(0);
+    if (loadLastImage) {
+        imageFile = imageshistory->getHistoryImageFile(0);
+
+        if (imageFile.FileExists()) {
+            loadImageFromHistory(0);
+        }
     }
 
     if (listImageContents->GetItemCount() > 0) {
@@ -236,7 +243,11 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
                     menuRecentFiles->Enable(wxID_CLEAR_HISTORY, true);
                 }
 
-                if (cpmtools->setImageType(imageType) && cpmtools->openImage(imageFile.GetFullPath())) {
+                bool useUppercase;
+                config->Read("/CpmFilesystem/UseUppercaseCharacters", &useUppercase, false);
+
+                if (cpmtools->setImageType(imageType)
+                        && cpmtools->openImage(imageFile.GetFullPath(), useUppercase)) {
                     isImageLoaded = true;
                     showDirectory();
                 }
@@ -278,8 +289,10 @@ void MainWindow::onImageFileNew(wxCommandEvent &event) {
 
     if (dialog->ShowModal() == wxID_OK) {
         wxString fileName = dialog->getImageFileName();
+        bool useUppercase;
+        config->Read("/CpmFilesystem/UseUppercaseCharacters", &useUppercase, false);
 
-        if (cpmtools->openImage(fileName)) {
+        if (cpmtools->openImage(fileName, useUppercase)) {
             wxString imageType = dialog->getImageType();
             imageshistory->addItem(fileName, imageType);
             editImageFile->SetValue(fileName);
@@ -546,7 +559,9 @@ void MainWindow::onCreateNew(wxCommandEvent &event) {
     dialog->setDefaultPath(imageFile.GetFullPath());
 
     if (dialog->ShowModal() == wxID_OK) {
-        cpmtools->openImage(editImageFile->GetValue());
+        bool useUppercase;
+        config->Read("/CpmFilesystem/UseUppercaseCharacters", &useUppercase, false);
+        cpmtools->openImage(editImageFile->GetValue(), useUppercase);
         showDirectory();
     }
 
@@ -579,6 +594,23 @@ void MainWindow::onCopySettings(wxCommandEvent &event) {
     dialog->ShowModal();
     wxDELETE(dialog);
 }
+
+// --------------------------------------------------------------------------------
+void MainWindow::onGeneralSettings(wxCommandEvent &event) {
+    WXUNUSED(event)
+    bool oldUppercase, newUppercase;
+    config->Read("/CpmFilesystem/UseUppercaseCharacters", &oldUppercase, false);
+    GeneralSettingsDialog *dialog = new GeneralSettingsDialog(this, config);
+    dialog->ShowModal();
+    wxDELETE(dialog);
+    config->Read("/CpmFilesystem/UseUppercaseCharacters", &newUppercase, false);
+
+    if (oldUppercase != newUppercase) {
+        cpmfs->initDriveData(newUppercase);
+        showDirectory();
+    }
+}
+
 
 // --------------------------------------------------------------------------------
 void MainWindow::onPasteFile(wxCommandEvent &event) {
@@ -666,7 +698,9 @@ void MainWindow::loadImageFromHistory(int historyId) {
         editImageFile->SetInsertionPoint(imageFile.GetFullPath().length());
         editImageType->SetValue(imageType);
         cpmtools->setImageType(imageType);
-        cpmtools->openImage(imageFile.GetFullPath());
+        bool useUppercase;
+        config->Read("/CpmFilesystem/UseUppercaseCharacters", &useUppercase, false);
+        cpmtools->openImage(imageFile.GetFullPath(), useUppercase);
         isImageLoaded = true;
         showDirectory();
     }
