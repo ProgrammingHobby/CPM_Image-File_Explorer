@@ -20,6 +20,6 @@ Unter Ubuntu können die Voraussetzungen in der Console mit folgender Zeile inst
 
 sudo apt install build-essential libwxgtk3.0-gtk3-dev
 
-Dann die Sourcen von CIFE von Github herunterladen und in den Stammordner in welchem sich das GNUmakefile befindet wechseln.
+Dann die Sourcen für CIFE von Github herunterladen und in den Stammordner in welchem sich das GNUmakefile befindet wechseln.
 
 Dort reicht dann in der Console ein einfaches  make  um CIFE zu kompilieren.
