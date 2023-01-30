@@ -32,6 +32,7 @@
 // --------------------------------------------------------------------------------
 #include <wx/aboutdlg.h>
 #include <wx/filedlg.h>
+#include <wx/dirdlg.h>
 #include <wx/stdpaths.h>
 #include <wx/msgdlg.h>
 #include <wx/clipbrd.h>
@@ -54,6 +55,8 @@ BEGIN_EVENT_TABLE(MainWindow, wxFrame)
     EVT_MENU(wxID_CHECK_IMAGE, MainWindow::onCheckImage)
     EVT_MENU(wxID_COPY_SETTINGS, MainWindow::onCopySettings)
     EVT_MENU(wxID_GENERAL_SETTINGS, MainWindow::onGeneralSettings)
+    EVT_MENU(wxID_CUT, MainWindow::onCutCopyFile)
+    EVT_MENU(wxID_COPY, MainWindow::onCutCopyFile)
     EVT_MENU(wxID_PASTE, MainWindow::onPasteFile)
     EVT_MENU(wxID_CLEAR_HISTORY, MainWindow::onClearHistory)
     EVT_BUTTON(wxID_BUTTON_CLEAR_MESSAGES, MainWindow::onClearMessages)
@@ -611,6 +614,54 @@ void MainWindow::onGeneralSettings(wxCommandEvent &event) {
     }
 }
 
+// --------------------------------------------------------------------------------
+void MainWindow::onCutCopyFile(wxCommandEvent &event) {
+    WXUNUSED(event)
+    wxString dialogPath;
+
+    if (imageFile.IsOk()) {
+        dialogPath = imageFile.GetPath();
+    }
+    else {
+        dialogPath = wxStandardPaths::Get().GetDocumentsDir();
+    }
+
+    wxDirDialog dirDialog(this, "Select Directory to copy file(s)", dialogPath,
+                          wxDD_DEFAULT_STYLE | wxDD_CHANGE_DIR);
+
+    if (dirDialog.ShowModal() == wxID_OK) {
+        wxString textFileEndings;
+        config->Read("/CpmOptions/TextfileEndings", &textFileEndings, "txt pip pas");
+        bool keepLastUpdatedTimestamp;
+        config->Read("/CpmOptions/KeepLastUpdatedTimestamp", &keepLastUpdatedTimestamp, false);
+        long index = listImageContents->GetFirstSelected();
+        wxArrayString files;
+
+        while (index != -1) {
+            wxString file = listImageContents->GetItemText(index, 0);
+            file.Replace(" ", "");
+            files.push_back(file);
+            index = listImageContents->GetNextSelected(index);
+        }
+
+        for (size_t i = 0; i < files.Count(); i++) {
+            wxString file = files[i];
+            int usernamedividerpos = file.Find(":");
+            int userNumber = wxAtoi(file.SubString(0, usernamedividerpos - 1));
+            wxFileName fileName(file.Mid(usernamedividerpos + 1));
+            bool isTextFile = textFileEndings.Matches("*" + fileName.GetExt() + "*");
+            cpmtools->readFileFromImage(fileName.GetFullName(), dirDialog.GetPath(), userNumber,
+                                        isTextFile, keepLastUpdatedTimestamp);
+            index = listImageContents->GetNextSelected(index);
+        }
+
+        if (event.GetId() == wxID_CUT) {
+            cpmtools->deleteFile(files);
+        }
+
+        showDirectory();
+    }
+}
 
 // --------------------------------------------------------------------------------
 void MainWindow::onPasteFile(wxCommandEvent &event) {

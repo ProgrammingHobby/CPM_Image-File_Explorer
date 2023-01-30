@@ -53,6 +53,7 @@ class MainWindow : public Ui_MainWindow {
         void onCheckImage(wxCommandEvent &event);
         void onCopySettings(wxCommandEvent &event);
         void onGeneralSettings(wxCommandEvent &event);
+        void onCutCopyFile(wxCommandEvent &event);
         void onPasteFile(wxCommandEvent &event);
         void onClearHistory(wxCommandEvent &event);
         void onSelectHistoryEntry(wxCommandEvent &event);
