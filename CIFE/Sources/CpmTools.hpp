@@ -47,6 +47,8 @@ class CpmTools {
         void checkImage(bool doRepair);
         void writeFileToImage(wxString filename, int userNumber, bool isTextFile,
                               bool preserveTimeStamps);
+        void readFileFromImage(wxString fileName, wxString filePath, int userNumber,
+                               bool isTextFile, bool preserveTimeStamps);
 
     public:     // Constructor & Destructor
         CpmTools(CpmDevice *device, CpmFs *fs, CpmGuiInterface *intf, wxString appPath);
@@ -79,6 +81,7 @@ class CpmTools {
         char *prfile(int extent);
         int fsck(const char *image, bool repair);
         int unix2cpm(const char *unixfilename, const char *cpmfilename, bool text, bool preserve);
+        int cpm2unix(const char *unixfilename, const char *cpmfilename, bool text, bool preserve);
 
 };
 
