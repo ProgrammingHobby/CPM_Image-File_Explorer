@@ -735,7 +735,9 @@ void MainWindow::loadImageFromHistory(int historyId) {
         return;
     }
 
-    imageshistory->addItem(imageFile.GetFullPath(), imageType);
+    if (historyId > 0) {
+        imageshistory->addItem(imageFile.GetFullPath(), imageType);
+    }
 
     if (isImageLoaded) {
         cpmtools->closeImage();
