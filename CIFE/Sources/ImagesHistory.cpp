@@ -47,7 +47,7 @@ void ImagesHistory::addItem(wxString file, wxString type) {
 
     // check if the given Image is already in History
     for (int i = 0; i < itemsCount; i++) {
-        if (file == m_ImageFiles[i]) {
+        if ((file == m_ImageFiles[i]) && (type == m_ImageTypes[i])) {
             deleteItem(i);
             itemsCount--;
             break;
@@ -94,8 +94,8 @@ bool ImagesHistory::load() {
             m_ImageFiles.Add(file);
             m_ImageTypes.Add(type);
             wxFileName fileName(file);
-            wxString menuLabel = fileName.GetFullName();
-            m_RecentMenu->Insert(i, (m_MenuItemId + i), recentMenuLabel(i, menuLabel));;
+            wxString menuLabel = fileName.GetFullName() + "  (" + type + ")";
+            m_RecentMenu->Insert(i, (m_MenuItemId + i), recentMenuLabel(i, menuLabel));
             m_RecentMenu->SetHelpString(m_MenuItemId + i, file);
             historyLoaded = true;
         }
@@ -182,7 +182,7 @@ void ImagesHistory::refreshMenuLabels() {
     // Update the labels in all menus
     for (int i = 0; i < itemsCount; i++) {
         wxFileName fileName(m_ImageFiles[i]);
-        wxString menuLabel = fileName.GetFullName();
+        wxString menuLabel = fileName.GetFullName() + "  (" + m_ImageTypes[i] + ")";
         m_RecentMenu->SetLabel(m_MenuItemId + i, recentMenuLabel(i, menuLabel));
         m_RecentMenu->SetHelpString(m_MenuItemId + i, m_ImageFiles[i]);
     }
