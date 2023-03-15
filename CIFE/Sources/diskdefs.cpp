@@ -26,6 +26,7 @@ namespace diskdefs {
 
     void getImageTypes(wxString appPath) {
         imageTypes.Clear();
+        imageTypes.Add("Amstrad");
         wxFileInputStream file(appPath + "diskdefs");
         wxTextInputStream text(file);
         int diskdefsCount = 0;
