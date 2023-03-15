@@ -249,8 +249,7 @@ void MainWindow::onImageFileOpen(wxCommandEvent &event) {
                 bool useUppercase;
                 config->Read("/CpmFilesystem/UseUppercaseCharacters", &useUppercase, false);
 
-                if (cpmtools->setImageType(imageType)
-                        && cpmtools->openImage(imageFile.GetFullPath(), useUppercase)) {
+                if (cpmtools->openImage(imageFile.GetFullPath(), imageType, useUppercase)) {
                     isImageLoaded = true;
                     showDirectory();
                 }
@@ -294,9 +293,9 @@ void MainWindow::onImageFileNew(wxCommandEvent &event) {
         wxString fileName = dialog->getImageFileName();
         bool useUppercase;
         config->Read("/CpmFilesystem/UseUppercaseCharacters", &useUppercase, false);
+        wxString imageType = dialog->getImageType();
 
-        if (cpmtools->openImage(fileName, useUppercase)) {
-            wxString imageType = dialog->getImageType();
+        if (cpmtools->openImage(fileName, imageType, useUppercase)) {
             imageshistory->addItem(fileName, imageType);
             editImageFile->SetValue(fileName);
             editImageFile->SetInsertionPoint(imageFile.GetFullPath().length());
@@ -564,8 +563,11 @@ void MainWindow::onCreateNew(wxCommandEvent &event) {
     if (dialog->ShowModal() == wxID_OK) {
         bool useUppercase;
         config->Read("/CpmFilesystem/UseUppercaseCharacters", &useUppercase, false);
-        cpmtools->openImage(editImageFile->GetValue(), useUppercase);
-        showDirectory();
+
+        if (cpmtools->openImage(editImageFile->GetValue(), dialog->getImageType(),
+                                useUppercase)) {
+            showDirectory();
+        }
     }
 
     wxDELETE(dialog);
@@ -722,6 +724,7 @@ void MainWindow::onSelectHistoryEntry(wxCommandEvent &event) {
 void MainWindow::loadImageFromHistory(int historyId) {
     imageFile = imageshistory->getHistoryImageFile(historyId);
     imageType = imageshistory->getHistoryImageType(historyId);
+    isImageLoaded = false;
 
     if (diskdefs::imageTypes.Index(imageType) == wxNOT_FOUND) {
         wxMessageDialog deleteDialog(NULL, "\nDo you want to delete the History Entry?",
@@ -750,15 +753,13 @@ void MainWindow::loadImageFromHistory(int historyId) {
         editImageFile->SetValue(imageFile.GetFullPath());
         editImageFile->SetInsertionPoint(imageFile.GetFullPath().length());
         editImageType->SetValue(imageType);
-        cpmtools->setImageType(imageType);
         bool useUppercase;
         config->Read("/CpmFilesystem/UseUppercaseCharacters", &useUppercase, false);
-        cpmtools->openImage(imageFile.GetFullPath(), useUppercase);
-        isImageLoaded = true;
-        showDirectory();
-    }
-    else {
-        isImageLoaded = false;
+
+        if (cpmtools->openImage(imageFile.GetFullPath(), imageType, useUppercase)) {
+            isImageLoaded = true;
+            showDirectory();
+        }
     }
 }
 

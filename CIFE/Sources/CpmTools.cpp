@@ -54,8 +54,9 @@ wxString CpmTools::getActualImageType() {
 }
 
 // --------------------------------------------------------------------------------
-bool CpmTools::openImage(wxString fileName, bool useUppercase) {
+bool CpmTools::openImage(wxString fileName, wxString typeName, bool useUppercase) {
     imageFileName = fileName;
+    imageTypeName = typeName;
     wxString image = fileName.substr(fileName.find_last_of("/\\") + 1);
 
     if (!cpmdevice->Open(fileName.c_str(), "r+b")) {
@@ -63,12 +64,19 @@ bool CpmTools::openImage(wxString fileName, bool useUppercase) {
                                            cpmdevice->getErrorMsg()));
         return (false);
     }
-    else {
-        if (cpmfs->initDriveData(useUppercase) == -1) {
-            guiintf->printMsg(wxString::Format("cannot init filesystem  (%s)\n",
-                                               cpmfs->getErrorMsg()));
-            return (false);
-        }
+
+    if (cpmfs->readDiskdefData(typeName.c_str()) == 1) {
+        guiintf->printMsg(wxString::Format("cannot read superblock  (%s)\n",
+                                           cpmfs->getErrorMsg()));
+        cpmdevice->Close();
+        return (false);
+    }
+
+    if (cpmfs->initDriveData(useUppercase) == 1) {
+        guiintf->printMsg(wxString::Format("cannot init filesystem  (%s)\n",
+                                           cpmfs->getErrorMsg()));
+        cpmdevice->Close();
+        return (false);
     }
 
     return (true);

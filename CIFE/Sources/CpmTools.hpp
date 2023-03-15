@@ -33,7 +33,7 @@ class CpmTools {
     public:     // Methods
         bool setImageType(wxString typeName);
         wxString getActualImageType();
-        bool openImage(wxString fileName, bool useUppercase);
+        bool openImage(wxString fileName, wxString typeName, bool useUppercase);
         wxString getActualFileName();
         bool closeImage();
         void showDirectory();
