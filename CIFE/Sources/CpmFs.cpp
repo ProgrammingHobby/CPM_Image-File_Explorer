@@ -1029,7 +1029,7 @@ int CpmFs::amsReadSuper(char const *format) {
     unsigned char boot_sector[512], *boot_spec;
     cpmdevice->SetGeometry(512, 9, 40, 0);
 
-    if (cpmdevice->ReadSector(0, 0, (char *) boot_sector)) {
+    if (!cpmdevice->ReadSector(0, 0, (char *) boot_sector)) {
         fserr = msgFormat("Failed to read Amstrad superblock  (%s)",
                           cpmdevice->getErrorMsg().c_str());
         return (1);
@@ -1148,7 +1148,7 @@ int CpmFs::readDiskdefData(const char *format) {
         s_ifreg <<= 1;
     }
 
-    if (strcmp(format, "amstrad") == 0) {
+    if (strcmp(format, "Amstrad") == 0) {
         return (amsReadSuper(format));
     }
 
