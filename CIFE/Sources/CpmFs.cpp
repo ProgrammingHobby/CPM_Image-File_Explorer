@@ -2461,10 +2461,10 @@ int CpmFs::mkfs(char const *filename, char const *format, char const *label,
 
     if (timeStamps && !(drive.type == CPMFS_P2DOS || drive.type == CPMFS_DR3)) { /*{{{*/
         int offset, j;
-        CpmFs::CpmInode_t ino;
+        CpmInode_t ino;
         static const char sig[] = "!!!TIME";
         unsigned int records;
-        CpmFs::DsDate_t *ds;
+        DsDate_t *ds;
 
         if (!cpmdevice->Open(filename, "r+b")) {
             fserr = msgFormat("Cannot open %s  (%s)", filename, cpmdevice->getErrorMsg().c_str());
@@ -2472,9 +2472,9 @@ int CpmFs::mkfs(char const *filename, char const *format, char const *label,
         }
 
         initDriveData(uppercase);
-        records = drive.maxdir / 8;
+        records = (drive.maxdir + 7) / 8;
 
-        if (!(ds = (CpmFs::DsDate_t *) malloc(records * 128))) {
+        if (!(ds = (DsDate_t *) malloc(records * 128))) {
             sync();
             return -1;
         }
@@ -2483,19 +2483,39 @@ int CpmFs::mkfs(char const *filename, char const *format, char const *label,
         offset = 15;
 
         for (i = 0; i < records; i++) {
+            unsigned int cksum;
+
             for (j = 0; j < 7; j++, offset += 16) {
-                *((char *) ds + offset) = sig[j];
+                *((char *)ds + offset) = sig[j];
             }
 
             /* skip checksum byte */
             offset += 16;
+
+            for (cksum = 0, j = 0; j < 127; ++j) {
+                cksum += *((unsigned char *)ds + i * 128 + j);
+            }
+
+            *((char *)ds + i * 128 + j) = cksum;
         }
 
-        /* Set things up so cpmSync will generate checksums and write the * file. */
-        if (create(&root, "00!!!TIME&.DAT", &ino, 0) == -1) {
+        /* The filesystem does not know about datestamper yet, because it
+             was not there when it was mounted. */
+        if (create(&root, "00!!!TIME&.DAT", &ino, 0222) == -1) {
             fserr = msgFormat("Unable to create DateStamper file.  (%s)", fserr.c_str());
             return -1;
         }
+
+        CpmFile_t dsfile;
+
+        if ((open(&ino, &dsfile, O_WRONLY) == -1)
+                || (write(&dsfile, (char *)ds, records * 128) != (records * 128))
+                || (close(&dsfile) == -1)) {
+            fserr = msgFormat("Unable to write DateStamper file.  (%s)", fserr.c_str());
+            return -1;
+        }
+
+        protSet(&ino, 0);
 
         drive.ds = ds;
         drive.dirtyDs = 1;
