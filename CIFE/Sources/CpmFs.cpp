@@ -26,6 +26,8 @@
 #include <fcntl.h>
 #include <memory>
 // --------------------------------------------------------------------------------
+extern char **environ;
+// --------------------------------------------------------------------------------
 CpmFs::CpmFs(CpmDevice *device, std::string appPath) {
     cpmdevice = device;
     diskdefsPath = appPath + "diskdefs";
@@ -44,6 +46,24 @@ void CpmFs::memcpy7(char *dest, char const *src, int count) {
         *dest = ((*dest) & 0x80) | ((*src) & 0x7F);
         ++dest;
         ++src;
+    }
+}
+
+// --------------------------------------------------------------------------------
+//  -- is character allowed in a name?
+// --------------------------------------------------------------------------------
+int CpmFs::isFileChar(char c, int type) {
+    if (c & 0x80) {
+        return 0;
+    }
+
+    if (type == CPMFS_DR3) {
+        return (c > ' ' && c != '<' && c != '>' && c != '.' && c != ',' && c != ';' && c != ':'
+                && c != '=' && c != '?' && c != '*' && c != '[' && c != ']' && c != '|' && !islower(c));
+    }
+    else {
+        return (c > ' ' && c != '<' && c != '>' && c != '.' && c != ';' && c != ':'
+                && c != '=' && c != '?' && c != '*' && c != '_' && !islower(c));
     }
 }
 
@@ -70,7 +90,7 @@ int CpmFs::splitFilename(char const *fullname, int type, char *name, char *ext,
     }
 
     for (i = 0; i < 8 && fullname[i] && fullname[i] != '.'; ++i) {
-        if (!ISFILECHAR(i, fullname[i])) {
+        if (!isFileChar(toupper(fullname[i]), type)) {
             fserr = "illegal CP/M filename";
             return (-1);
         }
@@ -79,11 +99,17 @@ int CpmFs::splitFilename(char const *fullname, int type, char *name, char *ext,
         }
     }
 
+    if (i == 0) {
+        /* no filename after user or extension without filename */
+        fserr = "illegal CP/M filename";
+        return (-1);
+    }
+
     if (fullname[i] == '.') {
         ++i;
 
         for (j = 0; j < 3 && fullname[i]; ++i, ++j) {
-            if (!ISFILECHAR(1, fullname[i])) {
+            if (!isFileChar(toupper(fullname[i]), type)) {
                 fserr = "illegal CP/M filename";
                 return (-1);
             }
@@ -92,7 +118,8 @@ int CpmFs::splitFilename(char const *fullname, int type, char *name, char *ext,
             }
         }
 
-        if (i == 1 && j == 0) {
+        if (fullname[i]) {
+            /* too long name */
             fserr = "illegal CP/M filename";
             return (-1);
         }
@@ -136,11 +163,17 @@ time_t CpmFs::cpm2unix_time(int days, int hour, int min) {
     /* the current offset from UTC is most sensible, but not perfect. */
     int year, days_per_year;
     static int days_per_month[] = {31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    char **old_environ;
+    static char gmt0[] = "TZ=GMT0";
+    static char *gmt_env[] = { gmt0, (char *)0 };
     tm tms;
     time_t lt, t;
+
     time(&lt);
     t = lt;
     tms = *localtime(&lt);
+    old_environ = environ;
+    environ = gmt_env;
     tms.tm_isdst = 0;
     lt = mktime(&tms);
     lt -= t;
@@ -178,6 +211,7 @@ time_t CpmFs::cpm2unix_time(int days, int hour, int min) {
     }
 
     t = mktime(&tms) + (days - 1) * 24 * 3600;
+    environ = old_environ;
     t -= lt;
     return (t);
 }
@@ -188,6 +222,7 @@ time_t CpmFs::cpm2unix_time(int days, int hour, int min) {
 void CpmFs::unix2cpm_time(time_t now, int *days, int *hour, int *min) {
     tm *tms;
     int i;
+
     tms = localtime(&now);
     *min = ((tms->tm_min / 10) << 4) | (tms->tm_min % 10);
     *hour = ((tms->tm_hour / 10) << 4) | (tms->tm_hour % 10);
@@ -212,7 +247,7 @@ time_t CpmFs::ds2unix_time(const DsEntry_t *entry) {
 
     if (entry->minute == 0 && entry->hour == 0 &&
             entry->day == 0 && entry->month == 0 && entry->year == 0) {
-        return 0;
+        return (0);
     }
 
     tms.tm_isdst = -1;
@@ -228,7 +263,7 @@ time_t CpmFs::ds2unix_time(const DsEntry_t *entry) {
     }
 
     tms.tm_year = yr;
-    return mktime(&tms);
+    return (mktime(&tms));
 }
 
 // --------------------------------------------------------------------------------
@@ -247,6 +282,7 @@ void CpmFs::unix2ds_time(time_t now, DsEntry_t *entry) {
         entry->hour = BIN2BCD(tms->tm_hour);
         entry->day = BIN2BCD(tms->tm_mday);
         entry->month = BIN2BCD(tms->tm_mon + 1);
+
         yr = tms->tm_year;
 
         if (yr > 100) {
@@ -347,7 +383,6 @@ int CpmFs::readBlock(int blockno, char *buffer, int start, int end) {
     }
 
     sect = (blockno * (drive.blksiz / drive.secLength) + bootOffset()) % drive.sectrk;
-
     track = (blockno * (drive.blksiz / drive.secLength) + bootOffset()) / drive.sectrk;
 
     for (counter = 0; counter <= end; ++counter) {
@@ -687,6 +722,10 @@ int CpmFs::match(char const *a, char const *pattern) {
         sprintf(pat, "%02d%s", user, pattern);
     }
 
+    if (strcmp(a, ".") == 0 || strcmp(a, "..") == 0) {
+        return (0);
+    }
+
     return recmatch(a, pat);
 }
 
@@ -763,6 +802,7 @@ int CpmFs::diskdefReadSuper(char const *format) {
         int argc;
         char *argv[2];
         char *s;
+
         /* Allow inline comments preceded by ; or # */
         s = strchr(line, '#');
 
@@ -790,7 +830,7 @@ int CpmFs::diskdefReadSuper(char const *format) {
                              drive.blksiz;
 
                 if (drive.extents == 0) {
-                    drive.extents = ((drive.size > 256 ? 8 : 16) * drive.blksiz) / 16384;
+                    drive.extents = ((drive.size > 256 ? 8 : 16) * drive.blksiz) / drive.extentsize;
                 }
 
                 if (drive.extents == 0) {
@@ -936,6 +976,14 @@ int CpmFs::diskdefReadSuper(char const *format) {
                 else if (strcmp(argv[0], "logicalextents") == 0) {
                     drive.extents = strtol(argv[1], (char **) 0, 0);
                 }
+                else if (strcmp(argv[0], "extentsize") == 0) {
+                    drive.extentsize = strtol(argv[1], (char **)0, 0);
+
+                    if (drive.extentsize > 16384) {
+                        fserr = msgFormat("extentsize > 16384 in line %d\n", ln);
+                        return (1);
+                    }
+                }
                 else if (strcmp(argv[0], "os") == 0) {
                     if (strcmp(argv[1], "2.2") == 0) {
                         drive.type |= CPMFS_DR22;
@@ -967,6 +1015,7 @@ int CpmFs::diskdefReadSuper(char const *format) {
             insideDef = 1;
             drive.skew = 1;
             drive.extents = 0;
+            drive.extentsize = 16384;
             drive.type = CPMFS_DR22;
             drive.skewtab = (int *) 0;
             drive.offset = 0;
@@ -1016,6 +1065,11 @@ int CpmFs::diskdefReadSuper(char const *format) {
 
     if (drive.maxdir < 0) {
         fserr = "maxdir parameter invalid or missing from diskdef";
+        return (1);
+    }
+
+    if ((drive.size <= 256 ? 16 : 8)*drive.blksiz < drive.extentsize) {
+        fserr = msgFormat("extent size less than %d\n", drive.extentsize);
         return (1);
     }
 
@@ -1077,10 +1131,12 @@ int CpmFs::amsReadSuper(char const *format) {
     drive.skew = 1; /* Amstrads skew at the controller level */
     drive.skewtab = (int *) 0;
     drive.boottrk = boot_spec[5];
+    drive.bootsec = -1;
     drive.offset = 0;
     drive.size = (drive.secLength * drive.sectrk * (drive.tracks - drive.boottrk)) /
                  drive.blksiz;
     drive.extents = ((drive.size > 256 ? 8 : 16) * drive.blksiz) / 16384;
+    drive.extentsize = 16384;
     return (0);
 }
 
@@ -1509,7 +1565,7 @@ int CpmFs::namei(char const *filename, CpmInode_t *i) {
     /* calculate size */
     {
         int block;
-        i->size = highestExtno * 16384;
+        i->size = highestExtno * drive.extentsize;
 
         if (drive.size <= 256) for (block = 15; block >= 0; --block) {
                 if (drive.dir[highestExt].pointers[block]) {
@@ -1877,8 +1933,8 @@ ssize_t CpmFs::read(CpmFile_t *file, char *buf, size_t count) {
     int extcap;
     extcap = (drive.size <= 256 ? 16 : 8) * blocksize;
 
-    if (extcap > 16384) {
-        extcap = 16384 * drive.extents;
+    if (extcap > 16384) {		// drive.extentsize ???
+        extcap = 16384 * drive.extents;	// drive.extentsize ???
     }
 
     if (file->ino->ino == (ino_t) drive.maxdir + 1) { /* [passwd] */
@@ -1909,7 +1965,7 @@ ssize_t CpmFs::read(CpmFile_t *file, char *buf, size_t count) {
             char buffer[16384];
 
             if (findext) {
-                extentno = file->pos / 16384;
+                extentno = file->pos / drive.extentsize;
                 extent = findFileExtent(drive.dir[file->ino->ino].status,
                                         drive.dir[file->ino->ino].name, drive.dir[file->ino->ino].ext,
                                         0, extentno);
@@ -2000,13 +2056,13 @@ ssize_t CpmFs::write(CpmFile_t *file, char const *buf, size_t count) {
     char buffer[16384];
     int extcap = (drive.size <= 256 ? 16 : 8) * blocksize;
 
-    if (extcap > 16384) {
-        extcap = (16384 * drive.extents);
+    if (extcap > 16384) {			// drive.extentsize ???
+        extcap = (16384 * drive.extents);	// drive.extentsize ???
     }
 
     while (count > 0) {
         if (findext) {
-            extentno = file->pos / 16384;
+            extentno = file->pos / drive.extentsize;
             extent = findFileExtent(drive.dir[file->ino->ino].status,
                                     drive.dir[file->ino->ino].name, drive.dir[file->ino->ino].ext,
                                     0, extentno);
@@ -2140,7 +2196,7 @@ ssize_t CpmFs::write(CpmFile_t *file, char const *buf, size_t count) {
 
         drive.dir[extent].extnol = EXTENTL(extentno);
         drive.dir[extent].extnoh = EXTENTH(extentno);
-        drive.dir[extent].blkcnt = ((file->pos - 1) % 16384) / 128 + 1;
+        drive.dir[extent].blkcnt = ((file->pos - 1) % drive.extentsize) / 128 + 1;
 
         if (drive.type & CPMFS_EXACT_SIZE) {
             drive.dir[extent].lrc = (128 - (file->pos % 128)) & 0x7F;
@@ -2459,7 +2515,7 @@ int CpmFs::mkfs(char const *filename, char const *format, char const *label,
         return -1;
     }
 
-    if (timeStamps && !(drive.type == CPMFS_P2DOS || drive.type == CPMFS_DR3)) { /*{{{*/
+    if (timeStamps && !(drive.type == CPMFS_P2DOS || drive.type == CPMFS_DR3)) {
         int offset, j;
         CpmInode_t ino;
         static const char sig[] = "!!!TIME";
@@ -2516,6 +2572,12 @@ int CpmFs::mkfs(char const *filename, char const *format, char const *label,
         }
 
         protSet(&ino, 0);
+
+        utimbuf ut;
+        namei("00!!!TIME&.DAT", &ino);
+        time(&ut.actime);
+        time(&ut.modtime);
+        utime(&ino, &ut);
 
         drive.ds = ds;
         drive.dirtyDs = 1;

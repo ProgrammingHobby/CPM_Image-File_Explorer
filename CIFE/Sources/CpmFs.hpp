@@ -81,6 +81,7 @@ class CpmFs {
             int type;
             int size;
             int extents; /* logical extents per physical extent */
+            int extentsize; /* pretty much always 16384 */
             int *skewtab;
             PhysDirectoryEntry_t *dir;
             int alvSize;
@@ -152,6 +153,7 @@ class CpmFs {
         int mkfs(char const *filename, char const *format, char const *label, char *bootTracks,
                  int timeStamps, int uppercase);
         bool getBootTracksEnabled();
+        int isFileChar(char c, int type);
         size_t getBootTrackSize();
         CpmSuperBlock_t &getDriveData();
         CpmInode_t &getDirectoryRoot();

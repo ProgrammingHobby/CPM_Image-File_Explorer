@@ -77,8 +77,10 @@ class CpmTools {
         void convertFilename(const char *filename, char *cpmname);
         int bcdCheck(int n, int max, const char *msg, const char *unit, int extent1, int extent2);
         int pwdCheck(int extent, const char *pwd, char decode);
+        int dirCheck(char const *str, size_t len, int allow_empty, int type);
+        int filesize(CpmFs::CpmSuperBlock_t const *sb, int extent);
         int ask(const char *msg);
-        char *prfile(int extent);
+        char *prfile(CpmFs::CpmSuperBlock_t *sb, int extent);
         int fsck(const char *image, bool repair);
         int unix2cpm(const char *unixfilename, const char *cpmfilename, bool text, bool preserve);
         int cpm2unix(const char *unixfilename, const char *cpmfilename, bool text, bool preserve);
