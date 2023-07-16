@@ -132,8 +132,8 @@ void CpmTools::showDirectory() {
                     /*    user: name    */
                     guiintf->printDirEntry(0, row, wxString::Format("%2d: %s", user, (gargv[i] + 2)));
                     /*    bytes    */
-                    guiintf->printDirEntry(1, row, wxString::Format("%5.1ldK",
-                                           (long)(statbuf.size + buf.f_bsize - 1) / buf.f_bsize * (buf.f_bsize / 1024)));
+                    guiintf->printDirEntry(1, row, wxString::Format("%5.1ldK", (long)sizetokb(statbuf.size,
+                                           buf.f_bsize)));
                     /*    records    */
                     guiintf->printDirEntry(2, row, wxString::Format("%6.1ld", (long)(statbuf.size / 128)));
                     /*    attributes    */
@@ -1220,6 +1220,16 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
     }
 
     return (exitcode);
+}
+
+// --------------------------------------------------------------------------------
+long CpmTools::sizetokb(off_t size, off_t blocksize) {
+    /* In DR CP/M, the minimal block size is 1024, but in CP/M-65
+    * it may be lower.
+    */
+    off_t blocks = (size + blocksize - 1) / blocksize;
+    off_t blocked_size = blocks * blocksize;
+    return (blocked_size + 1023) / 1024;
 }
 
 // --------------------------------------------------------------------------------
