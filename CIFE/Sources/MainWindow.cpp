@@ -610,7 +610,7 @@ void MainWindow::onGeneralSettings(wxCommandEvent &event) {
     wxDELETE(dialog);
     config->Read("/CpmFilesystem/UseUppercaseCharacters", &newUppercase, false);
 
-    if (oldUppercase != newUppercase) {
+    if ((oldUppercase != newUppercase) && isImageLoaded) {
         cpmfs->initDriveData(newUppercase);
         showDirectory();
     }
