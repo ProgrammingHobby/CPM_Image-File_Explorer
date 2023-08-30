@@ -79,7 +79,6 @@ class CpmTools {
         int pwdCheck(int extent, const char *pwd, char decode);
         int dirCheck(char const *str, size_t len, int allow_empty, int type);
         int filesize(CpmFs::CpmSuperBlock_t const *sb, int extent);
-        long sizetokb(off_t size, off_t blocksize);
         int ask(const char *msg);
         char *prfile(CpmFs::CpmSuperBlock_t *sb, int extent);
         int fsck(const char *image, bool repair);

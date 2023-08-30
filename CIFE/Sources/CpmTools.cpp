@@ -114,7 +114,7 @@ void CpmTools::showDirectory() {
 
     if (gargc) {
         int i, l, user, attrib;
-        int totalBytes = 0, totalRecs = 0;
+        int totalKBytes = 0, totalRecs = 0;
         qsort(gargv, gargc, sizeof(char *), namecmp);
         cpmfs->statFs(&buf);
 
@@ -127,15 +127,16 @@ void CpmTools::showDirectory() {
                     cpmfs->namei(gargv[i], &file);
                     cpmfs->stat(&file, &statbuf);
                     cpmfs->attrGet(&file, &attrib);
-                    totalBytes += statbuf.size;
-                    totalRecs += (statbuf.size + 127) / 128;
+                    totalKBytes += ((statbuf.size + 1023) / 1024);
+                    totalRecs += ((statbuf.size + 127) / 128);
                     /*    user: name    */
                     guiintf->printDirEntry(0, row, wxString::Format("%2d: %s", user, (gargv[i] + 2)));
                     /*    bytes    */
-                    guiintf->printDirEntry(1, row, wxString::Format("%5.1ldK", (long)sizetokb(statbuf.size,
-                                           buf.f_bsize)));
+                    guiintf->printDirEntry(1, row, wxString::Format("%5.1ldK",
+                                           (long)((statbuf.size + buf.f_bsize - 1) / buf.f_bsize * (buf.f_bsize / 1024))));
                     /*    records    */
-                    guiintf->printDirEntry(2, row, wxString::Format("%6.1ld", (long)(statbuf.size / 128)));
+                    guiintf->printDirEntry(2, row, wxString::Format("%6.1ld",
+                                           (long)((statbuf.size + 127) / 128)));
                     /*    attributes    */
                     std::string attribute;
                     attribute += ((attrib & CPM_ATTR_F1)      ? '1' : '-');
@@ -193,9 +194,9 @@ void CpmTools::showDirectory() {
         }
 
         guiintf->printDirInfo(
-            wxString::Format(" Total Bytes = %5.1dk\t\t\tTotal Records = %5.1d\t\t\t\tFiles Found = %4.1d\n"
-                             " Total 1k Blocks = %5.1ld\t\tUsed/Max Dir Entries: %4.1ld/%4.1ld",
-                             ((totalBytes + 1023) / 1024), totalRecs, l, ((buf.f_bused * buf.f_bsize) / 1024),
+            wxString::Format(" Total Bytes = %5.1ldk\t\t\tTotal Records = %5.1d\t\t\t\tFiles Found = %4.1d\n"
+                             " Total 1k Blocks = %5.1d\t\tUsed/Max Dir Entries: %4.1ld/%4.1ld",
+                             ((buf.f_bused * buf.f_bsize) / 1024), totalRecs, l, totalKBytes,
                              (buf.f_files - buf.f_ffree), buf.f_files));
     }
     else {
@@ -1220,16 +1221,6 @@ int CpmTools::unix2cpm(const char *unixfilename, const char *cpmfilename, bool t
     }
 
     return (exitcode);
-}
-
-// --------------------------------------------------------------------------------
-long CpmTools::sizetokb(off_t size, off_t blocksize) {
-    /* In DR CP/M, the minimal block size is 1024, but in CP/M-65
-    * it may be lower.
-    */
-    off_t blocks = (size + blocksize - 1) / blocksize;
-    off_t blocked_size = blocks * blocksize;
-    return (blocked_size + 1023) / 1024;
 }
 
 // --------------------------------------------------------------------------------
