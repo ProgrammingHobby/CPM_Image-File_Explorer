@@ -329,8 +329,9 @@ void MainWindow::onAbout(wxCommandEvent &event) {
                                "Using wxWidgets GUI - Framework Version ") + versionInfo.GetVersionString() +
                              wxString::Format(" - %dbit", (int)(sizeof(nullptr) * 8)) +
                              _("\n\nCP/M Images Functionality based on CP/M-Tools\n"
-                               "Source Code Version 2.24 (Snapshot 2023-07-16) from Michael Haardt."));
-    aboutInfo.SetCopyright(wxString::Format("Uwe Merker  (C) %d", datetime.GetCurrentYear()));
+                               "Source Code Version 2.24 (Snapshot 2023-08-14) from Michael Haardt."));
+    aboutInfo.SetCopyright(wxString::Format("(c) %d   Uwe Merker",
+                                            datetime.GetCurrentYear()));
     aboutInfo.SetWebSite("http://www.moria.de/~michael/cpmtools");
     wxBitmap iconBmp = wxXmlResource::Get()->LoadBitmap(wxT("appiconsmall"));
 
