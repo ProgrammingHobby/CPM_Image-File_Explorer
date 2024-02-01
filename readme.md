@@ -2,24 +2,29 @@
 
 ![](CIFE_Linux.jpg)
 
-CP/M Image File Explorer dient zum einfachen Erzeugen und Bearbeiten von binären Disketten- und Festplatten-Images.
+# CP/M Image-File Explorer will no longer be further developed or maintained via bug fixes.
 
-Der CP/M Image File Explorer basiert auf dem Source-Code der CP/M-Tools von Michael Haardt in der Version 2.23.
+# This version will be replaced by a new version.
+
+CP/M Image File Explorer(CIFE) allows easy creation and editing of binary floppy and hard disk images. This program is based on CP/M tools by Michael Haardt in version 2.23.
 
 http://www.moria.de/~michael/cpmtools
 
-Entwickelt wird der CP/M Image File Explorer in C/C++ mit den wxWidgets GUI-Framework.
+CIFE is written in C/C++ using the wxWidgets GUI framework.
 
-Als Entwicklungsumgebung dient Eclipse CDT.
+Eclipse CDT serves as the development environment.
 
-# Kompilieren von CIFE ohne Entwicklungsumgebung #
-CIFE kann unter Linux auch ohne eine installierte Entwicklungsumgebung auf das jeweilige Zielsystem hin Kompiliert werden.
-Dafür habe ich ein GNUmakefile angelegt. Voraussetzung ist der Linux Compiler GCC sowie die wxWidgets Development Pakete.
 
-Unter Ubuntu können die Voraussetzungen in der Console mit folgender Zeile installiert werden:
+
+# Compiling CIFE without Eclipse
+
+CIFE can also be compiled from the command-line in Linux by using the file GNUmakefile. The linux prerequisites
+
+  * GCC compiler
+  *  wxWidgets development packages
+
+Under Ubuntu, these can be installed in the console with the following command:
 
 sudo apt install build-essential libwxgtk3.0-gtk3-dev
 
-Dann die Sourcen für CIFE von Github herunterladen und in den Stammordner in welchem sich das GNUmakefile befindet wechseln.
-
-Dort reicht dann in der Console ein einfaches  make  um CIFE zu kompilieren.
+Download the sources for CIFE from Github. A simple make in the root folder, where the GNUmakefile is located, will build the program.
